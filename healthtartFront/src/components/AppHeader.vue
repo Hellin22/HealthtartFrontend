@@ -2,22 +2,22 @@
   <header class="header">
     <div class="left-header">
       <div class="logo">
-        <img src="@/assets/icons/logo.svg" alt="Healthtart Logo" class="logo-img"/>
+        <img src="@/assets/icons/logo.svg" alt="Healthtart Logo" class="logo-img" />
       </div>
     </div>
     <div class="right-header">
       <div class="nav-menu">
         <nav class="nav">
-          <button class="nav-button" :class="{active: activeTab === 'home' }" @click="setActiveTab('home')">Home</button>
-          <button class="nav-button" :class="{active: activeTab === 'gym' }" @click="setActiveTab('gym')">Gym</button>
-          <button class="nav-button" :class="{active: activeTab === 'routine' }" @click="setActiveTab('routine')">Routine</button>
-          <button class="nav-button" :class="{active: activeTab === 'history' }" @click="setActiveTab('history')">History</button>
-          <button class="nav-button" :class="{active: activeTab === 'inbody' }" @click="setActiveTab('inbody')">InBody</button>
-          <button class="nav-button" :class="{active: activeTab === 'mypage' }" @click="setActiveTab('mypage')">MyPage</button>
+          <button class="nav-button" :class="{ active: activeTab === 'home' }" @click="setActiveTab('home')">Home</button>
+          <button class="nav-button" :class="{ active: activeTab === 'gym' }" @click="setActiveTab('gym')">Gym</button>
+          <button class="nav-button" :class="{ active: activeTab === 'routine' }" @click="setActiveTab('routine')">Routine</button>
+          <button class="nav-button" :class="{ active: activeTab === 'history' }" @click="setActiveTab('history')">History</button>
+          <button class="nav-button" :class="{ active: activeTab === 'inbody' }" @click="setActiveTab('inbody')">InBody</button>
+          <button class="nav-button" :class="{ active: activeTab === 'mypage' }" @click="setActiveTab('mypage')">MyPage</button>
         </nav>
         <div class="auth-btn">
-          <button :class="{active: activeTab === 'login'}" @click="setActiveTab('login')">
-            LogIn
+          <button :class="{ active: activeTab === 'login' }" @click="setActiveTab('login')">
+            Sign in
             <!-- {{ isLoggedIn ? 'LogOut' : 'LogIn' }}   -->
           </button>
         </div>
@@ -27,63 +27,66 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-// 반응형 상태 설정
-const activeTab = ref('home');
+const activeTab = ref('');
 const route = useRoute();
 const router = useRouter();
 
 function setActiveTab(tab) {
-  activeTab.value = tab;
-  switch (tab) {
-    case 'home':
-      router.push({ path: '' });
-      break;
-    case 'gym':
-      router.push({ path: '/gym' });
-      break;
-    case 'routine':
-      router.push({ path: '/routine' });
-      break;
-    case 'history':
-      router.push({ path: '/history' });
-      break;
-    case 'inbody':
-      router.push({ path: '/inbody' });
-      break;
-    case 'mypage':
-      router.push({ path: '/mypage' });
-      break;
-    case 'login':
-      router.push({ path: '/login' });
-      break;
+  if (activeTab.value !== tab) {
+    activeTab.value = tab;
+    switch (tab) {
+      case 'home':
+        router.push({ path: '/' });
+        break;
+      case 'gym':
+        router.push({ path: '/gym' });
+        break;
+      case 'routine':
+        router.push({ path: '/routine' });
+        break;
+      case 'history':
+        router.push({ path: '/history' });
+        break;
+      case 'inbody':
+        router.push({ path: '/inbody' });
+        break;
+      case 'mypage':
+        router.push({ path: '/mypage' });
+        break;
+      case 'login':
+        router.push({ path: '/login' });
+        break;
+    }
   }
 }
 
-// 라우트에 따라 activeTab 업데이트
 function updateActiveTabFromRoute() {
   const path = route.path;
-  if (path.includes('home')) {
+  if (path === '/') {
     activeTab.value = 'home';
-  } else if (path.includes('gym')) {
+  } else if (path.includes('/gym')) {
     activeTab.value = 'gym';
-  } else if (path.includes('routine')) {
+  } else if (path.includes('/routine')) {
     activeTab.value = 'routine';
-  } else if (path.includes('history')) {
+  } else if (path.includes('/history')) {
     activeTab.value = 'history';
-  } else if (path.includes('inbody')) {
+  } else if (path.includes('/inbody')) {
     activeTab.value = 'inbody';
-  } else if (path.includes('mypage')) {
+  } else if (path.includes('/mypage')) {
     activeTab.value = 'mypage';
-  } else if (path.includes('login')) {
+  } else if (path.includes('/login')) {
     activeTab.value = 'login';
   }
 }
 
-// 컴포넌트가 마운트되면 경로에 맞는 탭을 설정
 onMounted(() => {
+  updateActiveTabFromRoute();
+});
+
+watch(route, () => {
   updateActiveTabFromRoute();
 });
 </script>
@@ -95,7 +98,7 @@ onMounted(() => {
   align-items: center;
   background-color: black;
   padding: 10px 30px;
-  height: 60px; /* Set a fixed height */
+  height: 60px;
 }
 
 .left-header {
@@ -176,7 +179,6 @@ onMounted(() => {
   gap: 20px;
 }
 
-/* Media query for smaller screens */
 @media (max-width: 768px) {
   .header {
     flex-wrap: wrap;
