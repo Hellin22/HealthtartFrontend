@@ -8,7 +8,7 @@
         <div class="right-header">
             <div class="nav-menu">
                 <nav class="nav">
-                    <button class="nav-button" :class="{active: activeTab === 'home' }" @click="setActiveTab('home')">Home</button>
+                    <button class="nav-button" :class="{active: activeTab === 'mainpage' }" @click="setActiveTab('mainpage')">Home</button>
                     <button class="nav-button" :class="{active: activeTab === 'gym' }" @click="setActiveTab('gym')">Gym</button>
                     <button class="nav-button" :class="{active: activeTab === 'routine' }" @click="setActiveTab('routine')">Routine</button>
                     <button class="nav-button" :class="{active: activeTab === 'history' }" @click="setActiveTab('history')">History</button>
@@ -29,64 +29,70 @@
     </header>
 </template>
   
-<script>
-import { useRoute, useRouter } from 'vue-router';
-import { ref, watch, onMounted, watchEffect } from 'vue';
+<script setup>
+    import { useRoute, useRouter } from 'vue-router';
+    import { ref, watch, onMounted, watchEffect } from 'vue';
 
-const route = useRoute();
-const router = useRouter();
+    const route = useRoute();
+    const router = useRouter();
 
-const activeTab = ref('');
+    const activeTab = ref('');
+    const isLoginPage = ref(false);
 
-function setActiveTab(tab) {
-  activeTab.value = tab;
+    watch(() => route.path, (newPath) => {
+        isLoginPage.value = newPath === '/login';
+    }, { immediate: true });
 
-  switch (tab) {
-    case 'home':
-      router.push({ path: '/home'});
-      break;
-    case 'gym':
-      router.push({ path: '/gym'});
-      break;
-    case 'routine':
-      router.push({ path: '/routine'});
-      break;
-    case 'history':
-      router.push({ path: '/history'});
-      break;
-    case 'inbody':
-      router.push({ path: '/inbody'});
-      break;
-    case 'mypage':
-        router.push({ path: '/mypage'});
+
+    function setActiveTab(tab) {
+    activeTab.value = tab;
+
+    switch (tab) {
+        case 'mainpage':
+        router.push({ path: '/mainpage'});
         break;
-    case 'login':
-        router.push({ path: '/login'});
-  }
-}
+        case 'gym':
+        router.push({ path: '/gym'});
+        break;
+        case 'routine':
+        router.push({ path: '/routine'});
+        break;
+        case 'history':
+        router.push({ path: '/history'});
+        break;
+        case 'inbody':
+        router.push({ path: '/inbody'});
+        break;
+        case 'mypage':
+            router.push({ path: '/mypage'});
+            break;
+        case 'login':
+            router.push({ path: '/login'});
+    }
+    }
 
-function updateActiveTabFromRoute() {
-  const path = route.path;
-  if (path.includes('home')) {
-    activeTab.value = 'home';
-  } else if (path.includes('gym')) {
-    activeTab.value = 'gym';
-  } else if (path.includes('routine')) {
-    activeTab.value = 'routine';
-  } else if (path.includes('history')) {
-    activeTab.value = 'history';
-  } else if (path.includes('inbody')) {
-    activeTab.value = 'inbody';
-  } else if (path.includes('mypage')) {
-    activeTab.value = 'mypage';
-  } else if (path.includes('login')) {
-    activeTab.value = 'login';
-  }
-}
+    function updateActiveTabFromRoute() {
+    const path = route.path;
+    if (path.includes('mainpage')) {
+        activeTab.value = 'mainpage';
+    } else if (path.includes('gym')) {
+        activeTab.value = 'gym';
+    } else if (path.includes('routine')) {
+        activeTab.value = 'routine';
+    } else if (path.includes('history')) {
+        activeTab.value = 'history';
+    } else if (path.includes('inbody')) {
+        activeTab.value = 'inbody';
+    } else if (path.includes('mypage')) {
+        activeTab.value = 'mypage';
+    } else if (path.includes('login')) {
+        activeTab.value = 'login';
+    }
+    }
 
-onMounted(() => {
-  updateActiveTabFromRoute();
-});
+    onMounted(() => {
+    updateActiveTabFromRoute();
+    });
 
 
     // export default {
@@ -178,6 +184,12 @@ onMounted(() => {
     border-radius: 10px;
   }
 
+  .nav-button:hover {
+    background-color: #01FEAE;
+    color: black;
+    border-radius: 10px;
+  }
+
   .auth-btn {
     flex: 0 0 auto;
     margin-left: 30px;
@@ -250,4 +262,3 @@ onMounted(() => {
 
     
 </style>
-  
