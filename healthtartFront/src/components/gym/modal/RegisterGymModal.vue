@@ -9,6 +9,7 @@
                 <th>번호</th>
                 <th>헬스장 이름</th>
                 <th>헬스장 주소</th>
+                <th>선택</th>
               </tr>
             </thead>
             <tbody>
@@ -16,6 +17,9 @@
                 <td>{{ gym.id }}</td>
                 <td>{{ gym.name }}</td>
                 <td>{{ gym.address }}</td>
+                <td>
+                  <button @click="selectGym(gym)" class="select-btn">선택</button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -42,13 +46,13 @@
   </template>
   
   <script setup>
-  import { ref, computed } from 'vue';
+  import { ref, computed, defineEmits } from 'vue';
   
   const props = defineProps({
     isOpen: Boolean,
   });
   
-  const emit = defineEmits(['close']);
+  const emit = defineEmits(['close', 'selectGym']);
   
   const searchQuery = ref('');
   const currentPage = ref(1);
@@ -95,6 +99,11 @@
   
   const nextPage = () => {
     if (currentPage.value < totalPages.value) currentPage.value++;
+  };
+  
+  const selectGym = (gym) => {
+    emit('selectGym', gym);
+    closeModal();
   };
   
   const closeModal = () => {
@@ -232,6 +241,15 @@
     color: #000;
     border: 1px solid #e4e4e4;
     border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .select-btn {
+    padding: 5px 10px;
+    background-color: #00ffff;
+    color: #000;
+    border: none;
+    border-radius: 3px;
     cursor: pointer;
   }
   </style>
