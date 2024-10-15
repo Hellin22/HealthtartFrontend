@@ -1,32 +1,29 @@
 <template>
-    <header class="header">
-        <div class="left-header">
-            <div class="logo">
-                <img src="@/assets/icons/logo.svg" alt="Healthtart Logo" class="logo-img"/>
-            </div>
+  <header class="header">
+    <div class="left-header">
+      <div class="logo">
+        <img src="@/assets/icons/logo.svg" alt="Healthtart Logo" class="logo-img" />
+      </div>
+    </div>
+    <div class="right-header">
+      <div class="nav-menu">
+        <nav class="nav">
+          <button class="nav-button" :class="{ active: activeTab === 'home' }" @click="setActiveTab('home')">Home</button>
+          <button class="nav-button" :class="{ active: activeTab === 'gym' }" @click="setActiveTab('gym')">Gym</button>
+          <button class="nav-button" :class="{ active: activeTab === 'routine' }" @click="setActiveTab('routine')">Routine</button>
+          <button class="nav-button" :class="{ active: activeTab === 'history' }" @click="setActiveTab('history')">History</button>
+          <button class="nav-button" :class="{ active: activeTab === 'inbody' }" @click="setActiveTab('inbody')">InBody</button>
+          <button class="nav-button" :class="{ active: activeTab === 'mypage' }" @click="setActiveTab('mypage')">MyPage</button>
+        </nav>
+        <div class="auth-btn">
+          <button :class="{ active: activeTab === 'login' }" @click="setActiveTab('login')">
+            Sign in
+            <!-- {{ isLoggedIn ? 'LogOut' : 'LogIn' }}   -->
+          </button>
         </div>
-        <div class="right-header">
-            <div class="nav-menu">
-                <nav class="nav">
-                    <button class="nav-button" :class="{active: activeTab === 'mainpage' }" @click="setActiveTab('mainpage')">Home</button>
-                    <button class="nav-button" :class="{active: activeTab === 'gym' }" @click="setActiveTab('gym')">Gym</button>
-                    <button class="nav-button" :class="{active: activeTab === 'routine' }" @click="setActiveTab('routine')">Routine</button>
-                    <button class="nav-button" :class="{active: activeTab === 'history' }" @click="setActiveTab('history')">History</button>
-                    <button class="nav-button" :class="{active: activeTab === 'inbody' }" @click="setActiveTab('inbody')">InBody</button>
-                    <button class="nav-button" :class="{active: activeTab === 'mypage' }" @click="setActiveTab('mypage')">MyPage</button>
-                </nav>
-                <div class="auth-btn">
-                  <button :class="{active: activeTab === 'login'}" @click="setActiveTab('login')">
-                    LogIn
-                   <!-- {{ isLoggedIn ? 'LogOut' : 'LogIn' }}   -->
-               </button>
-            </div>
-          </div>
-         <!-- 로그인 안 된 상태에는 LogIn, 로그인 된 상태에는 LogOut 글자가 나와야 한다 -->
-        <!-- 배경 색도 달라야한다 -->
-        <!-- <button class="login-btn" @click="login">LogIn</button> -->
-        </div>
-    </header>
+      </div>
+    </div>
+  </header>
 </template>
   
 <script setup>
@@ -44,180 +41,152 @@
     }, { immediate: true });
 
 
-    function setActiveTab(tab) {
+function setActiveTab(tab) {
+  if (activeTab.value !== tab) {
     activeTab.value = tab;
-
     switch (tab) {
-        case 'mainpage':
-        router.push({ path: '/mainpage'});
+      case 'home':
+        router.push({ path: '/' });
         break;
-        case 'gym':
-        router.push({ path: '/gym'});
+      case 'gym':
+        router.push({ path: '/gym' });
         break;
-        case 'routine':
-        router.push({ path: '/routine'});
+      case 'routine':
+        router.push({ path: '/routine' });
         break;
-        case 'history':
-        router.push({ path: '/history'});
+      case 'history':
+        router.push({ path: '/history' });
         break;
-        case 'inbody':
-        router.push({ path: '/inbody'});
+      case 'inbody':
+        router.push({ path: '/inbody' });
         break;
-        case 'mypage':
-            router.push({ path: '/mypage'});
-            break;
-        case 'login':
-            router.push({ path: '/login'});
+      case 'mypage':
+        router.push({ path: '/mypage' });
+        break;
+      case 'login':
+        router.push({ path: '/login' });
+        break;
     }
-    }
+  }
+}
 
-    function updateActiveTabFromRoute() {
-    const path = route.path;
-    if (path.includes('mainpage')) {
-        activeTab.value = 'mainpage';
-    } else if (path.includes('gym')) {
-        activeTab.value = 'gym';
-    } else if (path.includes('routine')) {
-        activeTab.value = 'routine';
-    } else if (path.includes('history')) {
-        activeTab.value = 'history';
-    } else if (path.includes('inbody')) {
-        activeTab.value = 'inbody';
-    } else if (path.includes('mypage')) {
-        activeTab.value = 'mypage';
-    } else if (path.includes('login')) {
-        activeTab.value = 'login';
-    }
-    }
+function updateActiveTabFromRoute() {
+  const path = route.path;
+  if (path === '/') {
+    activeTab.value = 'home';
+  } else if (path.includes('/gym')) {
+    activeTab.value = 'gym';
+  } else if (path.includes('/routine')) {
+    activeTab.value = 'routine';
+  } else if (path.includes('/history')) {
+    activeTab.value = 'history';
+  } else if (path.includes('/inbody')) {
+    activeTab.value = 'inbody';
+  } else if (path.includes('/mypage')) {
+    activeTab.value = 'mypage';
+  } else if (path.includes('/login')) {
+    activeTab.value = 'login';
+  }
+}
 
     onMounted(() => {
     updateActiveTabFromRoute();
     });
 
-
-    // export default {
-    // name: 'Header',
-    // data() {
-    //     return {
-    //     activeTab: 'home',
-    //     isLoggedIn: false   // 로그인 여부를 확인할 상태
-    //   };
-    // },
-    // // created() {
-    // //     // 컴포넌트가 생성될 때 localStorage를 통해 로그인 여부를 확인
-    // //     this.checkLoginStatus();
-    // // },
-    // methods: {
-    //     setActiveTab(tab) {
-    //         this.activeTab = tab;  // 탭 변경 시 상태 업데이트
-    //     },
-    //     handleAuthAction() {
-    //         if (this.isLoggedIn) {
-    //             this.logout();
-    //         } else {
-    //             this.$router.push('/login');
-    //         }
-    //     },
-    //     logout() {
-    //         localStorage.removeItem('authToken');
-    //         this.isLoggedIn = false;
-    //         this.$router.push('/login');
-    //     }
-    //   }
-    // };
+watch(route, () => {
+  updateActiveTabFromRoute();
+});
 </script>
-  
+
 <style scoped>
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: black;
-    padding: 10px 30px;
-    height: 60px; /* Set a fixed height */
-  }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: black;
+  padding: 10px 30px;
+  height: 60px;
+}
 
-  .left-header {
-    padding-right: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .logo {
-    display: flex;
-    align-items: center;
-    flex: 0 0 auto;
-  }
-  
-  .logo-img {
-    width: 80px;
-    /* margin-right: 10px; */
-    height: auto; /* Set a fixed height */
-    object-fit: contain; /* Maintain aspect ratio */
-    margin-top: 20px;
-  }
-  
-  .nav-menu {
-    display: flex;
-    justify-content: center;
-    flex-grow: 0;
-    margin: 0 20px;
-    align-items: center;
-    /* flex: 1 1 auto; */
-  }
-  
-  .nav-button {
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
-    padding: 5px 10px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    white-space: nowrap; /* Prevent text wrapping */
-  }
-  
-  .nav-button.active {
-    background-color: #01FEAE;
-    color: black;
-    border-radius: 10px;
-  }
+.left-header {
+  padding-right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .nav-button:hover {
-    background-color: #01FEAE;
-    color: black;
-    border-radius: 10px;
-  }
+.logo {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
 
-  .auth-btn {
-    flex: 0 0 auto;
-    margin-left: 30px;
-  }
+.logo-img {
+  width: 80px;
+  height: auto;
+  object-fit: contain;
+  margin-top: 20px;
+}
 
-  .auth-btn button {
-    background-color: #00E0E0;
-    color: black;
-    border: none;
-    border-radius: 10px;
-    padding: 5px 10px;
-    font-size: 18px;
-    cursor: pointer;
-    white-space: nowrap; /* Prevent text wrapping */
-  }
+.nav-menu {
+  display: flex;
+  justify-content: center;
+  flex-grow: 0;
+  margin: 0 20px;
+  align-items: center;
+}
 
-  .auth-btn button:hover {
-    background-color: #00c0c0;
-  }
+.nav-button {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 5px 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
 
-  .nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-  }
-  
-  .logout-btn {
+.nav-button.active {
+  background-color: #01FEAE;
+  color: black;
+  border-radius: 10px;
+}
+
+.nav-button:hover {
+  background-color: #e0ffdf;
+  color: black;
+  border-radius: 10px;
+}
+
+.auth-btn {
+  flex: 0 0 auto;
+  margin-left: 30px;
+}
+
+.auth-btn button {
+  background-color: #00E0E0;
+  color: black;
+  border: none;
+  border-radius: 10px;
+  padding: 5px 10px;
+  font-size: 18px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.auth-btn button:hover {
+  background-color: #00c0c0;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.logout-btn {
     background-color: #00E0E0;
     color: black;
     border: none;
@@ -231,34 +200,31 @@
     background-color: #00c0c0;
   }
 
-  /* Media query for smaller screens */
-    @media (max-width: 768px) {
-        .header {
-            flex-wrap: wrap;
-            height: auto;
-            padding: 10px;
-        }
+@media (max-width: 768px) {
+  .header {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 10px;
+  }
 
-        .nav-menu {
-            order: 3;
-            width: 100%;
-            margin: 10px 0 0 0;
-        }
+  .nav-menu {
+    order: 3;
+    width: 100%;
+    margin: 10px 0 0 0;
+  }
 
-        .nav {
-            justify-content: space-around;
-        }
+  .nav {
+    justify-content: space-around;
+  }
 
-        .nav-button {
-            font-size: 14px;
-            padding: 5px;
-        }
+  .nav-button {
+    font-size: 14px;
+    padding: 5px;
+  }
 
-        .auth-btn button {
-            font-size: 14px;
-            padding: 5px 10px;
-        }
-    }
-
-    
+  .auth-btn button {
+    font-size: 14px;
+    padding: 5px 10px;
+  }
+}
 </style>

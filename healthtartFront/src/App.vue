@@ -1,6 +1,10 @@
 <template>
-    <AppHeader/>
-   <RouterView/>
+  <div id="app">
+    <AppHeader />
+  </div>
+  <main>
+    <RouterView/>
+  </main>
 </template>
 
 <script setup>

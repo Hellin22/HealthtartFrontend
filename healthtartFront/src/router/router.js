@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import MainPage from '@/views/MainPage.vue';
-import LoginRoutes from './login';
+import MyPage from '@/views/user/MyPage.vue';
+// import LoginRoutes from './login';
 import SigninRoutes from './signin';
 
 // function isLoggedIn() {
@@ -12,7 +13,8 @@ import SigninRoutes from './signin';
 // meta: {requireAuth: true} 로그인이 필요한 페이지에 추가하기
 const routes = [
   { path: "/", component: MainPage },
-  ...LoginRoutes,
+  { path: "/mypage", component: MyPage },
+  // ...LoginRoutes,
   ...SigninRoutes
 ];
 
