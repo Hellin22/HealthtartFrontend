@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import MainPage from '@/views/MainPage.vue';
-import MyPage from '@/views/MyPage.vue';
+import MyPage from '@/views/user/MyPage.vue';
 // import LoginRoutes from './login';
 
 // function isLoggedIn() {
