@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <MainPage />
   </div>
   <main>
     <RouterView/>
@@ -9,9 +8,21 @@
 
 <script setup>
   import './assets/css/style.css';
-  import { RouterView, useRoute } from 'vue-router';
+import {ref, watch} from 'vue';
+import { RouterView, useRoute } from 'vue-router';
 
-  import MainPage from './views/MainPage.vue';
+  const route = useRoute();
+
+  const isMainPage = ref(false);
+
+
+  watch(() => route.path, (newPath) => {
+    isMainPage.value = newPath === '/';
+  } ,
+  {
+    immedate: true
+  });
+
 </script>
 
 <style setup>
