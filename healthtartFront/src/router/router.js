@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import MainPage from '@/views/MainPage.vue';
+
 // import LoginRoutes from './login';
 import RoutineRoutes from './routine';
 
