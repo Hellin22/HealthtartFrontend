@@ -18,7 +18,7 @@
         <div class="auth-btn">
           <template v-if="loginState.state.isLoggedIn">
             <span class="user-nickname">{{ loginState.state.userNickname }}</span>
-            <button @click="loginState.logout">LogOut</button>
+            <button @click="loginState.logout">Logout</button>
           </template>
           <button v-else :class="{active: activeTab === 'login'}" @click="setActiveTab('login')">
             LogIn
