@@ -160,7 +160,7 @@ th {
 td {
   border: 1px dashed #555; /* 점선 스타일 */
   width: 80px;
-  height: 80px;
+  height: 90px;
   color: white;
   font-size: 18px;
 }
@@ -195,7 +195,7 @@ td {
   display: flex;
   align-items: center;
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   padding-left: 40px;
 }
 
