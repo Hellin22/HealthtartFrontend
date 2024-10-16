@@ -84,10 +84,10 @@
 <script setup>
 import { ref, onMounted, provide } from 'vue';
 import { useRouter } from 'vue-router';
-import SideMenu from '@/components/SideMenu.vue';
-import RightSide from '@/components/RightSide.vue';
 import BackGround from '@/components/BackGround.vue';
 import '@/assets/css/user/MyPage.css';
+import SideMenu from '@/components/SideMenu.vue';
+import RightSide from '@/components/RightSide.vue';
 
 const router = useRouter();
 const formData = ref(null);
