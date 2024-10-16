@@ -12,13 +12,12 @@
   </template>
   
   <script setup>
-  // 사이드 메뉴는 별도의 로직이 없으므로 script는 비워둡니다.
   </script>
   
   <style scoped>
   .side-menu {
     background-color: black;
-    width: 300px;
+    width: 280px;
     color: #fff;
     padding: 20px;
     position: fixed;

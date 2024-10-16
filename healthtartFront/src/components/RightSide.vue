@@ -8,7 +8,7 @@
   
   <style scoped>
   .right-side {
-    width: 300px;
+    width: 280px;
     background-color: #000;
     position: fixed;
     top: 60px;
