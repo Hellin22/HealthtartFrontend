@@ -22,7 +22,10 @@
               <div class="workout-icon">
                 <img v-if="day.workout" :src="getWorkoutIcon(day.workout)" :alt="day.workout" />
               </div>
-              <div class="day-number">{{ formatDate(day.date) }}</div>
+              <div class="day-number" :class="{ 'current-day': day.date === currentDate }">
+                <span v-if="day.date === currentDate" class="current-date-circle">{{ formatDate(day.date) }}</span>
+                <span v-else>{{ formatDate(day.date) }}</span>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -40,9 +43,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+
 // 현재 연도와 월을 설정
 const currentYear = ref(2024);
 const currentMonth = ref('OCT'); // 월 이름을 설정
+const currentDate = ref(new Date().getDate()); // 오늘 날짜
 
 // 달력 관련 데이터
 const weeks = ref([]);
@@ -182,6 +187,19 @@ td {
   left: 5px; /* 셀의 왼쪽 상단에 위치 */
   font-size: 12px; /* 작은 폰트 크기 조정 */
   font-weight: 300; /* 얇은 폰트 두께 설정 */
+}
+
+/* 오늘 날짜를 원형으로 표시 */
+.current-date-circle {
+  display: inline-block;
+
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: rgba(0, 150, 136, 0.7); /* 원형 배경 색상 */
+  line-height: 20px;
+  font-weight: bold; /* 숫자 두께 설정 */
+  
 }
 
 .legend {
