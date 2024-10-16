@@ -2,8 +2,7 @@
     <div class="mypage-layout">
       <SideMenu />
       <main class="mypage-content" v-if="formData">
-        <img src="@/assets/icons/blueLabelFirst.svg" alt="블루라벨1" class="blue-label blue-label-left" />
-        <img src="@/assets/icons/blueLabelSecond.svg" alt="블루라벨2" class="blue-label blue-label-right" />
+        <BackGround />
         <h2 class="last-updated">마지막으로 수정한 날짜: {{ formData.lastUpdated }}</h2>
         <form class="mypage-form" @submit.prevent="updateProfile">
           <div class="form-group">
@@ -45,7 +44,7 @@
           <div class="extra-section">
             <div class="extra-button-group">
               <button class="add-gym-btn">등록 헬스장</button>
-              <button class="add-btn">추가</button>
+              <button class="add-btn" @click="openGymModal">추가</button>
             </div>
           </div>
           <div class="extra-section">
@@ -57,16 +56,20 @@
         </div>
       </main>
       <RightSide />
+      <RegisterGymModal :isOpen="isGymModalOpen" @close="closeGymModal" />
     </div>
   </template>
   
   <script setup>
-  import { ref, onMounted } from 'vue';
-  import SideMenu from '@/components/SideMenu.vue';
-  import RightSide from '@/components/RightSide.vue';
-  import '@/assets/css/user/MyPage.css';
-  
-  const formData = ref(null);
+import { ref, onMounted } from 'vue';
+import SideMenu from '@/components/SideMenu.vue';
+import RightSide from '@/components/RightSide.vue';
+import BackGround from '@/components/BackGround.vue';
+import RegisterGymModal from '@/components/gym/modal/RegisterGymModal.vue';
+import '@/assets/css/user/MyPage.css';
+
+const formData = ref(null);
+const isGymModalOpen = ref(false);
   
   onMounted(() => {
     formData.value = {
@@ -88,4 +91,14 @@
       alert('프로필이 업데이트되었습니다!');
     }
   };
+
+  const openGymModal = () => {
+  isGymModalOpen.value = true;
+  document.body.style.overflow = 'hidden';
+};
+
+const closeGymModal = () => {
+  isGymModalOpen.value = false;
+  document.body.style.overflow = '';
+};
   </script>

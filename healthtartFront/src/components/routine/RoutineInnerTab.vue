@@ -17,11 +17,21 @@
 <script setup>
     import '@/assets/css/RoutineInnerTab.css';
     import { ref } from 'vue';
+    import { useRouter } from 'vue-router';
 
     const activeTab = ref('ai'); 
+    const router = useRouter();
 
-    const setActiveTab = (tab) => {
+    const setActiveTab = async (tab) => {
         activeTab.value = tab;
+        switch(tab){
+            case 'ai':
+                router.push({ path: '/routine' });
+                break;
+            case 'user':
+                router.push({ path: '/user-recommendation' });
+                break;
+        }
     };
 
  </script>
