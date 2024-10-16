@@ -83,19 +83,6 @@ const submitForm = () => {
   formData.value.userAddress = `${formData.value.postalCode} ${formData.value.detailAddress}`;
   emit('submit', formData.value); // 부모 컴포넌트로 데이터 전달
 };
-  
-//   // 폼 제출 함수
-//   async function submitForm() {
-//     try {
-//       // 서버로 데이터 전송
-//       const response = await axios.post('https://example.com/api/register', formData.value);
-//       console.log('서버 응답:', response);
-//       alert('가입 완료!');
-//     } catch (error) {
-//       console.error('가입 실패:', error);
-//       alert('가입 실패! 다시 시도하세요.');
-//     }
-//   }
   </script>
   
   <style scoped>
@@ -170,7 +157,7 @@ const submitForm = () => {
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.15);
   }
 
-  #postalcode {
+  #postalCode {
     width: 250px;
   }
 

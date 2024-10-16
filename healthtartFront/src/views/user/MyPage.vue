@@ -37,9 +37,13 @@
           <label for="weight">몸무게</label>
           <input type="text" id="weight" v-model="formData.weight" />
         </div>
-        <button class="edit-btn" @click="goToEditPage">수정</button>
+        <div class="button-group">
+          <button class="inbody-btn" @click="openInbodyModal">내 인바디 등록</button>
+          <button class="edit-btn" @click="goToEditPage">수정</button>
+        </div>
       </form>
       <div class="separator"></div>
+      <RegisterInbodyModal :isOpen="isInbodyModalOpen" :closeModal="closeInbodyModal" />
       <div class="extra-content">
         <div class="extra-section">
           <div class="extra-button-group">
@@ -84,15 +88,17 @@
 <script setup>
 import { ref, onMounted, provide } from 'vue';
 import { useRouter } from 'vue-router';
-import SideMenu from '@/components/SideMenu.vue';
-import RightSide from '@/components/RightSide.vue';
 import BackGround from '@/components/BackGround.vue';
 import '@/assets/css/user/MyPage.css';
+import RegisterInbodyModal from '@/components/modal/inbody/RegisterInbodyModal.vue';
+import SideMenu from '@/components/SideMenu.vue';
+import RightSide from '@/components/RightSide.vue';
 
 const router = useRouter();
 const formData = ref(null);
 const selectedGym = ref(null);
 const registeredRivals = ref([]);
+const isInbodyModalOpen = ref(false);
 
 provide('selectedGym', selectedGym);
 provide('registeredRivals', registeredRivals);
@@ -113,5 +119,13 @@ onMounted(() => {
 
 const goToEditPage = () => {
   router.push('/mypage/edit');
+};
+
+const openInbodyModal = () => {
+  isInbodyModalOpen.value = true;
+};
+
+const closeInbodyModal = () => {
+  isInbodyModalOpen.value = false;
 };
 </script>

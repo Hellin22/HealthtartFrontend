@@ -16,16 +16,19 @@ import AppHeader from '@/components/AppHeader.vue';
 import { jwtDecode } from 'jwt-decode';
 
 
-const route = useRoute();
-const router = useRouter();
+  const route = useRoute();
+  const isMainPage = ref(false);
+  const isLoginPage = ref(false);
+  const isHistoryPage = ref(false);
+  const isSignupPage = ref(false);
+  const isGymPage = ref(false);
+  const isMyPage = ref(false);
 
-// 로그인 상태를 reactive 객체로 만듭니다.
 const loginState = reactive({
   isLoggedIn: false,
   userNickname: ''
 });
 
-// 로그인 상태 확인 함수
 const checkLoginStatus = () => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -49,6 +52,19 @@ const checkLoginStatus = () => {
   }
 };
 
+watch(() => route?.path, (newPath) => {
+    console.log("Route Path: ", newPath);
+    isMainPage.value = newPath === '/';
+    isLoginPage.value = newPath === '/login';
+    isHistoryPage.value = newPath === '/history';
+    isSignupPage.value = newPath === '/users/signup';
+    isMyPage.value = newPath === '/mypage';
+    isGymPage.value = newPath === '/gym';
+  },
+  {
+    immediate: true
+  });
+  
 // 로그아웃 함수
 const logout = () => {
   localStorage.removeItem('token');

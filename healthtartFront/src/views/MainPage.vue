@@ -3,11 +3,11 @@
     <main>
       <div class="content">
         <div class="left-content">
-          <h1>
+          <h1 class="h1content">
             헬린이들아,<br />
             헬스장이 두렵나?
           </h1>
-          <p>
+          <p class="pcontent">
             <span style="font-weight: 700;">헬스장 첫 발걸음이 막막하시다면, 걱정 마세요!</span><br />
             AI가 당신만을 위한 운동 루틴과 헬스 기구<br />
             사용법을 꼼꼼하게 알려주고, 신나는 맞춤<br />

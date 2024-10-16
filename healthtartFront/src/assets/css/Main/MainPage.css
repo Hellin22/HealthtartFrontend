@@ -1,7 +1,7 @@
 .app {
   background-color: #000;
   color: #fff;
-  height: calc(100vh - 60px); /* 헤더를 제외한 영역 */
+  height: calc(100vh - 60px);
   font-family: Arial, sans-serif;
   position: relative;
   overflow: hidden;
@@ -9,14 +9,14 @@
 
 main {
   position: relative;
-  height: calc(100vh - 60px); /* 헤더를 제외한 영역 */
+  height: calc(100vh - 60px);
 }
 
 .content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 100%; /* 상위 요소에서 받은 높이 적용 */
+  height: 100%;
 }
 
 .left-content {
@@ -26,7 +26,7 @@ main {
   height: 100%;
 }
 
-h1 {
+.h1content {
   font-size: 72px;
   line-height: 1.2;
   position: absolute;
@@ -36,7 +36,7 @@ h1 {
   z-index: 2;
 }
 
-p {
+.pcontent {
   position: absolute;
   top: 280px;
   left: 74px;
