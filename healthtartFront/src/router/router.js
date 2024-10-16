@@ -8,7 +8,6 @@ import UserRoutes from './user';
 import SignupRoutes from './signup';
 import HistoryRoutes from './history';
 import GymRoutes from './gym';
-import MyPageRoutes from '@/views/user/MyPage.vue';
 
 const routes = [
   { path: "/", component: MainPage },
@@ -16,8 +15,7 @@ const routes = [
   ...InbodyRoutes,
   ...GymRoutes,
   ...SignupRoutes,
-  ...HistoryRoutes,
-  ...MyPageRoutes
+  ...HistoryRoutes
 ];
 
 const router = createRouter({
