@@ -4,7 +4,7 @@
       <div class="content">
         <div class="left-content">
           <h1 class="h1content">
-            헬린이들아,<br />
+            헬린이들,<br />
             헬스장이 두렵나?
           </h1>
           <p class="pcontent">
