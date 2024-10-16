@@ -1,18 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router';
+
 import MainPage from '@/views/MainPage.vue';
+
 import InbodyRoutes from './inbody';
-import UserRoutes from './login';
+import UserRoutes from './user';
+import SignupRoutes from './signup';
+import HistoryRoutes from './history';  
 
-// function isLoggedIn() {
-//   // localStorage는 vue.js에서 전역으로 사용할 수 있는 storage
-//   return !!localStorage.getItem('token'); 
-// }
-
-// meta: {requireAuth: true} 로그인이 필요한 페이지에 추가하기
 const routes = [
   { path: "/", component: MainPage },
   ...UserRoutes,
   ...InbodyRoutes,
+  ...SignupRoutes,
+  ...HistoryRoutes
 ];
 
 const router = createRouter({
@@ -31,7 +31,6 @@ router.beforeEach((to, from, next) => {
     next(); // 그 외에는 해당 페이지로 이동 허용
   }
 });
-
 
 
 export default router;

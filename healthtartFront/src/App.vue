@@ -14,16 +14,18 @@ import { RouterView, useRoute, useRouter } from 'vue-router';
 import AppHeader from '@/components/AppHeader.vue';
 import { jwtDecode } from 'jwt-decode';
 
-const route = useRoute();
-const router = useRouter();
+
+  const route = useRoute();
+  const isMainPage = ref(false);
+  const isLoginPage = ref(false);
+  const isHistoryPage = ref(false);
+  const isSignupPage = ref(false);
 
 // 로그인 상태를 reactive 객체로 만듭니다.
 const loginState = reactive({
   isLoggedIn: false,
   userNickname: ''
 });
-
-const isMainPage = ref(false);
 
 // 로그인 상태 확인 함수
 const checkLoginStatus = () => {
@@ -49,6 +51,17 @@ const checkLoginStatus = () => {
   }
 };
 
+watch(() => route?.path, (newPath) => {
+    console.log("Route Path: ", newPath);
+    isMainPage.value = newPath === '/';
+    isLoginPage.value = newPath === '/login';
+    isHistoryPage.value = newPath === '/history';
+    isSignupPage.value = newPath === '/users/signup';
+  },
+  {
+    immediate: true
+  });
+  
 // 로그아웃 함수
 const logout = () => {
   localStorage.removeItem('token');
@@ -68,13 +81,6 @@ onMounted(() => {
   setInterval(checkLoginStatus, 60000);
 });
 
-// 현재 경로가 메인 페이지인지 확인. 빼도 될듯?
-watch(() => route.path, (newPath) => {
-  isMainPage.value = newPath === '/';
-}, {
-  immediate: true
-});
-
 // 로그인 상태와 관련 함수들을 provide
 provide('loginState', {
   state: loginState,
@@ -83,5 +89,5 @@ provide('loginState', {
 });
 </script>
 
-<style setup>
+<style scoped>
 </style>
