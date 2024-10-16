@@ -22,7 +22,10 @@
               <div class="workout-icon">
                 <img v-if="day.workout" :src="getWorkoutIcon(day.workout)" :alt="day.workout" />
               </div>
-              <div class="day-number">{{ formatDate(day.date) }}</div>
+              <div class="day-number" :class="{ 'current-day': day.date === currentDate }">
+                <span v-if="day.date === currentDate" class="current-date-circle">{{ formatDate(day.date) }}</span>
+                <span v-else>{{ formatDate(day.date) }}</span>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -44,6 +47,7 @@ import { ref, onMounted } from 'vue';
 // 현재 연도와 월을 설정
 const currentYear = ref(2024);
 const currentMonth = ref('OCT'); // 월 이름을 설정
+const currentDate = ref(new Date().getDate()); // 오늘 날짜
 
 // 달력 관련 데이터
 const weeks = ref([]);
@@ -124,12 +128,13 @@ onMounted(() => {
 
 <style scoped>
 .routine-calendar-container {
-  width: 80%;
+  width: 100%;
   margin: auto;
   color: white;
 }
 
 .calendar-header {
+  margin-left: 260px;
   text-align: left;
   font-size: 30px;
   color: white;
@@ -137,12 +142,14 @@ onMounted(() => {
 }
 
 .calendar-layout {
+  margin-left: 260px;
   display: flex;
   align-items: flex-start;
 }
 
 .calendar-table {
-  width: 70%; /* 달력의 너비 */
+  width: 80%; /* 달력의 너비 */
+  height: 450px;
   border-collapse: collapse;
   text-align: left;
   table-layout: fixed;
@@ -158,7 +165,7 @@ th {
 td {
   border: 1px dashed #555; /* 점선 스타일 */
   width: 80px;
-  height: 80px;
+  height: 90px;
   color: white;
   font-size: 18px;
 }
@@ -182,6 +189,19 @@ td {
   font-weight: 300; /* 얇은 폰트 두께 설정 */
 }
 
+/* 오늘 날짜를 원형으로 표시 */
+.current-date-circle {
+  display: inline-block;
+
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: rgba(0, 150, 136, 0.7); /* 원형 배경 색상 */
+  line-height: 20px;
+  font-weight: bold; /* 숫자 두께 설정 */
+  
+}
+
 .legend {
   width: 20%; /* 전설의 너비 줄이기 */
   text-align: center;
@@ -193,8 +213,8 @@ td {
   display: flex;
   align-items: center;
   text-align: center;
-  margin-bottom: 10px;
-  padding-left: 30px;
+  margin-bottom: 20px;
+  padding-left: 40px;
 }
 
 .legend-icon {
