@@ -5,6 +5,7 @@ import MainPage from '@/views/MainPage.vue';
 // import LoginRoutes from './login';
 import InbodyRoutes from './inbody';
 import UserRoutes from './user';
+import RoutineRoutes from './routine';
 import SignupRoutes from './signup';
 import HistoryRoutes from './history';
 import GymRoutes from './gym';
@@ -14,6 +15,7 @@ const routes = [
   ...UserRoutes,
   ...InbodyRoutes,
   ...GymRoutes,
+  ...RoutineRoutes,
   ...SignupRoutes,
   ...HistoryRoutes
 ];
