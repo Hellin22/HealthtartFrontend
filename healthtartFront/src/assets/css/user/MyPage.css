@@ -1,9 +1,9 @@
 .mypage-layout {
     display: flex;
     min-height: calc(100vh - 60px);
-  }
-  
-  .mypage-content {
+}
+
+.mypage-content {
     flex-grow: 1;
     margin-left: 300px;
     margin-right: 300px;
@@ -12,38 +12,36 @@
     padding: 30px;
     position: relative;
     z-index: 2;
-  }
-  
-  .last-updated {
+}
+
+.last-updated {
     position: absolute;
     top: 20px;
     right: 20px;
     font-size: 14px;
     color: #ffffff;
-  }
-  
-  .mypage-form {
+}
+
+.mypage-form {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
     margin-top: 50px;
-  }
-  
-  .form-group {
+}
+
+.form-group {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 2;
-  }
-  
-  .form-group label {
+}
+
+.form-group label {
     color: #fff;
     font-weight: bold;
     width: 100px;
-    z-index: 2;
-  }
-  
-  .form-group input {
+}
+
+.form-group input {
     flex: 1;
     padding: 10px;
     border: none;
@@ -51,78 +49,158 @@
     background-color: transparent;
     color: #fff;
     font-size: 16px;
-    z-index: 2;
-  }
-  
-  .update-btn {
+    pointer-events: none;
+    user-select: text;
+}
+
+.update-btn {
     grid-column: 2;
     justify-self: end;
-    padding: 10px 20px;
+    padding: 5px 15px;
     background-color: #00ffff;
     color: #000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 18px;
-  }
-  
-  .separator {
+    font-weight: bold;
+}
+
+.separator {
     width: 100%;
     height: 1px;
     background-color: #ffffff;
     margin: 20px 0;
-  }
-  
-  .extra-content {
+}
+
+.extra-content {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
-  }
-  
-  .extra-section {
+}
+
+.extra-section {
     width: 45%;
     border-radius: 5px;
-  }
-  
-  .extra-button-group {
+}
+
+.extra-button-group {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
     gap: 10px;
-  }
-  
-  .add-gym-btn,
-  .add-rival-btn,
-  .add-btn {
-    padding: 10px 20px;
-    background-color: #fff;
+}
+
+.add-btn {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #B8FFFF;
     color: #000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
-    z-index: 2;
-  }
-  
-  .add-btn {
-    background-color: #00ffff;
-  }
-  
-  .blue-label {
-    position: absolute;
-    z-index: 0;
-    width: 60%;
-    height: auto;
-  }
-  
-  .blue-label-left {
-    left: 8%;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  
-  .blue-label-right {
-    left: 25%;
-    top: 50%;
-    transform: translateY(-50%);
-  }
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.remove-btn {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #ff4444;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.label-text {
+    margin-top: 10px;
+    padding: 5px 10px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.selected-gym {
+    margin-top: 10px;
+    padding: 15px;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.selected-rival {
+    margin-top: 10px;
+    padding: 15px;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.new-design {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.new-design-header {
+    display: flex;
+    background-color: #01FEAE;
+    border-radius: 10px 10px 0 0;
+    padding: 10px;
+    align-items: center;
+    text-align: center;
+}
+
+.new-design-header-rival {
+    display: flex;
+    background-color: #01FDFE;
+    border-radius: 10px 10px 0 0;
+    padding: 10px;
+    align-items: center;
+    text-align: center;
+}
+
+.new-design-icon {
+    width: 30px;
+    height: 30px;
+    margin-left: 5px;
+    margin-right: 15px;
+}
+
+.new-design-title {
+    font-size: 18px;
+    color: black;
+    margin: 0;
+    font-weight: bold;
+}
+
+.new-design-actions {
+    display: flex;
+    justify-content: space-around;
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.new-design-action-btn {
+    background-color: #ffffff;
+    color: #000;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.new-design-action-btn:hover {
+    background-color: #e6e6e6;
+}

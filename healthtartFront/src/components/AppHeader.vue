@@ -25,14 +25,21 @@
     </div>
   </header>
 </template>
-
+  
 <script setup>
-import { ref, onMounted, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+    import { useRoute, useRouter } from 'vue-router';
+    import { ref, watch, onMounted, watchEffect } from 'vue';
 
-const activeTab = ref('');
-const route = useRoute();
-const router = useRouter();
+    const route = useRoute();
+    const router = useRouter();
+
+    const activeTab = ref('');
+    const isLoginPage = ref(false);
+
+    watch(() => route.path, (newPath) => {
+        isLoginPage.value = newPath === '/login';
+    }, { immediate: true });
+
 
 function setActiveTab(tab) {
   if (activeTab.value !== tab) {
@@ -82,9 +89,9 @@ function updateActiveTabFromRoute() {
   }
 }
 
-onMounted(() => {
-  updateActiveTabFromRoute();
-});
+    onMounted(() => {
+    updateActiveTabFromRoute();
+    });
 
 watch(route, () => {
   updateActiveTabFromRoute();
@@ -178,6 +185,20 @@ watch(route, () => {
   align-items: center;
   gap: 20px;
 }
+
+.logout-btn {
+    background-color: #00E0E0;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 15px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .logout-btn:hover {
+    background-color: #00c0c0;
+  }
 
 @media (max-width: 768px) {
   .header {
