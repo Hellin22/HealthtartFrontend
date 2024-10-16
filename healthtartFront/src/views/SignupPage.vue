@@ -1,13 +1,16 @@
 <template>
     <SignupStep1 v-if="currentStep === 1" @nextStep="goToStep2" />
     <SignupStep2 v-if="currentStep === 2" @submit="submitForm" />
+    <LoginBackground/>
 </template>
 
 <script setup>
-  import SignupStep1 from '@/components/SignupStep1.vue';
-  import SignupStep2 from '@/components/SignupStep2.vue';
+  import SignupStep1 from '@/components/users/SignupStep1.vue';
+  import SignupStep2 from '@/components/users/SignupStep2.vue';
+  import LoginBackground from '@/components/LoginBackground.vue';
   import { ref } from 'vue';
   import axios from 'axios';
+
 
   // 현재 스텝 추적
   const currentStep = ref(1);
@@ -19,7 +22,6 @@
     userName: '',
     userPhone: '',
     userNickname: '',
-    // userPostalcode: '',
     userAddress: '',
     userGender: '',
     userAge: '',
