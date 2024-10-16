@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import MainPage from '@/views/MainPage.vue';
 import InbodyRoutes from './inbody';
-import UserRoutes from './login';
+import UserRoutes from './user';
 
 // function isLoggedIn() {
 //   // localStorage는 vue.js에서 전역으로 사용할 수 있는 storage
