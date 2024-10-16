@@ -1,0 +1,83 @@
+.gym-container {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 60px);
+    padding: 20px;
+    color :#fff;
+  }
+  
+  .gym-header {
+    display: flex;
+    margin-top: 30px;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .equipment-title {
+    font-size: 24px;
+    margin: 0 0 10px 0;
+    text-align: center;
+  }
+  
+  .gym-title {
+    font-size: 40px;
+    margin: 0;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+.equipment-table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.table-header,
+.table-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-item,
+.table-cell {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+}
+
+.header-item {
+    font-weight: bold;
+    color: #fff;
+    border-bottom: 1px solid #00ffff;
+}
+
+.table-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.table-cell {
+    font-weight: bold;
+    border-bottom: 1px solid #3a3a3a;
+}
+
+.equipment-table {
+    border-top: 1px solid #00ffff;
+    border-bottom: 1px solid #00ffff;
+}
+
+.equipment-button {
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 16px;
+    padding: 5px;
+}
+
+.equipment-button:hover {
+    color: #00ffff;
+    text-decoration: underline;
+}

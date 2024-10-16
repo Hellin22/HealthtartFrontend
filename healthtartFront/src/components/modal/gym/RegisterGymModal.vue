@@ -1,7 +1,7 @@
 <template>
     <div v-if="isOpen" class="modal-overlay">
       <div class="modal-content">
-        <h2>헬스장 등록</h2>
+        <h2 class="h2gymregister">헬스장 등록</h2>
         <div class="table-container">
           <table>
             <thead>
@@ -140,7 +140,7 @@
     transform: translate(-50%, -50%);
   }
   
-  h2 {
+  .h2gymregister {
     color: #fff;
     text-align: center;
     margin: -15px -15px 15px -15px;

@@ -1,23 +1,29 @@
-.mypage-layout {
+.multi-layout {
     display: flex;
     min-height: calc(100vh - 60px);
 }
 
+.mypage-layout {
+    display: flex;
+    min-height: calc(100vh - 60px);
+    z-index: -3;
+}
+
 .mypage-content {
     flex-grow: 1;
-    margin-left: 300px;
-    margin-right: 300px;
+    margin-left: 280px;
+    margin-right: 280px;
     background-color: #000;
     color: #fff;
-    padding: 30px;
+    padding: 50px;
     position: relative;
     z-index: 2;
 }
 
 .last-updated {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 60px;
+    right: 50px;
     font-size: 14px;
     color: #ffffff;
 }
@@ -49,7 +55,7 @@
     background-color: transparent;
     color: #fff;
     font-size: 16px;
-    pointer-events: none;
+    pointer-events: auto;
     user-select: text;
 }
 
@@ -77,6 +83,7 @@
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
+    padding-right: 70px;
 }
 
 .extra-section {
@@ -93,7 +100,6 @@
 
 .label-text {
     margin-top: 10px;
-    padding: 5px 10px;
     color: #ffffff;
     font-size: 14px;
     font-weight: bold;

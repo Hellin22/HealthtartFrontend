@@ -2,17 +2,22 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import MainPage from '@/views/MainPage.vue';
 
+// import LoginRoutes from './login';
 import InbodyRoutes from './inbody';
 import UserRoutes from './user';
 import SignupRoutes from './signup';
-import HistoryRoutes from './history';  
+import HistoryRoutes from './history';
+import GymRoutes from './gym';
+import MyPageRoutes from '@/views/user/MyPage.vue';
 
 const routes = [
   { path: "/", component: MainPage },
   ...UserRoutes,
   ...InbodyRoutes,
+  ...GymRoutes,
   ...SignupRoutes,
-  ...HistoryRoutes
+  ...HistoryRoutes,
+  ...MyPageRoutes
 ];
 
 const router = createRouter({
