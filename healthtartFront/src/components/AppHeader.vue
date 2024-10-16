@@ -16,9 +16,12 @@
           <button class="nav-button" :class="{active: activeTab === 'mypage' }" @click="setActiveTab('mypage')">MyPage</button>
         </nav>
         <div class="auth-btn">
-          <button :class="{active: activeTab === 'login'}" @click="setActiveTab('login')">
+          <template v-if="loginState.state.isLoggedIn">
+            <span class="user-nickname">{{ loginState.state.userNickname }}</span>
+            <button @click="loginState.logout">LogOut</button>
+          </template>
+          <button v-else :class="{active: activeTab === 'login'}" @click="setActiveTab('login')">
             LogIn
-            <!-- {{ isLoggedIn ? 'LogOut' : 'LogIn' }}   -->
           </button>
         </div>
       </div>
@@ -27,10 +30,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, inject, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-// 반응형 상태 설정
+const loginState = inject('loginState');
+
 const activeTab = ref('home');
 const route = useRoute();
 const router = useRouter();
@@ -39,7 +43,7 @@ function setActiveTab(tab) {
   activeTab.value = tab;
   switch (tab) {
     case 'home':
-      router.push({ path: '' });
+      router.push({ path: '/' });
       break;
     case 'gym':
       router.push({ path: '/gym' });
@@ -62,10 +66,9 @@ function setActiveTab(tab) {
   }
 }
 
-// 라우트에 따라 activeTab 업데이트
 function updateActiveTabFromRoute() {
   const path = route.path;
-  if (path.includes('home')) {
+  if (path === '/') {
     activeTab.value = 'home';
   } else if (path.includes('gym')) {
     activeTab.value = 'gym';
@@ -82,9 +85,17 @@ function updateActiveTabFromRoute() {
   }
 }
 
-// 컴포넌트가 마운트되면 경로에 맞는 탭을 설정
-onMounted(() => {
-  updateActiveTabFromRoute();
+updateActiveTabFromRoute();
+
+// Watch for route changes to update the active tab
+watch(() => route.path, updateActiveTabFromRoute);
+
+// Watch for login state changes
+watch(() => loginState.state.isLoggedIn, (newValue) => {
+  if (!newValue) {
+    // If logged out, redirect to home
+    router.push('/');
+  }
 });
 </script>
 
@@ -203,5 +214,10 @@ onMounted(() => {
     font-size: 14px;
     padding: 5px 10px;
   }
+}
+
+.user-nickname {
+  color: white;
+  margin-right: 10px;
 }
 </style>

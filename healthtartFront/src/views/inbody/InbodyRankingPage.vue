@@ -43,10 +43,11 @@
   const fetchInbodyData = async () => {
     try {
       console.log('Fetching InBody data...') // 요청 시작 로그
-  
+      const token = localStorage.getItem('token'); // 저장된 토큰 가져오기
       const response = await axios.get('http://localhost:8080/inbody', {
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Authorization 헤더에 Bearer 토큰 추가
         },
       })
   
@@ -60,15 +61,17 @@
     }
   }
   
-  // 컴포넌트가 마운트될 때 데이터를 가져옴
+  // 컴포넌트가 마운트될 때 데이터를 가져오고 POST 요청도 함께 보냄
   onMounted(() => {
     fetchInbodyData()
+    // sendPostRequest()
   })
   </script>
   
   <style scoped>
   .inbody-ranking {
-    margin: 20px;
+    height : Calc(100vh - 60px);
+    padding:20px;
   }
   
   table {
