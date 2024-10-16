@@ -1,0 +1,95 @@
+.routine-calendar-container {
+    width: 100%;
+    margin: auto;
+    color: white;
+  }
+  
+  .calendar-header {
+    margin-left: 260px;
+    text-align: left;
+    font-size: 30px;
+    color: white;
+    margin-bottom: 20px;
+  }
+  
+  .calendar-layout {
+    margin-left: 260px;
+    display: flex;
+    align-items: flex-start;
+  }
+  
+  .calendar-table {
+    width: 80%; /* 달력의 너비 */
+    height: 450px;
+    border-collapse: collapse;
+    text-align: left;
+    table-layout: fixed;
+  }
+  
+  th {
+    border: none; /* 요일 머리글에서 점선 제거 */
+    padding-bottom: 5px;
+    font-size: 12px; /* 작은 폰트 크기 조정 */
+    font-weight: 300; /* 얇은 폰트 두께 설정 */
+  }
+  
+  td {
+    border: 1px dashed #555; /* 점선 스타일 */
+    width: 80px;
+    height: 90px;
+    color: white;
+    font-size: 18px;
+  }
+  
+  .day-cell {
+    text-align: center;
+    padding-top: 10px;
+    position: relative;
+  }
+  
+  .workout-icon img {
+    width: 90px;
+    height: 70px;
+  }
+  
+  .day-number {
+    position: absolute;
+    top: 5px;  /* 셀의 왼쪽 상단에 위치 */
+    left: 5px; /* 셀의 왼쪽 상단에 위치 */
+    font-size: 12px; /* 작은 폰트 크기 조정 */
+    font-weight: 300; /* 얇은 폰트 두께 설정 */
+  }
+  
+  /* 오늘 날짜를 원형으로 표시 */
+  .current-date-circle {
+    display: inline-block;
+  
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: rgba(0, 150, 136, 0.7); /* 원형 배경 색상 */
+    line-height: 20px;
+    font-weight: bold; /* 숫자 두께 설정 */
+    
+  }
+  
+  .legend {
+    width: 20%; /* 전설의 너비 줄이기 */
+    text-align: center;
+    display: flex;
+    flex-direction: column; /* 전설 항목을 세로로 나열 */
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 20px;
+    padding-left: 40px;
+  }
+  
+  .legend-icon {
+    width: 80px;
+    height: 40px;
+    margin-right: 30px;
+  }
