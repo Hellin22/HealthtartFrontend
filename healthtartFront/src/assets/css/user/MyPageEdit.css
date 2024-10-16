@@ -1,12 +1,6 @@
-.multi-layout {
-    display: flex;
-    min-height: calc(100vh - 60px);
-}
-
 .mypage-layout {
     display: flex;
     min-height: calc(100vh - 60px);
-    z-index: -3;
 }
 
 .mypage-content {
@@ -55,47 +49,20 @@
     background-color: transparent;
     color: #fff;
     font-size: 16px;
-    pointer-events: auto;
-    user-select: text;
 }
 
-.button-group {
-    flex-direction: row;
+.update-btn {
     grid-column: 2;
     justify-self: end;
-}
-
-.inbody-btn {
     padding: 5px 15px;
-    background-color: #63ffa4;
+    background-color: #01FEAE;
     color: #000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    margin-right : 15px;
-}
-
-.inbody-btn:hover {
-    background-color: #00ff1e;
-}
-
-.edit-btn {
-    padding: 5px 15px;
-    background-color: #00ffff;
-    color: #000;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
+    font-size: 18px;
     font-weight: bold;
 }
-
-.edit-btn:hover {
-    background-color: #00d0ff;
-}
-
 
 .separator {
     width: 100%;
@@ -123,8 +90,33 @@
     gap: 10px;
 }
 
+.add-btn {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #B8FFFF;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.remove-btn {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #ff4444;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
 .label-text {
     margin-top: 10px;
+    padding: 5px 10px;
     color: #ffffff;
     font-size: 14px;
     font-weight: bold;

@@ -1,12 +1,10 @@
-import LoginPage from "@/views/LoginPage.vue";
+import UserLoginPage from "@/views/user/UserLoginPage.vue";
 
-const LoginRoutes = [
+const UserRoutes = [
     {
-        path: "/login",
-        component: LoginPage,
-        props: true
-    },
-
+        path:"/login",
+        component: UserLoginPage
+    }
 ];
 
-export default LoginRoutes;
+export default UserRoutes;

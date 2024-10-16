@@ -16,9 +16,12 @@
           <button class="nav-button" :class="{ active: activeTab === 'mypage' }" @click="setActiveTab('mypage')">MyPage</button>
         </nav>
         <div class="auth-btn">
-          <button :class="{ active: activeTab === 'login' }" @click="setActiveTab('login')">
-            Sign in
-            <!-- {{ isLoggedIn ? 'LogOut' : 'LogIn' }}   -->
+          <template v-if="loginState.state.isLoggedIn">
+            <span class="user-nickname">{{ loginState.state.userNickname }}</span>
+            <button @click="loginState.logout">LogOut</button>
+          </template>
+          <button v-else :class="{active: activeTab === 'login'}" @click="setActiveTab('login')">
+            LogIn
           </button>
         </div>
       </div>
@@ -27,46 +30,39 @@
 </template>
   
 <script setup>
-    import { useRoute, useRouter } from 'vue-router';
-    import { ref, watch, onMounted, watchEffect } from 'vue';
+import { ref, inject, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
-    const route = useRoute();
-    const router = useRouter();
+const loginState = inject('loginState');
 
-    const activeTab = ref('');
-    const isLoginPage = ref(false);
-
-    watch(() => route.path, (newPath) => {
-        isLoginPage.value = newPath === '/login';
-    }, { immediate: true });
-
+const activeTab = ref('home');
+const route = useRoute();
+const router = useRouter();
 
 function setActiveTab(tab) {
-  if (activeTab.value !== tab) {
-    activeTab.value = tab;
-    switch (tab) {
-      case 'home':
-        router.push({ path: '/' });
-        break;
-      case 'gym':
-        router.push({ path: '/gym' });
-        break;
-      case 'routine':
-        router.push({ path: '/routine' });
-        break;
-      case 'history':
-        router.push({ path: '/history' });
-        break;
-      case 'inbody':
-        router.push({ path: '/inbody' });
-        break;
-      case 'mypage':
-        router.push({ path: '/mypage' });
-        break;
-      case 'login':
-        router.push({ path: '/login' });
-        break;
-    }
+  activeTab.value = tab;
+  switch (tab) {
+    case 'home':
+      router.push({ path: '/' });
+      break;
+    case 'gym':
+      router.push({ path: '/gym' });
+      break;
+    case 'routine':
+      router.push({ path: '/routine' });
+      break;
+    case 'history':
+      router.push({ path: '/history' });
+      break;
+    case 'inbody':
+      router.push({ path: '/inbody' });
+      break;
+    case 'mypage':
+      router.push({ path: '/mypage' });
+      break;
+    case 'login':
+      router.push({ path: '/login' });
+      break;
   }
 }
 
@@ -89,12 +85,18 @@ function updateActiveTabFromRoute() {
   }
 }
 
-    onMounted(() => {
-    updateActiveTabFromRoute();
-    });
 
-watch(route, () => {
-  updateActiveTabFromRoute();
+updateActiveTabFromRoute();
+
+// Watch for route changes to update the active tab
+watch(() => route.path, updateActiveTabFromRoute);
+
+// Watch for login state changes
+watch(() => loginState.state.isLoggedIn, (newValue) => {
+  if (!newValue) {
+    // If logged out, redirect to home
+    router.push('/');
+  }
 });
 </script>
 
@@ -226,5 +228,10 @@ watch(route, () => {
     font-size: 14px;
     padding: 5px 10px;
   }
+}
+
+.user-nickname {
+  color: white;
+  margin-right: 10px;
 }
 </style>
