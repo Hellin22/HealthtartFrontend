@@ -15,8 +15,9 @@
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 0;
+    z-index: -1;
     overflow: hidden;
+    pointer-events: none;
     background-color: black;
   }
   
@@ -25,6 +26,11 @@
     z-index: 0;
     width: 70%;
     height: auto;
+    user-select: none;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
   }
   
   .blue-label-left {
