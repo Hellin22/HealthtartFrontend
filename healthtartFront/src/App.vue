@@ -17,11 +17,13 @@
   const route = useRoute();
   const isMainPage = ref(false);
   const isLoginPage = ref(false);
+  const isSignupPage = ref(false);
 
   watch(() => route?.path, (newPath) => {
     console.log("Route Path: ", newPath);
     isMainPage.value = newPath === '/';
     isLoginPage.value = newPath === '/login';
+    isSignupPage.value = newPath === '/users/signup';
   },
   {
     immediate: true

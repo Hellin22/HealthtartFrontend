@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import MainPage from '@/views/MainPage.vue';
 import MyPage from '@/views/user/MyPage.vue';
 // import LoginRoutes from './login';
-import SigninRoutes from './signin';
+import SignupRoutes from './signup';
 
 // function isLoggedIn() {
 //   // localStorage는 vue.js에서 전역으로 사용할 수 있는 storage
@@ -15,7 +15,7 @@ const routes = [
   { path: "/", component: MainPage },
   { path: "/mypage", component: MyPage },
   // ...LoginRoutes,
-  ...SigninRoutes
+  ...SignupRoutes
 ];
 
 const router = createRouter({
