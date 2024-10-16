@@ -1,10 +1,10 @@
 <template>
   <div id="app">
     <AppHeader />
+    <main>
+      <RouterView />
+    </main>
   </div>
-  <main>
-    <RouterView/>
-  </main>
 </template>
 
 <script setup>
@@ -17,18 +17,21 @@
   const route = useRoute();
   const isMainPage = ref(false);
   const isLoginPage = ref(false);
+  const isHistoryPage = ref(false);
   const isSignupPage = ref(false);
 
   watch(() => route?.path, (newPath) => {
     console.log("Route Path: ", newPath);
     isMainPage.value = newPath === '/';
     isLoginPage.value = newPath === '/login';
+    isHistoryPage.value = newPath === '/history';
     isSignupPage.value = newPath === '/users/signup';
   },
   {
     immediate: true
   });
+
 </script>
 
-<style setup>
+<style scoped>
 </style>
