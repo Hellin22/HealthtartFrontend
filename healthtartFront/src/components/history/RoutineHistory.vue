@@ -40,7 +40,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-
 // 현재 연도와 월을 설정
 const currentYear = ref(2024);
 const currentMonth = ref('OCT'); // 월 이름을 설정
@@ -124,12 +123,13 @@ onMounted(() => {
 
 <style scoped>
 .routine-calendar-container {
-  width: 80%;
+  width: 100%;
   margin: auto;
   color: white;
 }
 
 .calendar-header {
+  margin-left: 260px;
   text-align: left;
   font-size: 30px;
   color: white;
@@ -137,12 +137,14 @@ onMounted(() => {
 }
 
 .calendar-layout {
+  margin-left: 260px;
   display: flex;
   align-items: flex-start;
 }
 
 .calendar-table {
-  width: 70%; /* 달력의 너비 */
+  width: 80%; /* 달력의 너비 */
+  height: 450px;
   border-collapse: collapse;
   text-align: left;
   table-layout: fixed;
@@ -194,7 +196,7 @@ td {
   align-items: center;
   text-align: center;
   margin-bottom: 10px;
-  padding-left: 30px;
+  padding-left: 40px;
 }
 
 .legend-icon {
