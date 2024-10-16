@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
+
 import MainPage from '@/views/MainPage.vue';
+
 import InbodyRoutes from './inbody';
-import UserRoutes from './user';
+import UserRoutes from './login';
 
 // function isLoggedIn() {
 //   // localStorage는 vue.js에서 전역으로 사용할 수 있는 storage
@@ -13,6 +15,8 @@ const routes = [
   { path: "/", component: MainPage },
   ...UserRoutes,
   ...InbodyRoutes,
+  ...SignupRoutes,
+  ...HistoryRoutes
 ];
 
 const router = createRouter({
@@ -31,7 +35,6 @@ router.beforeEach((to, from, next) => {
     next(); // 그 외에는 해당 페이지로 이동 허용
   }
 });
-
 
 
 export default router;

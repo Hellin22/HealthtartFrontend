@@ -15,11 +15,9 @@ import { RouterView, useRoute, useRouter } from 'vue-router';
 import AppHeader from '@/components/AppHeader.vue';
 import { jwtDecode } from 'jwt-decode';
 
+
 const route = useRoute();
 const router = useRouter();
-const isMainPage = ref(false);
-const isLoginPage = ref(false);
-const isHistoryPage = ref(false);
 
 // 로그인 상태를 reactive 객체로 만듭니다.
 const loginState = reactive({
@@ -50,15 +48,6 @@ const checkLoginStatus = () => {
     loginState.userNickname = '';
   }
 };
-
-// 현재 경로가 메인 페이지인지 확인.
-watch(() => route.path, (newPath) => {
-  isMainPage.value = newPath === '/';
-  isLoginPage.value = newPath === '/login';
-  isHistoryPage.value = newPath === '/history';
-}, {
-  immediate: true
-});
 
 // 로그아웃 함수
 const logout = () => {

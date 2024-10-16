@@ -2,18 +2,18 @@
   <header class="header">
     <div class="left-header">
       <div class="logo">
-        <img src="@/assets/icons/logo.svg" alt="Healthtart Logo" class="logo-img"/>
+        <img src="@/assets/icons/logo.svg" alt="Healthtart Logo" class="logo-img" />
       </div>
     </div>
     <div class="right-header">
       <div class="nav-menu">
         <nav class="nav">
-          <button class="nav-button" :class="{active: activeTab === 'home' }" @click="setActiveTab('home')">Home</button>
-          <button class="nav-button" :class="{active: activeTab === 'gym' }" @click="setActiveTab('gym')">Gym</button>
-          <button class="nav-button" :class="{active: activeTab === 'routine' }" @click="setActiveTab('routine')">Routine</button>
-          <button class="nav-button" :class="{active: activeTab === 'history' }" @click="setActiveTab('history')">History</button>
-          <button class="nav-button" :class="{active: activeTab === 'inbody' }" @click="setActiveTab('inbody')">InBody</button>
-          <button class="nav-button" :class="{active: activeTab === 'mypage' }" @click="setActiveTab('mypage')">MyPage</button>
+          <button class="nav-button" :class="{ active: activeTab === 'home' }" @click="setActiveTab('home')">Home</button>
+          <button class="nav-button" :class="{ active: activeTab === 'gym' }" @click="setActiveTab('gym')">Gym</button>
+          <button class="nav-button" :class="{ active: activeTab === 'routine' }" @click="setActiveTab('routine')">Routine</button>
+          <button class="nav-button" :class="{ active: activeTab === 'history' }" @click="setActiveTab('history')">History</button>
+          <button class="nav-button" :class="{ active: activeTab === 'inbody' }" @click="setActiveTab('inbody')">InBody</button>
+          <button class="nav-button" :class="{ active: activeTab === 'mypage' }" @click="setActiveTab('mypage')">MyPage</button>
         </nav>
         <div class="auth-btn">
           <template v-if="loginState.state.isLoggedIn">
@@ -28,7 +28,7 @@
     </div>
   </header>
 </template>
-
+  
 <script setup>
 import { ref, inject, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -70,20 +70,21 @@ function updateActiveTabFromRoute() {
   const path = route.path;
   if (path === '/') {
     activeTab.value = 'home';
-  } else if (path.includes('gym')) {
+  } else if (path.includes('/gym')) {
     activeTab.value = 'gym';
-  } else if (path.includes('routine')) {
+  } else if (path.includes('/routine')) {
     activeTab.value = 'routine';
-  } else if (path.includes('history')) {
+  } else if (path.includes('/history')) {
     activeTab.value = 'history';
-  } else if (path.includes('inbody')) {
+  } else if (path.includes('/inbody')) {
     activeTab.value = 'inbody';
-  } else if (path.includes('mypage')) {
+  } else if (path.includes('/mypage')) {
     activeTab.value = 'mypage';
-  } else if (path.includes('login')) {
+  } else if (path.includes('/login')) {
     activeTab.value = 'login';
   }
 }
+
 
 updateActiveTabFromRoute();
 
@@ -106,7 +107,7 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
   align-items: center;
   background-color: black;
   padding: 10px 30px;
-  height: 60px; /* Set a fixed height */
+  height: 60px;
 }
 
 .left-header {
@@ -187,7 +188,20 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
   gap: 20px;
 }
 
-/* Media query for smaller screens */
+.logout-btn {
+    background-color: #00E0E0;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 15px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .logout-btn:hover {
+    background-color: #00c0c0;
+  }
+
 @media (max-width: 768px) {
   .header {
     flex-wrap: wrap;
