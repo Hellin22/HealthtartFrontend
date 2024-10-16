@@ -18,7 +18,6 @@
   <style scoped>
   .side-menu {
     width: 300px;
-    background-color: #000;
     color: #fff;
     padding: 20px;
     position: fixed;
