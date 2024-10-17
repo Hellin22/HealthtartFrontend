@@ -63,12 +63,9 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-<<<<<<< HEAD
 import '@/assets/css/history/historyroutine.css';
 import RoutineHistoryModal from './RoutineHistoryModal.vue';
-=======
-import '@/assets/css/history/Historyroutine.css';
->>>>>>> 95d7884a43c9fbfe13989a8dde43ce6dd3fe9702
+
 
 // 현재 연도와 월을 설정
 const currentYear = ref(2024);
