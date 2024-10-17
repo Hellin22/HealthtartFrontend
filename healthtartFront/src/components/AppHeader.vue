@@ -1,29 +1,31 @@
 <template>
   <header class="header">
-        <div class="left-header">
-          <div class="logo">
-            <img src="@/assets/icons/logo.svg" alt="Healthtart Logo" class="logo-img" />
-          </div>
+    <div class="left-header">
+      <div class="logo" :class="{ active: activeTab === 'home' }" @click="setActiveTab('home')" >
+        <img src="@/assets/icons/logo.svg" alt="Healthtart Logo" class="logo-img"  />
+      </div>
+    </div>
+    <div class="right-header" style="padding-top: 10px;">
+      <div class="nav-menu">
+        <nav class="nav">
+          <button class="appheader-nav-button" :class="{ active: activeTab === 'home' }" @click="setActiveTab('home')">Home</button>
+          <button class="appheader-nav-button" :class="{ active: activeTab === 'gym' }" @click="setActiveTab('gym')">Gym</button>
+          <button class="appheader-nav-button" :class="{ active: activeTab === 'routine' }" @click="setActiveTab('routine')">Routine</button>
+          <button class="appheader-nav-button" :class="{ active: activeTab === 'history' }" @click="setActiveTab('history')">History</button>
+          <button class="appheader-nav-button" :class="{ active: activeTab === 'inbody' }" @click="setActiveTab('inbody')">InBody</button>
+          <button class="appheader-nav-button" :class="{ active: activeTab === 'mypage' }" @click="setActiveTab('mypage')">MyPage</button>
+        </nav>
+        <div class="auth-btn">
+          <template v-if="loginState.state.isLoggedIn">
+            <span class="user-nickname">{{ loginState.state.userNickname }}</span>
+            <button @click="handleLogout" style="padding-bottom: 4px;">Logout</button>
+          </template>
+          <button v-else :class="{active: activeTab === 'login'}" @click="setActiveTab('login')" style="padding-bottom: 4px;">
+            LogIn
+          </button>
         </div>
-        <div class="right-header">
-          <div class="nav-menu">
-            <nav class="nav">
-              <button class="nav-button" :class="{ active: activeTab === 'home' }" @click="setActiveTab('home')">Home</button>
-              <button class="nav-button" :class="{ active: activeTab === 'gym' }" @click="setActiveTab('gym')">Gym</button>
-              <button class="nav-button" :class="{ active: activeTab === 'routine' }" @click="setActiveTab('routine')">Routine</button>
-              <button class="nav-button" :class="{ active: activeTab === 'history' }" @click="setActiveTab('history')">History</button>
-              <button class="nav-button" :class="{ active: activeTab === 'inbody' }" @click="setActiveTab('inbody')">InBody</button>
-              <button class="nav-button" :class="{ active: activeTab === 'mypage' }" @click="setActiveTab('mypage')">MyPage</button>
-            </nav>
-          </div>
-          <div class="auth-btn">
-            <div v-if="loginState.state.isLoggedIn">
-              <span class="user-nickname">{{ loginState.state.userNickname }}</span>
-              <button @click="handleLogout">LogOut</button>
-            </div>
-              <button v-else :class="{active: activeTab === 'login'}" @click="setActiveTab('login')">LogIn</button>
-          </div>
-        </div>
+      </div>
+    </div>
   </header>
   <div class="header-underline"></div>
 </template>
@@ -73,7 +75,7 @@ function setActiveTab(tab) {
       router.push({ path: '/history' });
       break;
     case 'inbody':
-      router.push({ path: '/inbody' });
+      router.push({ path: '/ranking' });
       break;
     case 'mypage':
       router.push({ path: '/mypage' });
@@ -94,7 +96,7 @@ function updateActiveTabFromRoute() {
     activeTab.value = 'routine';
   } else if (path.includes('/history')) {
     activeTab.value = 'history';
-  } else if (path.includes('/inbody')) {
+  } else if (path.includes('/ranking')) {
     activeTab.value = 'inbody';
   } else if (path.includes('/mypage')) {
     activeTab.value = 'mypage';
@@ -144,6 +146,10 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
   display: flex;
 }
 
+.right-header {
+  display: flex;
+}
+
 .logo {
   display: flex;
   align-items: center;
@@ -165,24 +171,28 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
   align-items: center;
 }
 
-.nav-button {
+.appheader-nav-button {
   color: white;
   text-decoration: none;
   font-size: 18px;
-  padding: 5px 10px;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serifc;
+  font-weight: normal;
+  padding: 3px 10px;
+  padding-bottom: 4px;
   background: none;
   border: none;
   cursor: pointer;
   white-space: nowrap;
+  z-index: 2;
 }
 
-.nav-button.active {
+.appheader-nav-button.active {
   background-color: #01FEAE;
   color: black;
   border-radius: 10px;
 }
 
-.nav-button:hover {
+.appheader-nav-button:hover {
   background-color: #e0ffdf;
   color: black;
   border-radius: 10px;
@@ -191,14 +201,17 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
 .auth-btn {
   flex: 0 0 auto;
   margin-left: 30px;
+  z-index: 2;
 }
 
 .auth-btn button {
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serifc;
+  font-weight: normal;
   background-color: #00E0E0;
   color: black;
   border: none;
   border-radius: 10px;
-  padding: 5px 10px;
+  padding: 3px 10px;
   font-size: 18px;
   cursor: pointer;
   white-space: nowrap;
@@ -220,7 +233,7 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
     color: black;
     border: none;
     border-radius: 5px;
-    padding: 5px 15px;
+    padding: 3px 15px;
     font-size: 16px;
     cursor: pointer;
   }
@@ -247,13 +260,17 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
   }
 
   .nav-button {
-    font-size: 14px;
-    padding: 5px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serifc;
+   font-weight: normal;
+    font-size: 15px;
+    padding: 3px;
   }
 
   .auth-btn button {
-    font-size: 14px;
-    padding: 5px 10px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serifc;
+    font-weight: normal;
+    font-size: 15px;
+    padding: 3px 10px;
   }
 }
 

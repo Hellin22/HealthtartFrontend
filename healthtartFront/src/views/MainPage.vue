@@ -3,14 +3,14 @@
     <main>
       <div class="content">
         <div class="left-content">
-          <h1>
-            헬린이들아,<br />
+          <h1 class="h1content">
+            헬린이들,<br />
             헬스장이 두렵나?
           </h1>
-          <p>
+          <p class="pcontent">
             <span style="font-weight: 700;">헬스장 첫 발걸음이 막막하시다면, 걱정 마세요!</span><br />
             AI가 당신만을 위한 운동 루틴과 헬스 기구<br />
-            사용법을 꼼꼼하게 알려주고, 신나는 맞춤<br />
+            사용법을 편리하게 알려주고, 신나는 맞춤<br />
             플레이리스트까지 함께합니다.
           </p>
           <div class="buttons">
@@ -29,12 +29,26 @@
 
 <script setup>
 import { onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import '@/assets/css/Main/MainPage.css';
 
+const router = useRouter();
+const route = useRoute();
 
 onMounted(() => {
   const blueWave = document.createElement('div');
   blueWave.className = 'blue-wave';
   document.querySelector('.app').appendChild(blueWave);
+
+   // URL에서 토큰 파라미터 확인
+   const token = route.query.token;
+   if (token) {
+    // 토큰을 로컬 스토리지에 저장
+    localStorage.setItem('token', token);
+    
+    // 토큰을 제거한 URL로 리다이렉트
+    router.replace('/');
+  }
+
 });
 </script>

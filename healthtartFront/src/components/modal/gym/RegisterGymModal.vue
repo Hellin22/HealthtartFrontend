@@ -1,23 +1,23 @@
 <template>
     <div v-if="isOpen" class="modal-overlay">
       <div class="modal-content">
-        <h2>헬스장 등록</h2>
+        <h2 class="h2gymregister">헬스장 등록</h2>
         <div class="table-container">
           <table>
             <thead>
               <tr>
-                <th>번호</th>
-                <th>헬스장 이름</th>
-                <th>헬스장 주소</th>
-                <th>선택</th>
+                <th class="gymtable-title">번호</th>
+                <th class="gymtable-title">헬스장 이름</th>
+                <th class="gymtable-title">헬스장 주소</th>
+                <th class="gymtable-title">선택</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="gym in paginatedGyms" :key="gym.id">
-                <td>{{ gym.id }}</td>
-                <td>{{ gym.name }}</td>
-                <td>{{ gym.address }}</td>
-                <td>
+                <td class="gymtable-id">{{ gym.id }}</td>
+                <td class="gymtable-name">{{ gym.name }}</td>
+                <td class="gymtable-address">{{ gym.address }}</td>
+                <td class="gymtable-select">
                   <button @click="selectGym(gym)" class="select-btn">선택</button>
                 </td>
               </tr>
@@ -140,7 +140,7 @@
     transform: translate(-50%, -50%);
   }
   
-  h2 {
+  .h2gymregister {
     color: #fff;
     text-align: center;
     margin: -15px -15px 15px -15px;
@@ -165,18 +165,46 @@
     border-spacing: 0;
   }
   
-  th, td {
+  .gymtable-title, .gymtable-id, .gymtable-name, .gymtable-address, .gymtable-select {
     padding: 8px;
     text-align: left;
     border-bottom: 1px solid #f0f0f0;
     text-align: center;
   }
   
-  td {
+  .gymtable-id {
     background-color: #ffffff;
+    color : black;
+    font-size: 14px;
+    height :auto;
+    width : 10px;
+  }
+
+  .gymtable-name {
+    background-color: #ffffff;
+    color : black;
+    font-size: 14px;
+    height :auto;
+    width : 50px;
+  }
+
+  .gymtable-address {
+    background-color: #ffffff;
+    color : black;
+    font-size: 14px;
+    height :auto;
+    width : 80px;
+  }
+
+  .gymtable-select {
+    background-color: #ffffff;
+    color : black;
+    font-size: 14px;
+    height :auto;
+    width : 5px;
   }
   
-  th {
+  .gymtable-title {
     background-color: #f0f0f0;
     font-weight: bold;
   }

@@ -4,13 +4,17 @@ import MainPage from '@/views/MainPage.vue';
 
 import InbodyRoutes from './inbody';
 import UserRoutes from './users';
+import RoutineRoutes from './routine';
 import SignupRoutes from './signup';
 import HistoryRoutes from './history';
+import GymRoutes from './gym';
 
 const routes = [
   { path: "/", component: MainPage },
   ...UserRoutes,
   ...InbodyRoutes,
+  ...GymRoutes,
+  ...RoutineRoutes,
   ...SignupRoutes,
   ...HistoryRoutes
 ];

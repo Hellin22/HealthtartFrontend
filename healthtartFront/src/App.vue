@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+
     <AppHeader :is-logged-in="loginState.isLoggedIn" :user-nickname="loginState.userNickname" @logout="logout" />
   </div>
   <main>
@@ -21,14 +22,15 @@ import { jwtDecode } from 'jwt-decode';
   const isLoginPage = ref(false);
   const isHistoryPage = ref(false);
   const isSignupPage = ref(false);
+  const isGymPage = ref(false);
+  const isMyPage = ref(false);
+  const isRankingPage = ref(false);
 
-// 로그인 상태를 reactive 객체로 만듭니다.
 const loginState = reactive({
   isLoggedIn: false,
   userNickname: ''
 });
 
-// 로그인 상태 확인 함수
 const checkLoginStatus = () => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -58,6 +60,9 @@ watch(() => route?.path, (newPath) => {
     isLoginPage.value = newPath === '/login';
     isHistoryPage.value = newPath === '/history';
     isSignupPage.value = newPath === '/users/signup';
+    isMyPage.value = newPath === '/mypage';
+    isGymPage.value = newPath === '/gym';
+    isRankingPage.value = newPath === '/ranking';
   },
   {
     immediate: true

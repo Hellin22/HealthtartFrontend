@@ -2,7 +2,7 @@
     <div class="mypage-layout">
       <SideMenu />
       <main class="mypage-content" v-if="formData">
-        <BackGround />
+        <BackGround class="background-component"/>
         <h2 class="last-updated">마지막으로 수정한 날짜: {{ formData.lastUpdated }}</h2>
         <form class="mypage-form" @submit.prevent="updateProfile">
           <div class="form-group">
@@ -39,7 +39,7 @@
           </div>
           <button class="update-btn" type="submit">완료</button>
         </form>
-        <div class="separator"></div>
+        <div class="mypage-edit-separator"></div>
         <div class="extra-content">
           <div class="extra-section">
             <div class="extra-button-group">
