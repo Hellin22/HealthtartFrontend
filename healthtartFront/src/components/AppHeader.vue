@@ -1,11 +1,11 @@
 <template>
   <header class="header">
     <div class="left-header">
-      <div class="logo">
-        <img src="@/assets/icons/logo.svg" alt="Healthtart Logo" class="logo-img" />
+      <div class="logo" :class="{ active: activeTab === 'home' }" @click="setActiveTab('home')" >
+        <img src="@/assets/icons/logo.svg" alt="Healthtart Logo" class="logo-img"  />
       </div>
     </div>
-    <div class="right-header">
+    <div class="right-header" style="padding-top: 10px;">
       <div class="nav-menu">
         <nav class="nav">
           <button class="appheader-nav-button" :class="{ active: activeTab === 'home' }" @click="setActiveTab('home')">Home</button>
@@ -18,9 +18,9 @@
         <div class="auth-btn">
           <template v-if="loginState.state.isLoggedIn">
             <span class="user-nickname">{{ loginState.state.userNickname }}</span>
-            <button @click="loginState.logout">Logout</button>
+            <button @click="loginState.logout" style="padding-bottom: 4px;">Logout</button>
           </template>
-          <button v-else :class="{active: activeTab === 'login'}" @click="setActiveTab('login')">
+          <button v-else :class="{active: activeTab === 'login'}" @click="setActiveTab('login')" style="padding-bottom: 4px;">
             LogIn
           </button>
         </div>
@@ -143,7 +143,10 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
   color: white;
   text-decoration: none;
   font-size: 18px;
-  padding: 5px 10px;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serifc;
+  font-weight: normal;
+  padding: 3px 10px;
+  padding-bottom: 4px;
   background: none;
   border: none;
   cursor: pointer;
@@ -170,11 +173,13 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
 }
 
 .auth-btn button {
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serifc;
+  font-weight: normal;
   background-color: #00E0E0;
   color: black;
   border: none;
   border-radius: 10px;
-  padding: 5px 10px;
+  padding: 3px 10px;
   font-size: 18px;
   cursor: pointer;
   white-space: nowrap;
@@ -196,7 +201,7 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
     color: black;
     border: none;
     border-radius: 5px;
-    padding: 5px 15px;
+    padding: 3px 15px;
     font-size: 16px;
     cursor: pointer;
   }
@@ -223,13 +228,17 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
   }
 
   .nav-button {
-    font-size: 14px;
-    padding: 5px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serifc;
+   font-weight: normal;
+    font-size: 15px;
+    padding: 3px;
   }
 
   .auth-btn button {
-    font-size: 14px;
-    padding: 5px 10px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serifc;
+    font-weight: normal;
+    font-size: 15px;
+    padding: 3px 10px;
   }
 }
 

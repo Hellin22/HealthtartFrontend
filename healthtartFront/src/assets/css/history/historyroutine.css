@@ -201,13 +201,21 @@
   }
   
   .stars span {
-    font-size: 30px;
+    font-size: 27px;
+    
   }
   
   .star {
-    width: 40px;
-    height: 40px;
     margin: 0 2px;
+  }
+  .activestar {
+    width: 40px; /* 채워진 별의 크기 */
+    height: 40px;
+  }
+  
+  .inactivestar {
+    width: 35px; /* 빈 별의 크기 */
+    height: 35px;
   }
   
   

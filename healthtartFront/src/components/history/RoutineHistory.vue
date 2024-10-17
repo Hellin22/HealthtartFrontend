@@ -80,7 +80,7 @@ const selectedSatisfaction = ref(0);
 // 운동 데이터
 const workoutData = {
   14: {
-    time: '1시간 07분',
+    time: '67',
     satisfaction: 4,
     details: [
       { name: '고블릿 스쿼트', sets: 4, reps: '10 ~ 12', weight: '10kg' },
