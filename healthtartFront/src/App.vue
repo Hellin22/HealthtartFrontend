@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" style="background-color: black;">
 
     <AppHeader :is-logged-in="loginState.isLoggedIn" :user-nickname="loginState.userNickname" @logout="logout" />
   </div>
@@ -96,4 +96,5 @@ provide('loginState', {
 </script>
 
 <style scoped>
+
 </style>

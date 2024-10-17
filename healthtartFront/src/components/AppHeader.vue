@@ -292,7 +292,7 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
 .header-underline {
   margin-top: 12px;
   background-color: #01FFF1;
-  opacity: 0.2;
+  opacity: 0.3;
   height: 3px;
   width: 100%;
 }
