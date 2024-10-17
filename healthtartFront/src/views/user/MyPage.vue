@@ -2,7 +2,7 @@
   <div class="mypage-layout">
     <SideMenu />
     <main class="mypage-content" v-if="formData">
-      <BackGround />
+      <BackGround class="background-component"/>
       <h2 class="last-updated">마지막으로 수정한 날짜: {{ formData.lastUpdated }}</h2>
       <form class="mypage-form" @submit.prevent="updateProfile">
         <div class="form-group">
@@ -42,7 +42,7 @@
           <button class="edit-btn" @click="goToEditPage">수정</button>
         </div>
       </form>
-      <div class="separator"></div>
+      <div class="mypage-separator"></div>
       <RegisterInbodyModal :isOpen="isInbodyModalOpen" :closeModal="closeInbodyModal" />
       <div class="extra-content">
         <div class="extra-section">

@@ -8,12 +8,12 @@
     <div class="right-header">
       <div class="nav-menu">
         <nav class="nav">
-          <button class="nav-button" :class="{ active: activeTab === 'home' }" @click="setActiveTab('home')">Home</button>
-          <button class="nav-button" :class="{ active: activeTab === 'gym' }" @click="setActiveTab('gym')">Gym</button>
-          <button class="nav-button" :class="{ active: activeTab === 'routine' }" @click="setActiveTab('routine')">Routine</button>
-          <button class="nav-button" :class="{ active: activeTab === 'history' }" @click="setActiveTab('history')">History</button>
-          <button class="nav-button" :class="{ active: activeTab === 'inbody' }" @click="setActiveTab('inbody')">InBody</button>
-          <button class="nav-button" :class="{ active: activeTab === 'mypage' }" @click="setActiveTab('mypage')">MyPage</button>
+          <button class="appheader-nav-button" :class="{ active: activeTab === 'home' }" @click="setActiveTab('home')">Home</button>
+          <button class="appheader-nav-button" :class="{ active: activeTab === 'gym' }" @click="setActiveTab('gym')">Gym</button>
+          <button class="appheader-nav-button" :class="{ active: activeTab === 'routine' }" @click="setActiveTab('routine')">Routine</button>
+          <button class="appheader-nav-button" :class="{ active: activeTab === 'history' }" @click="setActiveTab('history')">History</button>
+          <button class="appheader-nav-button" :class="{ active: activeTab === 'inbody' }" @click="setActiveTab('inbody')">InBody</button>
+          <button class="appheader-nav-button" :class="{ active: activeTab === 'mypage' }" @click="setActiveTab('mypage')">MyPage</button>
         </nav>
         <div class="auth-btn">
           <template v-if="loginState.state.isLoggedIn">
@@ -55,7 +55,7 @@ function setActiveTab(tab) {
       router.push({ path: '/history' });
       break;
     case 'inbody':
-      router.push({ path: '/inbody' });
+      router.push({ path: '/ranking' });
       break;
     case 'mypage':
       router.push({ path: '/mypage' });
@@ -76,7 +76,7 @@ function updateActiveTabFromRoute() {
     activeTab.value = 'routine';
   } else if (path.includes('/history')) {
     activeTab.value = 'history';
-  } else if (path.includes('/inbody')) {
+  } else if (path.includes('/ranking')) {
     activeTab.value = 'inbody';
   } else if (path.includes('/mypage')) {
     activeTab.value = 'mypage';
@@ -115,6 +115,7 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 2;
 }
 
 .logo {
@@ -138,7 +139,7 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
   align-items: center;
 }
 
-.nav-button {
+.appheader-nav-button {
   color: white;
   text-decoration: none;
   font-size: 18px;
@@ -147,15 +148,16 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
   border: none;
   cursor: pointer;
   white-space: nowrap;
+  z-index: 2;
 }
 
-.nav-button.active {
+.appheader-nav-button.active {
   background-color: #01FEAE;
   color: black;
   border-radius: 10px;
 }
 
-.nav-button:hover {
+.appheader-nav-button:hover {
   background-color: #e0ffdf;
   color: black;
   border-radius: 10px;
@@ -164,6 +166,7 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
 .auth-btn {
   flex: 0 0 auto;
   margin-left: 30px;
+  z-index: 2;
 }
 
 .auth-btn button {

@@ -1,6 +1,6 @@
 <template>
-    <div class="modal-overlay" v-if="isOpen">
-      <div class="modal-content">
+    <div class="inbody-modal-overlay" v-if="isOpen">
+      <div class="inbody-modal-content">
         <h2 class="registerinbodytitle">인바디 등록</h2>
         <form @submit.prevent="handleSubmit">
           <div class="form-group">
@@ -50,7 +50,7 @@
   </script>
   
   <style scoped>
-  .modal-overlay {
+  .inbody-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -60,9 +60,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
   }
   
-  .modal-content {
+  .inbody-modal-content {
     background: rgb(0, 0, 0);
     padding: 20px;
     border-radius: 10px;
