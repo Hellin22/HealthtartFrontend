@@ -1,8 +1,6 @@
 <template>
   <div class="routine-calendar-container">
-    <div class="calendar-header">
-      <h2>{{ currentMonth }} {{ currentYear }}</h2> <!-- 연도와 월을 동적으로 출력 -->
-    </div>
+    <div class="calendar-header">{{ currentMonth }} {{ currentYear }}</div>
     <div class="calendar-layout">
       <table class="calendar-table">
         <thead>
@@ -43,7 +41,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import '@/assets/css/history/historyroutine.css';
+import '@/assets/css/history/Historyroutine.css';
 
 // 현재 연도와 월을 설정
 const currentYear = ref(2024);
