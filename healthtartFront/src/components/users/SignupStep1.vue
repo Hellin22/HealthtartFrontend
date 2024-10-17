@@ -1,53 +1,67 @@
 <template>
-    <div class="outer-container">
+  <div class="outer-container">
     <div class="form-container">
       <form @submit.prevent="next">
         <div class="email-container">
           <div class="email-form">
             <div class="left-email">
               <div class="message-container">
-              <label for="email">이메일 *</label>
-              <div v-if="emailTouched && emailError" class="error-message">올바른 이메일 형식을 입력해주세요.</div>
+                <label for="email">이메일 *</label>
+                <div v-if="emailTouched && emailError" class="error-message">올바른 이메일 형식을 입력해주세요.</div>
               </div>
-              <input type="text" id="email" required v-model="formData.userEmail" @blur="checkEmail" placeholder="이메일 입력" />
+              <div class="email-input-group">
+                <input type="text" id="email" required v-model="formData.userEmail" @blur="checkEmail" placeholder="이메일 입력" />
+                <button type="button" @click="sendVerificationEmail" class="auth" :disabled="emailError || !formData.userEmail || isEmailSent">
+                  인증
+                </button>
+              </div>
+              
+              <div class="verification-form">
+                <label for="verificationCode">인증번호 *</label>
+                <div class="verification-input-group">
+                  <input type="text" id="verificationCode" placeholder="   5분내로 인증번호를 입력해주세요" v-model="verificationCode"
+                    :disabled="!isEmailSent" />
+                  <button type="button" @click="verifyCode" class="auth" :disabled="!isEmailSent || isVerified">
+                    확인
+                  </button>
+                </div>
+              </div>
             </div>
-          <div class="right-email">
-          <div class="blank"></div>
-            <button type="button" @click="" class="auth">인증</button>
           </div>
         </div>
-      </div>
-  
+
         <div class="password-form">
           <label for="password">비밀번호 *</label>
           <input type="password" id="password" required v-model="formData.userPassword" placeholder="비밀번호 입력" />
         </div>
-  
-          <div class="name-form">
-            <label for="name">이름 *</label>
-            <input type="text" required v-model="formData.userName" id="name" placeholder="이름 입력" />
-          </div>
-  
-          <div class="phonenumber-form">
-            <label for="phonenumber">전화번호 *</label>
-            <input type="text" id="phonenumber" required v-model="formData.userPhone" placeholder="전화번호 입력" />
-          </div>
-  
-          <div class="nickname-form">
-            <label for="nickname">닉네임 *</label>
-            <input type="text" id="nickname" required v-model="formData.userNickname" placeholder="닉네임 입력" />
-          </div>
 
-          <button type="submit" class="next-btn">다음</button>
+        <div class="name-form">
+          <label for="name">이름 *</label>
+          <input type="text" required v-model="formData.userName" id="name" placeholder="이름 입력" />
+        </div>
+
+        <div class="phonenumber-form">
+          <label for="phonenumber">전화번호 *</label>
+          <input type="text" id="phonenumber" required v-model="formData.userPhone" placeholder="전화번호 입력" />
+        </div>
+
+        <div class="nickname-form">
+          <label for="nickname">닉네임 *</label>
+          <input type="text" id="nickname" required v-model="formData.userNickname" placeholder="닉네임 입력" />
+        </div>
+
+        <!-- "다음" 버튼은 인증 완료 시에만 활성화 -->
+        <button type="submit" class="next-btn" :disabled="!isVerified">다음</button>
       </form>
     </div>
-</div>
-  </template>
-  
-  <script setup>
-  import { ref } from 'vue';
+  </div>
+</template>
 
-  // 폼 데이터 상태
+<script setup>
+import { ref } from 'vue';
+import axios from 'axios';
+
+// 폼 데이터 상태
 const formData = ref({
   userEmail: '',
   userPassword: '',
@@ -56,36 +70,92 @@ const formData = ref({
   userNickname: ''
 });
 
-const emailError = ref(false); // 이메일 형식 오류 상태
-const emailTouched = ref(false); // 이메일 입력 폼이 처음 선택되었는지 확인
+const verificationCode = ref('');
+const isEmailSent = ref(false);
+const isVerified = ref(false);
+const emailError = ref(false);
+const emailTouched = ref(false);
 
 // 이메일 유효성 검사 함수
 const validateEmail = (email) => {
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 이메일 형식 검사용 정규 표현식
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailPattern.test(email);
 };
 
 // 이메일 입력 필드를 벗어났을 때 유효성 검사
 const checkEmail = () => {
-  emailTouched.value = true; // 입력 필드를 벗어났음을 표시
+  emailTouched.value = true;
   if (!validateEmail(formData.value.userEmail)) {
-    emailError.value = true; // 이메일이 유효하지 않으면 오류 상태를 true로 설정
+    emailError.value = true;
   } else {
-    emailError.value = false; // 유효한 이메일이면 오류 상태를 false로 설정
+    emailError.value = false;
   }
 };
 
-// setup에서 emit을 인자로 받아옵니다
-const emit = defineEmits(['nextStep']); // 이벤트 정의
+// 인증 메일 전송
+const sendVerificationEmail = async () => {
+  if (!emailError.value && formData.value.userEmail) {
+    try {
+      // 인증 메일 전송 요청
+      const response = await axios.post('http://localhost:8080/users/verification-email', {
+        email: formData.value.userEmail
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    
+      // HTTP 상태 코드가 200일 때
+      if (response.status === 200) {
+        alert('인증번호를 전송하였습니다.');
+        isEmailSent.value = true;
+      }
+    } catch (error) {
+      // 상태 코드가 200이 아닌 경우 또는 오류가 발생했을 때
+      alert('인증번호 전송에 실패했습니다.');
+      console.error('Error:', error);
+    }
+  }
+};
+
+
+
+
+// 인증번호 확인
+const verifyCode = async () => {
+  if (verificationCode.value) {
+    try {
+      // 인증 메일 전송 요청
+      const response = await axios.post('http://localhost:8080/users/verification-email/confirmation', {
+        email: formData.value.userEmail,
+        code: verificationCode.value
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.status === 200) {
+        alert('인증번호 확인이 완료되었습니다.');
+        isVerified.value = true;
+      }
+    } catch (error) {
+      alert('인증번호 확인에 실패했습니다.');
+      console.error('Error:', error);
+    }
+  }
+};
 
 // 폼 제출 함수
+const emit = defineEmits(['nextStep']);
 const next = () => {
-  if (emailError.value) {
+  if (emailError.value || !isVerified.value) {
+    alert('이메일 인증이 필요합니다.');
     return;
   }
-  emit('nextStep', formData.value); // 부모 컴포넌트로 데이터 전달
+  emit('nextStep', formData.value);
 };
-  </script>
+</script>
   
   <style scoped>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
@@ -119,13 +189,9 @@ const next = () => {
     align-items: center;
   }
 
-  .left-email, .right-email, .password-form, .name-form, .phonenumber-form, .nickname-form {
+  .left-email, .password-form, .name-form, .phonenumber-form, .nickname-form {
     display: flex;
     flex-direction: column;
-  }
-
-  .blank {
-    margin-top: 15px;
   }
 
   label {
@@ -214,5 +280,28 @@ const next = () => {
   .message-container {
     display: flex;
   }
+
+  .email-input-group, .verification-input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.email-input-group input, .verification-input-group input {
+  flex: 1;
+  width: auto;
+}
+
+.auth {
+  width: 60px;
+  height: 40px; /* 높이를 input과 맞춤 */
+  flex-shrink: 0;
+}
+
+#email, #verificationCode {
+  flex: 1;
+}
+
+  
   </style>
   
