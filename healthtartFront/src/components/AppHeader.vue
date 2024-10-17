@@ -154,6 +154,7 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
   display: flex;
   align-items: center;
   flex: 0 0 auto;
+  cursor: pointer;
 }
 
 .logo-img {

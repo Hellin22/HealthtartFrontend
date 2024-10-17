@@ -1,45 +1,45 @@
 <template>
     <div class="outer-container">
     <div class="form-container">
-        <div class="inner-container">
       <form @submit.prevent="next">
         <div class="email-container">
           <div class="email-form">
             <div class="left-email">
+              <div class="message-container">
               <label for="email">이메일 *</label>
-              <input type="text" id="email" v-model="formData.userEmail" @blur="checkEmail" placeholder="이메일 입력" />
+              <div v-if="emailTouched && emailError" class="error-message">올바른 이메일 형식을 입력해주세요.</div>
+              </div>
+              <input type="text" id="email" required v-model="formData.userEmail" @blur="checkEmail" placeholder="이메일 입력" />
             </div>
           <div class="right-email">
           <div class="blank"></div>
             <button type="button" @click="" class="auth">인증</button>
           </div>
         </div>
-        <div v-if="emailTouched && emailError" class="error-message">올바른 이메일 형식을 입력해주세요.</div>
       </div>
   
         <div class="password-form">
           <label for="password">비밀번호 *</label>
-          <input type="password" id="password" v-model="formData.userPassword" placeholder="비밀번호 입력" />
+          <input type="password" id="password" required v-model="formData.userPassword" placeholder="비밀번호 입력" />
         </div>
   
           <div class="name-form">
             <label for="name">이름 *</label>
-            <input type="text" v-model="formData.userName" id="name" placeholder="이름 입력" />
+            <input type="text" required v-model="formData.userName" id="name" placeholder="이름 입력" />
           </div>
   
           <div class="phonenumber-form">
             <label for="phonenumber">전화번호 *</label>
-            <input type="text" id="phonenumber" v-model="formData.userPhone" placeholder="전화번호 입력" />
+            <input type="text" id="phonenumber" required v-model="formData.userPhone" placeholder="전화번호 입력" />
           </div>
   
           <div class="nickname-form">
             <label for="nickname">닉네임 *</label>
-            <input type="text" id="nickname" v-model="formData.userNickname" placeholder="닉네임 입력" />
+            <input type="text" id="nickname" required v-model="formData.userNickname" placeholder="닉네임 입력" />
           </div>
 
           <button type="submit" class="next-btn">다음</button>
       </form>
-    </div>
     </div>
 </div>
   </template>
@@ -95,14 +95,10 @@ const next = () => {
   }
   .outer-container {
     width: 100vw;
-    height: calc(100vh - 60px);;
+    height: calc(100vh - 65px);;
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-
-  .inner-container {
-
   }
 
   .form-container {
@@ -213,6 +209,10 @@ const next = () => {
 
   .email-container {
     margin-bottom: 15px;
+  }
+
+  .message-container {
+    display: flex;
   }
   </style>
   

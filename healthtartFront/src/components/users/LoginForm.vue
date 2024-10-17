@@ -5,7 +5,10 @@
           <form @submit.prevent="loginUser">
 
             <div class="email">
+                <div class="login-message-container">
                 <label for="email">이메일</label>
+                <div v-if="emailTouched && emailError" class="error-message">{{ errorMessage }}</div>
+                </div>
                 <input type="email" id="email" required v-model="formData.userEmail" @blur="checkEmail" placeholder="이메일 입력" />
             </div>
   
@@ -16,18 +19,16 @@
 
         <div class="login-buttons">
           <button type="button" @click="loginUser" class="login">로그인</button>
-          <button type="button" class="kakao">카카오 로그인</button>
-          <button type="button" class="google">구글 로그인</button>
+          <button type="button" @click="kakaoLogin" class="kakao">카카오 로그인</button>
+          <button type="button" @click="googleLogin" class="google">구글 로그인</button>
         </div>
-
-        <div v-if="emailTouched && emailError" class="error-message">{{ errorMessage }}</div>
 
         <div class="finds">
           <div class="find-email">이메일 찾기</div>
           <div>|</div>
           <div class="find-password">비밀번호 찾기</div>
           <div>|</div>
-          <div class="signup">회원가입</div>
+          <div class="signup" @click="goToSignup">회원가입</div>
         </div>
       </form>
     </div>
@@ -114,6 +115,19 @@ const loginUser = async () => {
     console.error('로그인 중 오류 발생:', error);
     errorMessage.value = '로그인 중 오류가 발생했습니다. 다시 시도해주세요.';
   }
+};
+
+const goToSignup = () => {
+  router.push('/users/signup'); // /users/signup 경로로 이동
+}
+
+const kakaoLogin = () => {
+  window.location.href = 'http://localhost:8080/oauth2/authorization/kakao';
+};
+
+
+const googleLogin = () => {
+  window.location.href = 'http://localhost:8080/oauth2/authorization/google';
 };
 </script>
 
@@ -250,4 +264,7 @@ input {
     flex-direction: column;
   }
 
+.login-message-container {
+    display: flex;
+}
 </style>
