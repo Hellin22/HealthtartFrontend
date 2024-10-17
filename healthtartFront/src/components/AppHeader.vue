@@ -127,7 +127,7 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
   align-items: center;
   background-color: black;
   padding: 10px 30px;
-  height: 63px;
+  height: 50px;
 }
 
 .outer-container {
@@ -151,6 +151,7 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
 }
 
 .logo {
+  margin-top: 10px;
   display: flex;
   align-items: center;
   flex: 0 0 auto;
@@ -200,6 +201,7 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
 }
 
 .auth-btn {
+  margin-top: 10px;
   flex: 0 0 auto;
   margin-left: 30px;
   z-index: 2;
@@ -223,6 +225,7 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
 }
 
 .nav {
+  margin-top: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -288,9 +291,10 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
 }
 
 .header-underline {
+  margin-top: 12px;
   background-color: #01FFF1;
-  opacity: 0.4;
-  height: 2px;
+  opacity: 0.3;
+  height: 3px;
   width: 100%;
 }
 </style>
