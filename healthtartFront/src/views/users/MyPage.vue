@@ -1,6 +1,6 @@
 <template>
   <div class="mypage-layout">
-    <SideMenu />
+    <MyPageSideMenu/>
     <main class="mypage-content" v-if="formData">
       <BackGround class="background-component"/>
       <h2 class="last-updated">마지막으로 수정한 날짜: {{ formData.lastUpdated }}</h2>
@@ -91,8 +91,8 @@ import { useRouter } from 'vue-router';
 import BackGround from '@/components/BackGround.vue';
 import '@/assets/css/user/MyPage.css';
 import RegisterInbodyModal from '@/components/modal/inbody/RegisterInbodyModal.vue';
-import SideMenu from '@/components/SideMenu.vue';
 import RightSide from '@/components/RightSide.vue';
+import MyPageSideMenu from '../../components/MyPageSideMenu.vue';
 
 const router = useRouter();
 const formData = ref(null);

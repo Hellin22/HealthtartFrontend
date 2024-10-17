@@ -1,5 +1,6 @@
 <template>
-  <div id="app">
+  <div id="app" style="background-color: black;">
+
     <AppHeader :is-logged-in="loginState.isLoggedIn" :user-nickname="loginState.userNickname" @logout="logout" />
   </div>
   <main>
@@ -14,6 +15,7 @@ import { RouterView, useRoute, useRouter } from 'vue-router';
 import AppHeader from '@/components/AppHeader.vue';
 import { jwtDecode } from 'jwt-decode';
 
+  const router = useRouter();
 
   const route = useRoute();
   const isMainPage = ref(false);
@@ -94,4 +96,5 @@ provide('loginState', {
 </script>
 
 <style scoped>
+
 </style>

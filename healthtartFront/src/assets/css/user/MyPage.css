@@ -1,10 +1,10 @@
 .mypage-layout {
+    background-color: black;
     display: flex;
-    min-height: calc(100vh - 60px);
+    min-height: calc(100vh - 80px);
     position: relative;
     z-index: 2;
 }
-
 
 .mypage-content {
     flex-grow: 1;
