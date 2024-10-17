@@ -18,7 +18,7 @@
         <div class="auth-btn">
           <template v-if="loginState.state.isLoggedIn">
             <span class="user-nickname">{{ loginState.state.userNickname }}</span>
-            <button @click="loginState.logout" style="padding-bottom: 4px;">Logout</button>
+            <button @click="handleLogout" style="padding-bottom: 4px;">Logout</button>
           </template>
           <button v-else :class="{active: activeTab === 'login'}" @click="setActiveTab('login')" style="padding-bottom: 4px;">
             LogIn
@@ -27,17 +27,37 @@
       </div>
     </div>
   </header>
+  <div class="header-underline"></div>
 </template>
   
 <script setup>
-import { ref, inject, watch } from 'vue';
+import { defineProps, defineEmits, ref, inject, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+const emit = defineEmits(['logout']);
 const loginState = inject('loginState');
 
 const activeTab = ref('home');
 const route = useRoute();
 const router = useRouter();
+
+// props로 받은 데이터 선언 (카멜 케이스로 선언)
+const props = defineProps({
+  isLoggedIn: {
+    type: Boolean,
+    required: true
+  },
+  userNickname: {
+    type: String,
+    required: true
+  }
+});
+
+// 로그아웃 이벤트 핸들러
+const handleLogout = () => {
+  // 로그아웃 이벤트를 부모 컴포넌트에 전달
+  emit('logout');
+};
 
 function setActiveTab(tab) {
   activeTab.value = tab;
@@ -61,7 +81,7 @@ function setActiveTab(tab) {
       router.push({ path: '/mypage' });
       break;
     case 'login':
-      router.push({ path: '/login' });
+      router.push({ path: '/users/login' });
       break;
   }
 }
@@ -110,12 +130,24 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
   height: 60px;
 }
 
+.outer-container {
+    display: flex;
+    flex-direction: column;
+}
+
 .left-header {
   padding-right: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2;
+}
+
+.right-header {
+  display: flex;
+}
+
+.right-header {
+  display: flex;
 }
 
 .logo {
@@ -128,7 +160,7 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
   width: 80px;
   height: auto;
   object-fit: contain;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .nav-menu {
@@ -245,5 +277,19 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
 .user-nickname {
   color: white;
   margin-right: 10px;
+}
+
+.line {
+    background-color: #01FFF1;
+    height: 6px;
+    width: 100vh;
+    opacity: 0.5;
+}
+
+.header-underline {
+  background-color: #01FFF1;
+  opacity: 0.5;
+  height: 5px;
+  width: 100%;
 }
 </style>

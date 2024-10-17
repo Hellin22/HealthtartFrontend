@@ -7,7 +7,7 @@
 <script setup>
   import SignupStep1 from '@/components/users/SignupStep1.vue';
   import SignupStep2 from '@/components/users/SignupStep2.vue';
-  import LoginBackground from '@/components/LoginBackground.vue';
+  import LoginBackground from '@/components/users/LoginBackground.vue';
   import { ref } from 'vue';
   import axios from 'axios';
 
