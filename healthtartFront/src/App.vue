@@ -14,6 +14,7 @@ import { RouterView, useRoute, useRouter } from 'vue-router';
 import AppHeader from '@/components/AppHeader.vue';
 import { jwtDecode } from 'jwt-decode';
 
+  const router = useRouter();
 
   const route = useRoute();
   const isMainPage = ref(false);
