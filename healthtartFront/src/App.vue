@@ -22,6 +22,7 @@ import { jwtDecode } from 'jwt-decode';
   const isSignupPage = ref(false);
   const isGymPage = ref(false);
   const isMyPage = ref(false);
+  const isRankingPage = ref(false);
 
 const loginState = reactive({
   isLoggedIn: false,
@@ -59,6 +60,7 @@ watch(() => route?.path, (newPath) => {
     isSignupPage.value = newPath === '/users/signup';
     isMyPage.value = newPath === '/mypage';
     isGymPage.value = newPath === '/gym';
+    isRankingPage.value = newPath === '/ranking';
   },
   {
     immediate: true

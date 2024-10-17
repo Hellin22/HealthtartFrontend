@@ -1,13 +1,10 @@
-.multi-layout {
-    display: flex;
-    min-height: calc(100vh - 60px);
-}
-
 .mypage-layout {
     display: flex;
     min-height: calc(100vh - 60px);
-    z-index: -3;
+    position: relative;
+    z-index: 2;
 }
+
 
 .mypage-content {
     flex-grow: 1;
@@ -17,7 +14,7 @@
     color: #fff;
     padding: 50px;
     position: relative;
-    z-index: 2;
+    z-index: 3;
 }
 
 .last-updated {
@@ -26,6 +23,7 @@
     right: 50px;
     font-size: 14px;
     color: #ffffff;
+    z-index: 4;
 }
 
 .mypage-form {
@@ -39,6 +37,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    z-index: 4;
 }
 
 .form-group label {
@@ -63,6 +62,7 @@
     flex-direction: row;
     grid-column: 2;
     justify-self: end;
+    z-index: 4;
 }
 
 .inbody-btn {
@@ -97,11 +97,13 @@
 }
 
 
-.separator {
+.mypage-separator {
     width: 100%;
     height: 1px;
     background-color: #ffffff;
     margin: 20px 0;
+    z-index: 4;
+    position: relative;
 }
 
 .extra-content {
@@ -114,6 +116,7 @@
 .extra-section {
     width: 45%;
     border-radius: 5px;
+    z-index: 4;
 }
 
 .extra-button-group {
