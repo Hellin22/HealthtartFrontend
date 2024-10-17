@@ -59,18 +59,43 @@
     user-select: text;
 }
 
-.edit-btn {
+.button-group {
+    flex-direction: row;
     grid-column: 2;
     justify-self: end;
+}
+
+.inbody-btn {
+    padding: 5px 15px;
+    background-color: #63ffa4;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    margin-right : 15px;
+}
+
+.inbody-btn:hover {
+    background-color: #00ff1e;
+}
+
+.edit-btn {
     padding: 5px 15px;
     background-color: #00ffff;
     color: #000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: bold;
 }
+
+.edit-btn:hover {
+    background-color: #00d0ff;
+}
+
 
 .separator {
     width: 100%;

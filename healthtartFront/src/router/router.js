@@ -5,19 +5,24 @@ import MainPage from '@/views/MainPage.vue';
 // import LoginRoutes from './login';
 import InbodyRoutes from './inbody';
 import UserRoutes from './user';
+import RoutineRoutes from './routine';
 import SignupRoutes from './signup';
 import HistoryRoutes from './history';
 import GymRoutes from './gym';
-import MyPageRoutes from '@/views/user/MyPage.vue';
 
 const routes = [
   { path: "/", component: MainPage },
   ...UserRoutes,
   ...InbodyRoutes,
   ...GymRoutes,
+  ...RoutineRoutes,
   ...SignupRoutes,
+<<<<<<< HEAD
   ...HistoryRoutes,
   // ...MyPageRoutes
+=======
+  ...HistoryRoutes
+>>>>>>> bff265803daabd981430a2fd31776f79edf20e66
 ];
 
 const router = createRouter({
