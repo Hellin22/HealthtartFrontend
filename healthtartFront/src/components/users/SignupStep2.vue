@@ -44,7 +44,7 @@
   
           <div class="age-form">
             <label for="age">나이 *</label>
-            <input type="number" id="age" required v-model="formData.userAge" placeholder="나이 입력" />
+            <input type="number" id="age" min="0" required v-model="formData.userAge" placeholder="나이 입력" />
           </div>
 
           <div class="gym-form">
