@@ -28,7 +28,7 @@ import arrowIcon from '@/assets/icons/icon3.svg';
   padding-left: 30px;
   padding-bottom: 50px;
   position: fixed;
-  top: 60px;
+  top: 80px;
   bottom: 0;
   left: 0;
   display: flex;

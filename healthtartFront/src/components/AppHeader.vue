@@ -127,7 +127,7 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
   align-items: center;
   background-color: black;
   padding: 10px 30px;
-  height: 60px;
+  height: 63px;
 }
 
 .outer-container {
@@ -288,8 +288,8 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
 
 .header-underline {
   background-color: #01FFF1;
-  opacity: 0.5;
-  height: 5px;
+  opacity: 0.4;
+  height: 2px;
   width: 100%;
 }
 </style>
