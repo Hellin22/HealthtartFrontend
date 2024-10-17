@@ -115,10 +115,9 @@ const changePage = (page) => {
 .inbody-ranking {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - 65px);
   padding: 20px;
   position: relative;
-  z-index: 1;
 }
 
 .background-component {
