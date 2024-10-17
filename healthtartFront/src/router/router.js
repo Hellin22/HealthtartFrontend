@@ -17,12 +17,7 @@ const routes = [
   ...GymRoutes,
   ...RoutineRoutes,
   ...SignupRoutes,
-<<<<<<< HEAD
-  ...HistoryRoutes,
-  // ...MyPageRoutes
-=======
   ...HistoryRoutes
->>>>>>> bff265803daabd981430a2fd31776f79edf20e66
 ];
 
 const router = createRouter({
