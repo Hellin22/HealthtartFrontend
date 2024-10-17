@@ -17,7 +17,7 @@
                     <div class="board-header-weight">무게</div>
                     <div class="board-header-link">영상 링크</div>
                 </div>
-                <div class="board-body">
+            <div class="board-body">
                     <div class="board-row" v-for="(routine, index) in routines" :key="routine.number">
                         <div class="board-row-number">{{ routine.number }}</div>
                         <div class="board-row-workout">{{ routine.title }}</div>
@@ -43,7 +43,7 @@
         align-items: center;
         background-color: black;
         color: white;
-        height: calc(100vh - 60px);
+        height: calc(100vh - 65px);
         padding-top: 41.6px;
     }
 
