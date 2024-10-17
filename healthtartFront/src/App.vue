@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+
     <AppHeader :is-logged-in="loginState.isLoggedIn" :user-nickname="loginState.userNickname" @logout="logout" />
   </div>
   <main>

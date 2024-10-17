@@ -29,12 +29,26 @@
 
 <script setup>
 import { onMounted } from 'vue';
-import '@/assets/css/main/MainPage.css';
+import { useRouter, useRoute } from 'vue-router';
+import '@/assets/css/Main/MainPage.css';
 
+const router = useRouter();
+const route = useRoute();
 
 onMounted(() => {
   const blueWave = document.createElement('div');
   blueWave.className = 'blue-wave';
   document.querySelector('.app').appendChild(blueWave);
+
+   // URL에서 토큰 파라미터 확인
+   const token = route.query.token;
+   if (token) {
+    // 토큰을 로컬 스토리지에 저장
+    localStorage.setItem('token', token);
+    
+    // 토큰을 제거한 URL로 리다이렉트
+    router.replace('/');
+  }
+
 });
 </script>
