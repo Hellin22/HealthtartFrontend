@@ -127,7 +127,7 @@ watch(() => loginState.state.isLoggedIn, (newValue) => {
   align-items: center;
   background-color: black;
   padding: 10px 30px;
-  height: 55px;
+  height: 45px;
 }
 
 .outer-container {

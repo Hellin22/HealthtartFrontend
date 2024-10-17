@@ -29,7 +29,7 @@ import arrowIcon from '@/assets/icons/icon3.svg';
   padding-bottom: 50px;
   position: fixed;
   top: 80px;
-  bottom: 0;
+  bottom: 10px;
   left: 0;
   display: flex;
   flex-direction: column;
