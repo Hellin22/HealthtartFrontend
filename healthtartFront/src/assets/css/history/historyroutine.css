@@ -208,12 +208,12 @@
   .star {
     margin: 0 2px;
   }
-  .active {
+  .activestar {
     width: 40px; /* 채워진 별의 크기 */
     height: 40px;
   }
   
-  .inactive {
+  .inactivestar {
     width: 35px; /* 빈 별의 크기 */
     height: 35px;
   }

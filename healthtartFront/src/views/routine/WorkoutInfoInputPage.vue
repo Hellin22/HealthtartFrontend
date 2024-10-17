@@ -21,7 +21,7 @@
                         {{part}}
                     </button>
                 </div>
-                <label class="select-label">운동 부위를 선택해 주세요. (중복 선택 불가)</label>
+                <label class="select-label">운동 부위를 선택해 주세요. ( 중복 선택 불가 )</label>
             </div>
             <button class="generate-routine-button" @click="generateRoutine">운동 루틴 생성하기</button>
         </RoutineInnerTab>

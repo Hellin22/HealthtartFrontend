@@ -40,12 +40,11 @@
     background-color: transparent;
     border: 2px solid #000000;
     width: 90px;
-    height:40px;
+    height:45px;
     color: white;
-    padding: 5px;
-    font-size: 20px;
+    font-size: 25px;
     cursor: pointer;
-    border-radius: 10px;
+    border-radius: 13px;
     transition: background-color 0.3s;
     white-space: nowrap; 
 }
@@ -64,10 +63,12 @@
     background-color: #01FDFE;
     color: black;
     border: none;
-    padding: 15px 30px;
-    font-size: 16px;
+    width: 230px;
+    height: 40px;
+    font-size: 18px;
+    font-weight: bold;
     cursor: pointer;
-    border-radius: 10px;
+    border-radius: 20px;
     transition: background-color 0.3s;
     display: block;
     margin: 50px auto;
@@ -78,6 +79,6 @@
 }
 
 .select-label {
-    font-size: 20px;
+    font-size: 22px;
     color: #01FDFE;
 }

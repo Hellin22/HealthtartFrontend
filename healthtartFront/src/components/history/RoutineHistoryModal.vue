@@ -28,7 +28,7 @@
           <div class="stars">
             <span>만족도 &nbsp; </span>
             <img v-for="n in 5" :key="n" :src="n <= satisfaction ? activeStar : inactiveStar"
-              :class="n <= satisfaction ? 'star active' : 'star inactive'" />
+              :class="n <= satisfaction ? 'star activestar' : 'star inactivestar'" />
           </div>
           <button class="confirm-btn" @click="closeModal">확인</button>
         </div>
