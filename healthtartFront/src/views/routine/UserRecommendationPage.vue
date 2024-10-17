@@ -12,9 +12,9 @@
                 <div class="board-body">
                     <div class="board-row" v-for="(routine, index) in routines" :key="routine.number">
                         <div class="board-row-number">{{ routine.number }}</div>
-                        <div class="board-row-title" @click="setActiveTitle()">{{ routine.title }}</div>
+                        <div class="board-row-title" @click="setActiveTitle(routine)">{{ routine.title }}</div>
                         <div class="board-row-rating">
-                            <span v-for="star in routine.averageRating" :key="star">★</span>
+                            <span v-for="star in routine.averageRating" :key="star" class="star-filled">★</span>
                             <span v-for="star in (5 - routine.averageRating)" :key="star">☆</span>
                         </div>
                         <div class="board-row-time">{{ routine.workoutTime }}</div>
@@ -50,8 +50,8 @@
     { number: 11, title: "칼퇴야", averageRating: 1, workoutTime: "30분" },
     ];
 
-    const setActiveTitle = () => {
-        router.push({ path: '/routine-detail' });
+    const setActiveTitle = (routine) => {
+        router.push({ path: '/routine-detail', query: { title: routine.title } });
     };
 
 

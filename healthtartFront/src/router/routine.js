@@ -1,5 +1,6 @@
 import WorkoutInfoInputPage from "@/views/routine/WorkoutInfoInputPage.vue";
 import UserRecommendationPage from "../views/routine/UserRecommendationPage.vue";
+import UserRecommendationdetailPage from "../views/routine/UserRecommendationdetailPage.vue";
 
 const RoutineRoutes = [
   {
@@ -9,6 +10,10 @@ const RoutineRoutes = [
   {
     path: "/user-recommendation",
     component: UserRecommendationPage
+  },
+  {
+    path: "/routine-detail",
+    component: UserRecommendationdetailPage
   },
 
 ];

@@ -7,7 +7,7 @@
             <div class="nav-menu">
                 <button :class="{'active-button': activeTab === 'user', 'inactive-button': activeTab !== 'user'}"@click="setActiveTab('user')">유저 추천 루틴</button>
             </div>
-        </nav>
+        </nav>  
         <div :class="{'main-container': true, 'user-container': activeTab === 'user'}">
             <slot></slot>
         </div>
