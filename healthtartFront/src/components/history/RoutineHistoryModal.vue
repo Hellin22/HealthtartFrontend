@@ -15,7 +15,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(exercise, index) in workoutDetails" :key="index" > 
+          <tr v-for="(exercise, index) in workoutDetails" :key="index">
             <td style="height: 20px; font-size: 16px;">{{ exercise.name }}</td>
             <td style="height: 20px; font-size: 18px;">{{ exercise.sets }}</td>
             <td style="height: 20px; font-size: 18px;">{{ exercise.reps }}</td>
@@ -24,15 +24,16 @@
         </tbody>
       </table>
       <div class="satisfaction">
-      <div class="box">
-        <div class="stars">
-          <span>만족도 &nbsp; </span>
-          <img v-for="n in 5" :key="n" :src="n <= satisfaction ? activeStar : inactiveStar" class="star" />
+        <div class="box">
+          <div class="stars">
+            <span>만족도 &nbsp; </span>
+            <img v-for="n in 5" :key="n" :src="n <= satisfaction ? activeStar : inactiveStar"
+              :class="n <= satisfaction ? 'star active' : 'star inactive'" />
+          </div>
+          <button class="confirm-btn" @click="closeModal">확인</button>
         </div>
-        <button class="confirm-btn" @click="closeModal">확인</button>
+
       </div>
-      
-    </div>
     </div>
   </div>
 </template>
@@ -56,11 +57,11 @@ const props = defineProps({
 // 분을 "시간 분" 형식으로 변환하는 일반 함수
 const convertMinutesToTime = (minutes) => {
   if (isNaN(minutes) || minutes <= 0) {
-    return '0분'; 
+    return '0분';
   }
   const hours = Math.floor(minutes / 60);
   const remainingMinutes = minutes % 60;
-  
+
   if (hours > 0 && remainingMinutes > 0) {
     return `${hours}시간 ${remainingMinutes}분`;
   } else if (hours > 0) {
