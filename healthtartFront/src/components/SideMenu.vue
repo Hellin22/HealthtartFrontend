@@ -22,7 +22,7 @@ import arrowIcon from '@/assets/icons/icon3.svg';
   
   <style scoped>
   .side-menu {
-  z-index: 10001; 
+  z-index: 9999; 
   background-color: black;
   width: 230px;
   color: #fff;
