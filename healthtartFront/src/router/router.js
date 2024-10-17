@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import MainPage from '@/views/MainPage.vue';
 
-// import LoginRoutes from './login';
 import InbodyRoutes from './inbody';
 import UserRoutes from './user';
 import RoutineRoutes from './routine';
