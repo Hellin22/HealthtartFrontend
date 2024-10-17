@@ -6,34 +6,34 @@
         <div class="postalcode-form">
             <div class="left-postalcode">
                 <label for="postalCode"> 주소 (우편번호) *</label>
-                <input type="number" id="postalCode" v-model="formData.postalCode" placeholder="우편번호 입력" />
+                <input type="number" id="postalCode" required v-model="formData.postalCode" placeholder="우편번호 입력" />
             </div>
             <div class="right-postalcode">
                 <div class="blank">
                 </div>
-                <button type="button" @click="" class="search">검색</button>
+                <button type="button" @click="" required class="search">검색</button>
             </div>
         </div>
   
         <div class="address-form">
           <label for="detailAddress">주소 (상세주소) *</label>
-          <input type="text" id="detailAddress" v-model="formData.detailAddress" placeholder="상세주소 입력" />
+          <input type="text" id="detailAddress" required v-model="formData.detailAddress" placeholder="상세주소 입력" />
         </div>
 
         <div class="physical-info">
           <div class="height-form">
             <label for="height">키 (cm) *</label>
-            <input type="number" id="height" min="0" step="0.1" v-model="formData.userHeight" placeholder="키 입력" />
+            <input type="number" id="height" required min="0" step="0.1" v-model="formData.userHeight" placeholder="키 입력" />
           </div>
 
           <div class="weight-form">
             <label for="weight">몸무게 (kg) *</label>
-            <input type="number" id="weight" min="0" step="0.1" v-model="formData.userWeight" placeholder="몸무게 입력" />
+            <input type="number" id="weight" required min="0" step="0.1" v-model="formData.userWeight" placeholder="몸무게 입력" />
           </div>
 
           <div class="gender-form">
             <label for="gender">성별 *</label>
-            <select v-model="formData.userGender" id="gender" placeholder="성별 선택">
+            <select v-model="formData.userGender" required id="gender" placeholder="성별 선택">
               <option value="M">남자</option>
               <option value="F">여자</option>
             </select>
@@ -44,7 +44,7 @@
   
           <div class="age-form">
             <label for="age">나이 *</label>
-            <input type="number" id="age" v-model="formData.userAge" placeholder="나이 입력" />
+            <input type="number" id="age" required v-model="formData.userAge" placeholder="나이 입력" />
           </div>
 
           <div class="gym-form">
@@ -93,7 +93,7 @@ const submitForm = () => {
   }
   .outer-container {
     width: 100vw;
-    height: calc(100vh - 60px);;
+    height: calc(100vh - 65px);;
     display: flex;
     justify-content: center;
     align-items: center;
