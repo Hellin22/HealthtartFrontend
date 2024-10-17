@@ -17,7 +17,7 @@ const routes = [
   ...GymRoutes,
   ...SignupRoutes,
   ...HistoryRoutes,
-  ...MyPageRoutes
+  // ...MyPageRoutes
 ];
 
 const router = createRouter({
