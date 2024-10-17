@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-      <div class="left-container">
+  <div class="back-container">
+      <div class="loginleft-container">
         <div class="background-text">
           도망친 곳에<br>
           낙원이 있을 리 없다.
@@ -9,7 +9,7 @@
           <img src="@/assets/icons/loginpagelogo.svg" alt="Background Logo">
         </div>
       </div>
-      <div class="right-container">
+      <div class="loginright-container">
         <div class="background-blue">
           <img src="@/assets/icons/backgroundblue.svg" alt="Background Blue">
         </div>
@@ -22,7 +22,7 @@
 </script>
 
 <style scoped>
-    .container {
+    .back-container {
       position: absolute;
       top: 0;
       left: 0;
@@ -35,7 +35,7 @@
       display: flex;
     }
 
-    .left-container, .right-container {
+    .loginleft-container, .loginright-container {
       flex-basis: 50%;
       flex-grow: 1;
     }
@@ -48,7 +48,7 @@
       padding: 20px;
     }
 
-    .left-container {
+    .loginleft-container {
       display: flex;
       flex-direction: column;
       position: relative;
@@ -56,7 +56,7 @@
       align-items: center;
     }
 
-    .right-container {
+    .loginright-container {
       display: flex;
       justify-content: center;
       align-items: center;
