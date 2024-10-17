@@ -2,20 +2,24 @@
     width: 100%;
     margin: auto;
     color: white;
+    position: relative;
   }
   
   .calendar-header {
+    position: relative;
     margin-left: 260px;
     text-align: left;
     font-size: 30px;
-    color: white;
     margin-bottom: 20px;
+    color: white;
+    z-index: 2;
   }
   
   .calendar-layout {
     margin-left: 260px;
     display: flex;
     align-items: flex-start;
+    z-index: 2;
   }
   
   .calendar-table {
@@ -24,6 +28,7 @@
     border-collapse: collapse;
     text-align: left;
     table-layout: fixed;
+    z-index: 2;
   }
   
   th {
@@ -31,6 +36,7 @@
     padding-bottom: 5px;
     font-size: 12px; /* 작은 폰트 크기 조정 */
     font-weight: 300; /* 얇은 폰트 두께 설정 */
+    
   }
   
   td {
@@ -78,6 +84,7 @@
     text-align: center;
     display: flex;
     flex-direction: column; /* 전설 항목을 세로로 나열 */
+    z-index: 2;
   }
   
   .legend-item {
