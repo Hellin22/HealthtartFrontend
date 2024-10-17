@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-    import '@/assets/css/RoutineInnerTab.css';
+    import '@/assets/css/routine/RoutineInnerTab.css';
     import { ref, watch, onMounted } from 'vue';
     import { useRouter, useRoute } from 'vue-router';
 
