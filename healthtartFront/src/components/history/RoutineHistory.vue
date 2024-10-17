@@ -1,12 +1,8 @@
 <template>
   <div class="routine-calendar-container">
-<<<<<<< HEAD
     <div class="calendar-header">
       <h2>{{ currentMonth }} {{ currentYear }}</h2>
     </div>
-=======
-    <div class="calendar-header">{{ currentMonth }} {{ currentYear }}</div>
->>>>>>> 95d7884a43c9fbfe13989a8dde43ce6dd3fe9702
     <div class="calendar-layout">
       <table class="calendar-table">
         <thead>
