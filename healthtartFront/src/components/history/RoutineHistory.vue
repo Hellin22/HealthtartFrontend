@@ -44,7 +44,6 @@
       </div>
     </div>
 
-    <!-- RoutineHistoryModal 컴포넌트 호출 -->
     <RoutineHistoryModal
       v-if="isModalOpen"
       :isOpen="isModalOpen"

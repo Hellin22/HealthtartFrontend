@@ -91,6 +91,7 @@ const formattedDate = computed(() => {
 
 <style scoped>
 .modal-overlay {
+  z-index: 9999; 
   position: fixed;
   top: 0;
   left: 0;
@@ -104,6 +105,7 @@ const formattedDate = computed(() => {
 }
 
 .modal-content {
+  z-index: 10000; 
   margin: 0;
   background-color: #141414; 
   padding: 20px;
