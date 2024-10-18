@@ -19,7 +19,7 @@
               <div class="verification-form">
                 <label for="verificationCode">인증번호 *</label>
                 <div class="verification-input-group">
-                  <input type="text" id="verificationCode" placeholder="   5분내로 인증번호를 입력해주세요" v-model="verificationCode"
+                  <input type="text" id="verificationCode" placeholder="5분내로 인증번호를 입력해주세요" v-model="verificationCode"
                     :disabled="!isEmailSent" />
                   <button type="button" @click="verifyCode" class="auth" :disabled="!isEmailSent || isVerified">
                     확인
@@ -189,7 +189,7 @@ const next = () => {
     align-items: center;
   }
 
-  .left-email, .password-form, .name-form, .phonenumber-form, .nickname-form {
+  .left-email, .password-form, .name-form, .phonenumber-form, .nickname-form, .verification-form {
     display: flex;
     flex-direction: column;
   }
@@ -200,7 +200,7 @@ const next = () => {
     font-weight: bold;
   }
 
-  #email, #password, #name, #phonenumber, #nickname {
+  #email, #password, #name, #phonenumber, #nickname, #verificationCode {
     padding-left: 10px;
     padding-top: 5px;
     padding-bottom: 5px;
@@ -208,8 +208,10 @@ const next = () => {
     width: 320px;
   }
 
-  #email {
+
+  #email, #verificationCode {
     margin-bottom: 5px;
+    width: 250px;
   }
 
   .form-group {
@@ -274,7 +276,7 @@ const next = () => {
   }
 
   .email-container {
-    margin-bottom: 15px;
+    /* margin-bottom: 5px; */
   }
 
   .message-container {
@@ -284,7 +286,7 @@ const next = () => {
   .email-input-group, .verification-input-group {
   display: flex;
   gap: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .email-input-group input, .verification-input-group input {
