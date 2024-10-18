@@ -25,6 +25,8 @@ import { jwtDecode } from 'jwt-decode';
   const isGymPage = ref(false);
   const isMyPage = ref(false);
   const isRankingPage = ref(false);
+  const isAddInfoPage = ref(false);
+  const isResetPasswordPage = ref(false);
 
 const loginState = reactive({
   isLoggedIn: false,
@@ -39,7 +41,13 @@ const checkLoginStatus = () => {
       const currentTime = Date.now() / 1000;
       if (decodedToken.exp > currentTime) {
         loginState.isLoggedIn = true;
-        loginState.userNickname = decodedToken.nickname;
+
+        // userNickname을 토큰에서 추출하거나, 이미 설정된 값을 유지
+        if (!loginState.userNickname) {
+          loginState.userNickname = decodedToken.nickname;  // 토큰에 nickname이 있으면 설정
+        }
+
+        // loginState.userNickname = decodedToken.nickname;
         console.log(decodedToken.nickname);
       } else {
         logout();
@@ -63,6 +71,8 @@ watch(() => route?.path, (newPath) => {
     isMyPage.value = newPath === '/mypage';
     isGymPage.value = newPath === '/gym';
     isRankingPage.value = newPath === '/ranking';
+    isAddInfoPage.value = newPath === '/users/addinfo';
+    isResetPasswordPage.value = newPath === '/users/password'; 
   },
   {
     immediate: true

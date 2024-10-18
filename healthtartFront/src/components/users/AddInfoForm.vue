@@ -1,19 +1,35 @@
 <template>
-    <div class="outer-container">
-    <div class="form-container">
-        <div class="inner-container">
-      <form @submit.prevent="submitForm">
-        <div class="postalcode-form">
+  <div class="addinfo-outer-container">
+    <div class="addinfo-form-container">
+      <div class="addinfo-inner-container">
+        <form @submit.prevent="submitAddinfo">
+          <div class="addinfo-phone-form">
+            <label for="phone"> 전화번호 *</label>
+            <input type="string" id="phone" required v-model="formData.userPhone" placeholder="전화번호 입력" />
+          </div>
+          
+          <div class="addinfo-nickname-form">
+            <label for="nickname">닉네임 *</label>
+            <div class="addinfo-nickname-container">
+              <input type="string" id="nickname" required v-model="formData.userNickname" @input="resetNicknameCheck" placeholder="닉네임 입력" />
+              <button type="button" @click="checkNickname" class="nickname-check-btn" :disabled="!formData.userNickname">중복체크</button>
+            </div>
+            <div class="nickname-message">
+              <div v-if="nicknameError" class="error-message">중복된 닉네임입니다. 다른 닉네임을 선택해주세요.</div>
+              <div v-if="nicknameChecked && !nicknameError" class="success-message">사용 가능한 닉네임입니다.</div>
+            </div>
+          </div>
+
+          <div class="addinfo-postalCode-form">
             <div class="left-postalcode">
-                <label for="postalCode"> 주소 (우편번호) *</label>
-                <input type="number" id="postalCode" required v-model="formData.postalCode" placeholder="우편번호 입력" />
+              <label for="postalCode"> 주소 (우편번호) *</label>
+              <input type="number" id="postalCode" required v-model="formData.postalCode" placeholder="우편번호 입력" />
             </div>
             <div class="right-postalcode">
-                <div class="blank">
-                </div>
-                <button type="button" @click="findPostalCode" required class="search">검색</button>
+              <div class="blank"></div>
+              <button type="button" @click="findPostalCode" required class="search">검색</button>
             </div>
-        </div>
+          </div>
   
         <div class="address-form">
           <label for="detailAddress">주소 (상세주소) *</label>
@@ -53,7 +69,7 @@
           </div>
         </div>
 
-          <button type="submit" class="submit-btn">가입</button>
+          <button type="submit" class="addinfo-done">입력 완료</button>
       </form>
     </div>
     </div>
@@ -62,9 +78,22 @@
   
   <script setup>
   import { ref } from 'vue';
+  import axios from 'axios';
+
+  const nicknameError = ref(false);  // 닉네임 중복 여부
+  const nicknameChecked = ref(false); // 닉네임 중복 체크 완료 여부
+
+  // 닉네임 중복 체크 상태 초기화 (닉네임이 변경되면 호출)
+const resetNicknameCheck = () => {
+  nicknameError.value = false;
+  nicknameChecked.value = false;
+};
+
 
   // 폼 데이터 상태
 const formData = ref({
+  userPhone: '',
+  userNickname: '',
   userAddress: '',
   userGender: '',
   userAge: '',
@@ -124,32 +153,79 @@ console.log(formData.value);
 // setup에서 emit을 인자로 받아옵니다
 const emit = defineEmits(['submit']); // 이벤트 정의
 
+// 닉네임 중복 체크 함수
+const checkNickname = async () => {
+  if (formData.value.userNickname) {
+    try {
+      const response = await axios.get('http://localhost:8080/users/nickname/check', {
+        params: { userNickname: formData.value.userNickname }
+      });
+
+      // 서버로부터 닉네임 중복 체크 결과 처리
+      console.log(response.data.isDuplicate)
+
+      if (response.data.isDuplicate) {
+        nicknameError.value = true; // 중복됨
+        nicknameChecked.value = false; // 체크 실패
+      } else {
+        nicknameError.value = false; // 중복 아님
+        nicknameChecked.value = true; // 체크 완료
+      }
+    } catch (error) {
+      alert('닉네임 중복 체크 중 오류가 발생했습니다.');
+      console.error('Error:', error);
+      nicknameError.value = true;
+      nicknameChecked.value = false;
+    }
+  }
+};
+
 // 최종 제출 함수
-const submitForm = () => {
-  formData.value.userAddress = `${formData.value.postalCode} ${formData.value.detailAddress}`;
-  emit('submit', formData.value); // 부모 컴포넌트로 데이터 전달
+const submitAddinfo = () => {
+  console.log(nicknameError.value);
+  console.log(nicknameChecked.value);
+  if(nicknameError.value === false && nicknameChecked.value === true){
+      
+    formData.value.userAddress = `${formData.value.postalCode} ${formData.value.detailAddress}`;
+
+    // LocalStorage에서 추가 정보를 가져옵니다
+    // 토큰은 안줘도 됩니다.
+    const userName = localStorage.getItem('userName');
+    const userEmail = localStorage.getItem('userEmail');
+    const provider = localStorage.getItem('provider');
+    const providerId = localStorage.getItem('providerId');
+
+    // 추가 정보를 formData에 추가
+    const finalData = {
+      ...formData.value,
+      userName,
+      userEmail,
+      provider,
+      providerId
+    };
+    emit('submit', finalData); // 부모 컴포넌트로 데이터 전달
+  }else {
+    console.log("닉네임 체크를 해주세요!");
+  }
 };
   </script>
   
   <style scoped>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-
+  
   * {
     font-family: 'Inter', sans-serif;
   }
-  .outer-container {
+  
+  .addinfo-outer-container {
     width: 100vw;
-    height: calc(100vh - 65px);;
+    height: calc(100vh - 65px);
     display: flex;
     justify-content: center;
     align-items: center;
   }
-
-  .inner-container {
-
-  }
-
-  .form-container {
+  
+  .addinfo-form-container {
     background-color: #f0f4f8;
     padding: 20px;
     max-width: 380px;
@@ -160,40 +236,35 @@ const submitForm = () => {
     box-shadow: -20px 20px 20px rgba(0, 255, 255, 0.5);
     position: relative;
   }
-
-  .postalcode-form {
+  
+  .addinfo-postalCode-form {
     display: flex;
     justify-content: space-between;
-    align-items: center;
   }
-
-  .left-postalcode, .right-postalcode, .address-form, .height-form, .weight-form, .gender-form, .age-form, .gym-form {
+  
+  .left-postalcode, .right-postalcode, .addinfo-nickname-form, .addinfo-phone-form, .address-form, .height-form, .weight-form, .gender-form, .age-form, .gym-form {
     display: flex;
     flex-direction: column;
   }
-
+  
   .blank {
-    margin-top: 15px;
+    margin-top: 26.4px;
   }
-
+  
   label {
     font-size: 14px;
     margin-bottom: 8px;
     font-weight: bold;
   }
-
-  #postalCode, #detailAddress, #gender, #age, #weight, #height, #gym {
+  
+  #phone, #nickname, #postalCode, #detailAddress, #gender, #age, #weight, #height, #gym {
     padding-left: 10px;
     padding-top: 5px;
     padding-bottom: 5px;
     margin-bottom: 15px;
     width: 320px;
   }
-
-  .form-group {
-    margin-bottom: 15px;
-  }
-
+  
   input, select {
     font-size: 14px;
     width: 300px;
@@ -202,12 +273,12 @@ const submitForm = () => {
     border-style: none;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.15);
   }
-
-  #postalCode {
+  
+  #nickname, #postalCode {
     width: 250px;
   }
-
-  .search {
+  
+  .search, .nickname-check-btn {
     background-color: #01FDFE;
     width: 60px;
     height: 35px;
@@ -216,14 +287,14 @@ const submitForm = () => {
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
     font-weight: bold;
   }
-
-  .search:hover {
+  
+  .search:hover, .nickname-check-btn:hover {
     background-color: #1DEBEC;
     box-shadow: none;
     cursor: pointer;
   }
-
-  .submit-btn {
+  
+  .addinfo-done {
     background-color: #01FDFE;
     width: 320px;
     height: 45px;
@@ -233,34 +304,57 @@ const submitForm = () => {
     font-weight: bold;
     margin-top: 10px;
   }
-
-  .submit-btn:hover {
+  
+  .addinfo-done:hover {
     background-color: #1DEBEC;
     box-shadow: none;
     cursor: pointer;
   }
-
-  .physical-info {
+  
+  .physical-info, .personal-info {
     display: flex;
     justify-content: space-between;
   }
-
-  .height-form, .weight-form, .gender-form {
-    display: flex;
-    flex-direction: column;
-  }
-
+  
   #height, #weight, #gender {
     width: 100px;
   }
-
-  .personal-info {
-    display: flex;
-    justify-content: space-between;
-  }
-
+  
   #age, #gym {
     width: 150px;
   }
-  </style>
   
+  .addinfo-nickname-form {
+    position: relative;
+    margin-bottom: 20px;
+  }
+  
+  .addinfo-nickname-container {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .nickname-message {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    width: 100%;
+  }
+  
+  .error-message, .success-message {
+    font-size: 12px;
+    margin-top: 2px;
+  }
+  
+  .error-message {
+    color: red;
+  }
+  
+  .success-message {
+    color: green;
+  }
+  
+  .addinfo-postalCode-form, .address-form, .physical-info, .personal-info {
+    margin-top: 10px;
+  }
+  </style>

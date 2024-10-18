@@ -49,8 +49,9 @@ const props = defineProps({
   },
   userNickname: {
     type: String,
+    default: '',
     required: true
-  }
+  },
 });
 
 // 로그아웃 이벤트 핸들러
