@@ -169,10 +169,13 @@ const verifyCode = async () => {
           'Content-Type': 'application/json'
         }
       });
-
-      if (response.status === 200) {
+      
+      console.log(response.data);
+      if (response.data.success === true) {
         alert('인증번호 확인이 완료되었습니다.');
         isVerified.value = true;
+      }else{
+        alert('인증번호가 일치하지 않습니다.');
       }
     } catch (error) {
       alert('인증번호 확인에 실패했습니다.');
