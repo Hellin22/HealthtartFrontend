@@ -2,6 +2,7 @@ import WorkoutInfoInputPage from "@/views/routine/WorkoutInfoInputPage.vue";
 import UserRecommendationPage from "../views/routine/UserRecommendationPage.vue";
 import UserRecommendationdetailPage from "../views/routine/UserRecommendationdetailPage.vue";
 import AIGenerateRoutinePage from "../views/routine/AIGenerateRoutinePage.vue";
+import StartWorkoutPage from "../views/routine/StartWorkoutPage.vue";
 
 const RoutineRoutes = [
   {
@@ -20,6 +21,10 @@ const RoutineRoutes = [
     path: "/generate-routine",
     component: AIGenerateRoutinePage
   },
+  {
+    path: "/start-workout",
+    component: StartWorkoutPage
+  }
 
 ];
 
