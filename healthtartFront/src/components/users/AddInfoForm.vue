@@ -7,11 +7,15 @@
             <label for="phone"> 전화번호 *</label>
             <input type="string" id="phone" required v-model="formData.userPhone" placeholder="전화번호 입력" />
           </div>
+          
           <div class="addinfo-nickname-form">
             <label for="nickname"> 닉네임 *</label>
-            <input type="string" id="nickname" required v-model="formData.userNickname" placeholder="닉네임 입력" />
-            <!-- 닉네임은 중복되지 않도록 유효성 검사 실행 -->
+            <div class="addinfo-nickname-container">
+              <input type="string" id="nickname" required v-model="formData.userNickname" placeholder="닉네임 입력" />
+              <button type="button" class="nickname-check-btn">중복확인</button>
+            </div>
           </div>
+
           <div class="addinfo-postalCode-form">
             <div class="left-postalcode">
               <label for="postalCode"> 주소 (우편번호) *</label>
@@ -69,11 +73,7 @@
   </template>
   
   <script setup>
-  import { ref, onMounted } from 'vue';
-  import { useRoute, useRouter } from 'vue-router';
-
-  const route = useRoute();
-  const router = useRouter();
+  import { ref } from 'vue';
 
   // 폼 데이터 상태
 const formData = ref({
@@ -189,7 +189,7 @@ const submitAddinfo = () => {
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.15);
   }
 
-  #postalCode {
+  #nickname, #postalCode {
     width: 250px;
   }
 
@@ -247,6 +247,27 @@ const submitAddinfo = () => {
 
   #age, #gym {
     width: 150px;
+  }
+
+  .addinfo-nickname-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .nickname-check-btn {
+    background-color: #01FDFE;
+    width: 60px;
+    height: 35px;
+    border-style: none;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+  }
+
+  .nickname-check-btn:hover {
+    background-color: #1DEBEC;
+    box-shadow: none;
+    cursor: pointer;
   }
   </style>
   
