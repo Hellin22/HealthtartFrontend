@@ -5,7 +5,7 @@
             <label for="workout-time">운동 예정 시간:</label>
 
             <!-- v-model="selectedTime" 추가하기 -->
-            <select id="workout-time" class="dropdown"> 
+            <select id="workout-time" v-model="selectedTime" class="dropdown"> 
                 <option value="60">60</option>
                 <option value="90">90</option>
                 <option value="120">120</option>
@@ -31,6 +31,8 @@
  
  <script setup>
     import { ref } from 'vue';
+    import { jwtDecode } from 'jwt-decode';
+    import { useRouter } from 'vue-router';
 
     import RoutineInnerTab from '@/components/routine/RoutineInnerTab.vue';
     import '@/assets/css/routine/WorkoutInfoInputPage.css';
@@ -38,7 +40,9 @@
 
     const bodyParts = ['등', '가슴', '어깨', '코어', '삼두', '유산소', '하체', '전완근', '이두'];
     const selectedParts = ref([]);
+    const selectedTime = ref(60);
     const loading = ref(false);
+    const router =useRouter();
 
     const toggleSelection = (part) => {
         if (!selectedParts.value.includes(part)) {
@@ -47,16 +51,46 @@
         };
     }
 
-    // selectedTime 만들어야됨
-
     const generateRoutine = async () => {
-    loading.value = true; 
-    await new Promise(resolve => setTimeout(resolve, 2000)); // cors해결되면 gpt api 호출해서 대기타는걸로 변경해야댐
-    // const createRoutine = await fetch(`api/gpt/generate-routine?userCode=${userCode}&bodyPart=${part}&time=${time}`);
-    loading.value = false;
+        loading.value = true; 
+        const bodyPart = selectedParts.value[0];
 
-    // 루틴 생성 후 루틴 확인 화면으로 이동
-    // 라우터 푸시하기
-};
+        try {
+            const token = localStorage.getItem('token');
+            const userCode = jwtDecode(token).sub;
+            console.log(userCode);
+            console.log(bodyPart); 
+            console.log(selectedTime.value); 
+            
+            const response = await fetch(`http://localhost:8080/api/gpt/generate-routine?userCode=${userCode}&bodyPart=${bodyPart}&time=${selectedTime.value}`, {    
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    userCode: userCode,
+                    bodyPart: bodyPart,
+                    time: selectedTime.value,
+                }),
+            });
+
+        if (!response.ok) {
+            throw new Error('서버 응답 오류');
+        }
+
+        const data = await response.json();
+
+        router.push({ 
+            path: '/generate-routine', 
+            query: { routineData: JSON.stringify(data), bodyPart: bodyPart } 
+        });
+        } catch (error) {
+                console.error('오류 발생:', error);
+            } finally {
+                loading.value = false;
+            }
+    };
+
     
  </script>

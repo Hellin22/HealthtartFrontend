@@ -1,6 +1,6 @@
 <template>
     <div class="modal-overlay" v-if="isOpen">
-      <div class="modal-content">
+      <div class="rival-modal-content">
         <h2 class="modal-title">라이벌 등록</h2>
         <div class="input-container">
           <input type="text" v-model="rivalName" placeholder="라이벌 닉네임" class="modal-input" />
@@ -42,19 +42,19 @@ const registerRival = () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(193, 193, 193, 0.6);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 999;
 }
 
-.modal-content {
+.rival-modal-content {
   background-color: #000000;
   color: #ffffff;
   padding: 20px;
   border-radius: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
   width: 300px;
   text-align: center;
 }
