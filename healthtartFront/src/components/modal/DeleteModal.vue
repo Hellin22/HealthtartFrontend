@@ -1,13 +1,13 @@
 <template>
     <div class="modal-overlay" v-if="isOpen">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button class="close-btn" @click="closeModal">✖</button>
+      <div class="delete-modal-content">
+        <div class="delete-modal-header">
+          <button class="delete-close-btn" @click="closeModal">✖</button>
         </div>
-        <div class="modal-body">삭제하시겠습니까?</div>
-        <div class="modal-actions">
-          <button class="cancel-btn" @click="closeModal">취소</button>
-          <button class="confirm-btn" @click="confirmDeletion">확인</button>
+        <div class="delete-modal-body">삭제하시겠습니까?</div>
+        <div class="delete-modal-actions">
+          <button class="delete-cancel-btn" @click="closeModal">취소</button>
+          <button class="delete-confirm-btn" @click="confirmDeletion">확인</button>
         </div>
       </div>
     </div>
@@ -39,28 +39,28 @@ const confirmDeletion = () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(193, 193, 193, 0.6);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 999;
 }
 
-.modal-content {
+.delete-modal-content {
   background-color: #ffffff;
   border-radius: 10px;
   width: 300px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
-.modal-header {
+.delete-modal-header {
   background-color: #000000;
   padding: 10px;
   text-align: right;
 }
 
-.close-btn {
+.delete-close-btn {
   background-color: transparent;
   border: none;
   color: #ffffff;
@@ -68,7 +68,7 @@ const confirmDeletion = () => {
   cursor: pointer;
 }
 
-.modal-body {
+.delete-modal-body {
   padding: 30px 20px;
   background-color: #ffffff;
   font-size: 18px;
@@ -79,13 +79,13 @@ const confirmDeletion = () => {
   font-weight: bold;
 }
 
-.modal-actions {
+.delete-modal-actions {
   display: flex;
   border-top: 1px solid #e0e0e0;
 }
 
-.cancel-btn,
-.confirm-btn {
+.delete-cancel-btn,
+.delete-confirm-btn {
   flex: 1;
   padding: 15px 0;
   font-size: 16px;
@@ -94,20 +94,20 @@ const confirmDeletion = () => {
   background-color: #ffffff;
 }
 
-.cancel-btn {
+.delete-cancel-btn {
   border-right: 1px solid #e0e0e0;
   color: #000000;
 }
 
-.confirm-btn {
+.delete-confirm-btn {
   color: #ff0000;
 }
 
-.cancel-btn:hover {
+.delete-cancel-btn:hover {
     background-color: #e0e0e0;
 }
 
-.confirm-btn:hover {
+.delete-confirm-btn:hover {
   background-color: #ff0000;
   color : white;
 }
