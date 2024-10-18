@@ -59,4 +59,30 @@
         console.log(`운동을 시작합니다: ${routine.title}`);
     };
 
+    const fetchRoutines = async () => {
+        try {
+            const response = await fetch('http://localhost:8080/api/gpt/ratings', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('서버 응답 오류');
+            }
+
+            const data = await response.json();
+            routines.value = data.map((item, index) => ({
+                number: index + 1, 
+                title: item.title, 
+                averageRating: Math.round(item.averageRating), 
+                workoutTime: item.workoutTime, 
+            }));
+        } catch (error) {
+            console.error('오류 발생:', error);
+        }
+    };
+
 </script>
