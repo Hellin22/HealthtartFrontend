@@ -1,9 +1,35 @@
+@keyframes slideIn {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+}
+
+.mypageedit-form-group {
+    justify-content: flex-start;
+    align-items: center;
+    position: relative; /* position을 relative로 설정하여 z-index 적용 */
+    z-index: 10; /* 충분히 높은 z-index 값 설정 */
+    transition: 0.5 ease-in-out;
+}
+
+/* 애니메이션을 적용할 비밀번호 필드 */
+.mypageedit-form-group.password-animated, .extra-section.animated, .update-btn.animated {
+    animation: slideIn 0.5s ease forwards;
+    position: relative; /* position 추가 */
+    z-index: 15; /* z-index 값 높임 */
+}
+
 .mypageedit-layout {
     background-color: black;
     display: flex;
     min-height: calc(100vh - 65px);
     position: relative;
-    z-index: 10;
+    z-index: 1; /* 기본 z-index */
     align-items: flex-start;
     justify-content: center;
 }
@@ -16,7 +42,7 @@
     color: #fff;
     padding: 50px;
     position: relative;
-    z-index: 20;
+    z-index: 2; /* 충분히 높은 z-index */
 }
 
 .last-updated {
@@ -35,14 +61,20 @@
     margin-top: 50px;
 }
 
-.mypageedit-form-group {
+.password-change-group {
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
     align-items: center;
-    z-index: 4;
-    padding-left: 10px;
-    padding-right: 10px;
-    position: relative;
+    font-weight: bold;
+    z-index: 5;
+}
+
+.password-change-group label {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    font-weight: bold;
+    z-index: 5;
 }
 
 .mypageedit-form-group label {
@@ -50,9 +82,37 @@
     font-weight: bold;
     text-align: left;
     font-size: 14px;
-    z-index: 5;
-    width: 100px;
     position: relative;
+    margin-right: 10px;
+    z-index: 5;
+}
+
+.mypageedit-form-checkbox {
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border: 2px solid #01FEAE;
+    border-radius: 5px;
+    background-color: transparent;
+    cursor: pointer;
+    position: relative; 
+    margin-left: 10px;
+}
+
+.mypageedit-form-checkbox:checked {
+    background-color: #01FEAE;
+    border-color: #01FEAE;
+}
+
+.mypageedit-form-checkbox:checked::before {
+    content: "✔";
+    color: #000;
+    font-weight: bold;
+    font-size: 16px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .mypageedit-form-group input {
@@ -63,9 +123,9 @@
     background-color: rgba(0, 255, 255, 0.1);
     color: #fff;
     font-size: 14px;
-    z-index: 5;
+    z-index: 15; /* z-index 값 추가 */
+    position: relative; /* position 추가 */
     width: 70%;
-    position: relative;
 }
 
 .update-btn {
@@ -79,18 +139,21 @@
     cursor: pointer;
     font-size: 14px;
     font-weight: bold;
-    z-index: 4;
+    z-index: 5;
 }
 
 .extra-content {
     display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-    padding-right: 70px;
+    justify-content: center;
+    width: 100%;
+    margin: 0 auto;
+    padding-right: 15px;
+    z-index: 25;
+    position: relative;
 }
 
 .extra-section {
-    width: 45%;
+    width: 50%;
     border-radius: 5px;
 }
 
@@ -200,6 +263,6 @@
     height: 1px;
     background-color: #ffffff;
     margin: 20px 0;
-    z-index: 4;
+    z-index: 29;
     position: relative;
 }
