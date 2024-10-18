@@ -88,6 +88,7 @@
 <script setup>
 import { ref, onMounted, provide } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 import BackGround from '@/components/BackGround.vue';
 import '@/assets/css/user/MyPage.css';
 import RegisterInbodyModal from '@/components/modal/inbody/RegisterInbodyModal.vue';
@@ -99,22 +100,29 @@ const formData = ref(null);
 const selectedGym = ref(null);
 const registeredRivals = ref([]);
 const isInbodyModalOpen = ref(false);
+const UsersInfo = ref([]);
 
 provide('selectedGym', selectedGym);
 provide('registeredRivals', registeredRivals);
 
+const fetchUserData = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get('http://localhost:8080/users/mypage', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    UsersInfo.value = response.data;
+  } catch (error) {
+    console.error('Error fetching User data:', error);
+  }
+};
+
 onMounted(() => {
-  formData.value = {
-    name: '이나현',
-    email: 'nazzang02@gmail.com',
-    password: '***********************',
-    phone: '010-1234-5678',
-    nickname: '이나짱',
-    gender: '여',
-    height: '?',
-    weight: '?',
-    lastUpdated: '2024-09-20 19:24:40'
-  };
+  fetchUserData();
 });
 
 const goToEditPage = () => {
