@@ -1,8 +1,8 @@
 <template>
   <div class="mypage-layout">
-    <MyPageSideMenu/>
+    <MyPageSideMenu />
     <main class="mypage-content">
-      <BackGround class="background-component"/>
+      <BackGround class="background-component" />
       <div v-if="formData">
         <h2 class="last-updated">마지막으로 수정한 날짜: {{ formData.updatedAt }}</h2>
         <form class="mypage-form">
@@ -43,7 +43,6 @@
             <button type="button" class="edit-btn" @click="goToEditPage">수정</button>
           </div>
         </form>
-        <div class="mypage-separator"></div>
         <RegisterInbodyModal :isOpen="isInbodyModalOpen" :closeModal="closeInbodyModal" />
         <div class="extra-content">
           <div class="extra-section">
@@ -67,15 +66,15 @@
             <div class="extra-button-group">
               <span class="label-text">등록 라이벌</span>
             </div>
-            <div v-if="registeredRivals.length > 0" class="selected-rival">
+            <div v-if="registeredRival && registeredRival.rivalMatchCode" class="selected-rival">
               <div class="rival-info new-design">
                 <div class="new-design-header-rival">
                   <img src="@/assets/icons/usericon.svg" alt="유저" class="usericon new-design-icon" />
-                  <h3 class="new-design-title">{{ registeredRivals[registeredRivals.length - 1] }}</h3>
+                  <h3 class="new-design-title">{{ registeredRival.userNickname }}</h3>
                 </div>
                 <div class="new-design-actions">
-                  <button class="new-design-action-btn">운동기록 보기</button>
-                  <button class="new-design-action-btn">인바디 보기</button>
+                  <button class="new-design-action-btn" @click="viewRivalWorkoutRecord(registeredRival.rivalUserCode)">운동기록 보기</button>
+                  <button class="new-design-action-btn" @click="viewRivalInbody(registeredRival.rivalUserCode)">인바디 보기</button>
                 </div>
               </div>
             </div>
@@ -96,17 +95,19 @@ import '@/assets/css/user/MyPage.css';
 import RegisterInbodyModal from '@/components/modal/inbody/RegisterInbodyModal.vue';
 import RightSide from '@/components/RightSide.vue';
 import MyPageSideMenu from '../../components/MyPageSideMenu.vue';
+import { jwtDecode } from 'jwt-decode';
 
 const route = useRoute();
 const router = useRouter();
 const formData = ref(null);
 const selectedGym = ref(null);
-const registeredRivals = ref([]);
+const registeredRival = ref(null);
 const isInbodyModalOpen = ref(false);
 
 provide('selectedGym', selectedGym);
-provide('registeredRivals', registeredRivals);
+provide('registeredRival', registeredRival);
 
+// 유저 정보 조회
 const fetchUserData = async () => {
   try {
     const token = localStorage.getItem('token');
@@ -127,24 +128,71 @@ const fetchUserData = async () => {
     } else {
       selectedGym.value = null;
     }
+  } catch (error) {
+    console.error('유저 정보 조회 중 오류가 발생했습니다.:', error);
+  }
+};
+
+const fetchRivalNickname = async (rivalUserCode) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(`http://localhost:8080/users/usercode/${rivalUserCode}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data.userNickname;
+  } catch (error) {
+    console.error(`라이벌 닉네임 조회 중 오류 발생: ${rivalUserCode}`, error);
+    return null;
+  }
+};
+
+const fetchRival = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const decodedToken = jwtDecode(token);
+    const userCode = decodedToken.sub;
+
+    const response = await axios.get(`http://localhost:8080/rival`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const rivalData = response.data;
+    const userNickname = await fetchRivalNickname(rivalData.rivalUserCode);
+    registeredRival.value = {
+      ...rivalData,
+      userNickname,
+    };
 
   } catch (error) {
-    console.error('Error fetching User data:', error);
+    console.error('라이벌 조회 중 오류가 발생했습니다:', error);
   }
 };
 
 onMounted(() => {
   fetchUserData();
+  fetchRival();
 });
 
 if (route.params.updatedData) {
   formData.value = route.params.updatedData;
   selectedGym.value = route.params.selectedGym;
-  registeredRivals.value = route.params.registeredRivals;
+  registeredRival.value = route.params.registeredRival;
 }
 
 const goToEditPage = () => {
-  router.push('/mypage/edit');
+  router.push({
+    path: '/mypage/edit',
+    query: {
+      selectedGym: JSON.stringify(selectedGym.value),
+      registeredRival: JSON.stringify(registeredRival.value)
+    }
+  });
 };
 
 const openInbodyModal = () => {
@@ -153,5 +201,21 @@ const openInbodyModal = () => {
 
 const closeInbodyModal = () => {
   isInbodyModalOpen.value = false;
+};
+
+const showGymEquipment = () => {
+  console.log('Show gym equipment');
+};
+
+const showGymAddress = () => {
+  console.log('Show gym address');
+};
+
+const viewRivalWorkoutRecord = (rivalUserCode) => {
+  console.log('View rival workout record:', rivalUserCode);
+};
+
+const viewRivalInbody = (rivalUserCode) => {
+  console.log('View rival inbody:', rivalUserCode);
 };
 </script>
