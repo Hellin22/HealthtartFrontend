@@ -14,8 +14,8 @@
                         <div class="board-row-number">{{ routine.number }}</div>
                         <div class="board-row-title" @click="setActiveTitle(routine)">{{ routine.title }}</div>
                         <div class="board-row-rating">
-                            <span v-for="star in routine.averageRating" :key="star" class="star-filled">★</span>
-                            <span v-for="star in (5 - routine.averageRating)" :key="star">☆</span>
+                            <span v-for="star in Math.max(0, Math.round(routine.averageRating))" :key="star" class="star-filled">★</span>
+                            <span v-for="star in (5 - Math.max(0, Math.round(routine.averageRating)))" :key="star">☆</span>
                         </div>
                         <div class="board-row-time">{{ routine.workoutTime }}</div>
                         <div class="board-row-start">
@@ -32,23 +32,12 @@
     import '@/assets/css/routine/UserRecommendationPage.css';
     import RoutineInnerTab from '@/components/routine/RoutineInnerTab.vue';
 
+    import { ref, onMounted } from 'vue';
     import { useRouter } from 'vue-router';
 
     const router = useRouter();
 
-    const routines = [
-    { number: 1, title: "초보자를 위한 쉽고 편한 운동", averageRating: 5, workoutTime: "20분" },
-    { number: 2, title: "에어로빅으로 운동해", averageRating: 5, workoutTime: "40분" },
-    { number: 3, title: "하루 1시간으로 건강해지기", averageRating: 5, workoutTime: "1시간" },
-    { number: 4, title: "재밌는 입시생의 운동 루틴", averageRating: 4, workoutTime: "40분" },
-    { number: 5, title: "주말에만 해도 10kg 감량하는 홈트", averageRating: 4, workoutTime: "30분" },
-    { number: 6, title: "유제은", averageRating: 4, workoutTime: "30분" },
-    { number: 7, title: "집갈래", averageRating: 3, workoutTime: "30분" },
-    { number: 8, title: "너무너무", averageRating: 3, workoutTime: "30분" },
-    { number: 9, title: "졸리니까", averageRating: 3, workoutTime: "30분" },
-    { number: 10, title: "금요일은", averageRating: 2, workoutTime: "30분" },
-    { number: 11, title: "칼퇴야", averageRating: 1, workoutTime: "30분" },
-    ];
+    const routines = ref([]);
 
     const setActiveTitle = (routine) => {
         router.push({ path: '/routine-detail', query: { title: routine.title } });
@@ -61,7 +50,7 @@
 
     const fetchRoutines = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/gpt/ratings', {
+            const response = await fetch('http://localhost:8080/history/ratings', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -74,15 +63,38 @@
             }
 
             const data = await response.json();
-            routines.value = data.map((item, index) => ({
-                number: index + 1, 
-                title: item.title, 
-                averageRating: Math.round(item.averageRating), 
-                workoutTime: item.workoutTime, 
+            console.log(data);
+            routines.value = await Promise.all(data.map(async (item, index) => {
+                const averageRating = item.routineRatings ? Math.round(item.routineRatings * 2) / 2 : 0;
+                const workoutInfoResponse = await fetch(`http://localhost:8080/workoutInfos/${item.workoutInfoCode}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
+
+                if (!workoutInfoResponse.ok) {
+                    throw new Error('운동 정보 조회 오류');
+                }
+
+                const workoutInfo = await workoutInfoResponse.json();
+
+                return {
+                    number: index + 1,
+                    title: workoutInfo.title,
+                    averageRating: averageRating,
+                    workoutTime: workoutInfo.time,
+                };
             }));
+        
         } catch (error) {
             console.error('오류 발생:', error);
         }
     };
+
+    onMounted(() => {
+        fetchRoutines();
+    });
 
 </script>
