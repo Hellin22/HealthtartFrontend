@@ -8,10 +8,6 @@
                 <div class="routine-insert-info">
                     <p class="routine-date">날짜: {{routine.date}}</p> 
                     <p class="routine-workoutPart">운동 부위: {{ routine.bodyPart }} | 키: {{routine.height}}cm | 몸무게: {{routine.weight}}kg | 성별: {{routine.gender}} | 운동 시간: {{ routine.totalTime }}분</p>
-                    <!-- <p class="routine-height">키: {{routine.height}}cm</p>
-                    <p class="routine-weight">몸무게: {{routine.weight}}kg</p>
-                    <p class="routine-gender">성별: {{routine.gender}}</p>
-                    <p class="routine-workoutTime">운동 시간: {{ routine.totalTime }}분</p> -->
                     <br>
                 </div>
                 <br>
@@ -27,13 +23,12 @@
                     </div>
                     <div class="recommend-music">
                         <p><span class="music-span">추천 Music: {{ routine.musicList }}</span></p>
-                        <!-- <br><span v-html="formatExerciseMusic(routine.musicList)"></span> -->
                     </div>
                 </div>
             
             </div>
             <div class="button-container">
-                <button class="regenerate-routine-button"><img class="regenerate-icon" src="@/assets/icons/regenerate.svg" alt="루틴 재생성 버튼">루틴 재생성 하기</button>
+                <button class="regenerate-routine-button" @click="regenerateRoutine()"><img class="regenerate-icon" src="@/assets/icons/regenerate.svg" alt="루틴 재생성 버튼">루틴 재생성 하기</button>
                 <button class="start-routine-button" @click="setActiveButton()"><img class="start-icon"src="@/assets/icons/start.svg" alt="운동 시작 버튼">운동 시작하기</button>
             </div>
         </div>
@@ -70,6 +65,7 @@
             routine.value.height = userData.userHeight; 
             routine.value.weight = userData.userWeight; 
             routine.value.gender = userData.userGender;
+            
         } catch (error) {
             console.error('Error fetching User data:', error);
         }
@@ -82,6 +78,57 @@
         const day = String(date.getDate()).padStart(2, '0'); 
         return `${year}년 ${month}월 ${day}일`;
     };
+
+    const regenerateRoutine = async () => {
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/gpt/generate-routine?userCode=${userCode}&bodyPart=${routine.value.bodyPart}&time=${routine.value.totalTime}`, {    
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    userCode: userCode,
+                    bodyPart: routine.value.bodyPart,
+                    time: routine.value.totalTime,
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const newRoutine = await response.json();
+
+             routine.value = {
+                ...routine.value,
+                title: newRoutine.title,
+                totalTime: newRoutine.totalTime,
+                musicList: newRoutine.musicList,
+                bodyPart: newRoutine.bodyPart,
+                exercises: [],
+            };
+
+            let i = 1;
+            while (newRoutine[`workoutName${i}`]) {
+                routine.value.exercises.push({
+                    name: newRoutine[`workoutName${i}`],
+                    explanation: newRoutine[`exerciseExplanation${i}`],
+                    video: newRoutine[`exerciseVideo${i}`],
+                    sets: newRoutine[`weightSet${i}`],
+                    reps: newRoutine[`numberPerSet${i}`],
+                    weight: newRoutine[`weightPerSet${i}`],
+                    time: newRoutine[`workoutTime${i}`]
+                });
+                i++;
+            }
+
+        } catch (error) {
+            console.error('Error regenerating routine:', error);
+        }
+    }
+
 
     onMounted(() => {
 
@@ -119,10 +166,6 @@
         return explanation.split('.').map(sentence => sentence.trim()).filter(sentence => sentence).join('.<br>');
     };
 
-    const formatExerciseMusic = (musicList) => {
-        return musicList.split('-').map(sentence => sentence.trim()).filter(sentence => sentence).join(' - ');
-    };
-
     const toggleEdit = (index, field) => {
         const exercise = routine.value.exercises[index];
         const newValue = prompt(`${field} 변경:`, exercise[field]);
@@ -130,10 +173,16 @@
             exercise[field] = newValue;
         }
     };
-    
+
     const setActiveButton = () => {
-        router.push({ path: '/start-workout' });
+        router.push({ 
+            path: '/start-workout', 
+            query: { 
+                routineData: JSON.stringify(routine.value) 
+            } 
+        });
     };
+
 
     const isDeleteModalOpen = ref(false);
     const currentDeleteIndex = ref(null);
@@ -236,6 +285,7 @@
         display: flex;
         align-items: center;
         justify-content: flex-start;
+        cursor: pointer;
     }
 
     .regenerate-icon {
