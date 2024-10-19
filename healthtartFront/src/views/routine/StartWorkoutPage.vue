@@ -1,20 +1,40 @@
 <template>
     <div class="container">
+        <div class="routine-container">
+            <div class="routine-info">
+                <div class="exercise-list">
+                    <div v-for="(exercise, index) in routine.exercises" :key="index">
+                        <p class="name-p"><span class="name-span">{{ exercise.name }}</span> - {{ exercise.sets }}세트, {{ exercise.reps }}회</p>
+                        <p><span v-html="formatExerciseExplanation(exercise.explanation)"></span>.</p><br>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="timer-border">
             <div class="timer">{{ formattedTime }}</div>
             <div class="timer-button">
-            <button class="start-button" @click="startTimer"><img class="start-icon" src="@/assets/icons/playbutton.svg" alt="시작 버튼"></button>
-            <button class="pause-button" @click="stopTimer"><img class="pause-icon" src="@/assets/icons/pausebutton.svg" alt="중지 버튼"></button>
-            <button class="stop-button" @click="resetTimer"><img class="stop-icon" src="@/assets/icons/stopbutton.svg" alt="끝 버튼"></button>
+                <button class="start-button" @click="startTimer">
+                    <img class="start-icon" src="@/assets/icons/playbutton.svg" alt="시작 버튼">
+                </button>
+                <button class="pause-button" @click="stopTimer">
+                    <img class="pause-icon" src="@/assets/icons/pausebutton.svg" alt="중지 버튼">
+                </button>
+                <button class="stop-button" @click="resetTimer">
+                    <img class="stop-icon" src="@/assets/icons/stopbutton.svg" alt="끝 버튼">
+                </button>
+            </div>
+            <p class="timer-instruction">추천 운동 시간: {{ routine.totalTime }}분</p>
         </div>
-        </div>
-    
     </div>
 </template>
 
 <script setup>
     import { ref, computed } from 'vue';
+    import { useRoute } from 'vue-router';
 
+    const route = useRoute();
+    const routine = ref(JSON.parse(route.query.routineData || '{}')); 
+    console.log(routine);
     const seconds = ref(0);
     let timerInterval = null;
 
@@ -41,25 +61,50 @@
         stopTimer();
         seconds.value = 0;
     };
+
+    const formatExerciseExplanation = (explanation) => {
+        return explanation.split('.').map(sentence => sentence.trim()).filter(sentence => sentence).join('.<br>');
+    };
 </script>
 
 <style scoped>
     .container {
         display: flex;
-        flex-direction: column;
-        align-items: center;
+        flex-direction: row;
+        align-items: flex-start;
         background-color: black;
         height: calc(100vh - 65px);
         padding-top: 41.6px;
+        overflow-y: auto; 
     }
 
-    .timer-border {
-        background-color: #2b2e2e;
+    .routine-container {
+        flex: 1; 
+        margin-left: 50px;
+    }
 
-        
-        /* margin: 30px; */
+    .routine-title {
+        margin-bottom: 20px;
+    }
+
+    .name-p {
+        border-bottom: 1px solid rgba(109, 108, 108, 1);
+        padding-bottom: 2px;
+        display: inline-block;
+    }
+
+    .name-span {
+        font-weight: bold;
+    }
+
+
+    .timer-border {
+        position: sticky; 
+        top: 0;
+        background-color: #2b2e2e;
         border-radius: 20px;
         box-shadow: 0 2px 3px rgba(109, 108, 108, 0.5);
+        margin-right: 50px;
     }
 
     .timer {
@@ -102,5 +147,21 @@
         width: 20px;
         height: 20px;
     }
-    
+
+    p {
+        color:#01FDFE;
+        font-size: 20px;
+    }
+
+    h1 {
+        color:#01FDFE;
+    }
+
+     /* 추가된 스타일 */
+     .timer-instruction {
+        color: white;
+        text-align: center; 
+        margin: 10px 0; 
+        font-size: 18px; 
+    }
 </style>

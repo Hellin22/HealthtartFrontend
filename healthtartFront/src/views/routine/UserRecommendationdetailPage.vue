@@ -2,10 +2,10 @@
     <div class="container">
         <div class="recommendation-main-container">
             <div class="title-info-container">
-                <label class="routine-title">{{this.$route.query.title}}</label>
+                <label class="routine-title">{{title}}</label>
                 <div class="info-container">
-                    <p class="registration-time">등록 시간: 등록시간 드가야댐</p>
-                    <p class="total-time">전체 운동 시간: 전체운동시간 드가야댐</p>
+                    <p class="registration-time">등록 시간: {{ createdAt }}</p>
+                    <p class="total-time">전체 운동 시간: {{ totalTime }}분</p>
                 </div>
             </div>
             <div class="board-container">
@@ -28,13 +28,83 @@
                     </div>
                 </div>
             </div>
+            <div class="start-button-container">
+                <button class="start-button">운동 시작</button>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup>
-    
+    import { ref, onMounted } from 'vue';
+    import { useRoute } from 'vue-router';
+
+    const route = useRoute();
+    const title = ref(route.query.title);
+    const createdAt = ref(null);
+    const totalTime = ref(0);
+    const routines = ref([]);
+    const workoutInfoCode = ref(route.query.workoutInfoCode);
+
+    const fetchRoutineDetails = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/workoutInfos/${workoutInfoCode.value}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('운동 정보 조회 오류');
+            }
+
+            const workoutInfo = await response.json();
+
+            const routineResponse = await fetch(`http://localhost:8080/workout-per-routine/detail/${workoutInfo.routineCode}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+            if (!routineResponse.ok) {
+                throw new Error('운동 루틴 상세 정보 조회 오류');
+            }
+
+            const routineInfo = await routineResponse.json();
+
+            title.value = workoutInfo.title;
+
+            const year = workoutInfo.createdAt[0];
+            const month = workoutInfo.createdAt[1];
+            const day = workoutInfo.createdAt[2];
+
+            createdAt.value = `${year}년 ${month}월 ${day}일`;
+            totalTime.value = workoutInfo.time;
+
+            routines.value = routineInfo.map((routine, index) => ({
+                number: routine.workoutOrder,
+                title: routine.workoutName,
+                set: routine.weightSet,
+                num: routine.numberPerSet,
+                weight: routine.weightPerSet,
+                link: routine.link,
+            }));
+
+
+        } catch (error) {
+            console.error('오류 발생:', error);
+        }
+    };
+
+    onMounted(() => {
+        fetchRoutineDetails();
+    });
 </script>
+
 
 <style scoped>
     .container {
@@ -111,5 +181,26 @@
 
     .board-row-number, .board-row-workout, .board-row-set, .board-row-num, .board-row-weight, .board-row-link {
         text-align: center; 
+    
+    }
+
+    .start-button-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px; 
+    }
+
+    .start-button {
+        padding: 3px 15px;
+        background-color: #01FDFE;
+        border: none;
+        border-radius: 10px;
+        color: black;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .start-button-container button:hover {
+        background-color: #ffffff;
     }
 </style>

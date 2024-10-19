@@ -26,6 +26,8 @@
             <button class="generate-routine-button" @click="generateRoutine">운동 루틴 생성하기</button>
         </RoutineInnerTab>
         <LoadingScreen v-if="loading"/>
+        <ConfirmModal :isOpen="isModalOpen" @close="isModalOpen = false" @confirm="isModalOpen = false" />
+        
     </div>
  </template>
  
@@ -37,11 +39,13 @@
     import RoutineInnerTab from '@/components/routine/RoutineInnerTab.vue';
     import '@/assets/css/routine/WorkoutInfoInputPage.css';
     import LoadingScreen from './LoadingScreen.vue';
+    import ConfirmModal from '../../components/modal/ConfirmModal.vue';
 
     const bodyParts = ['등', '가슴', '어깨', '코어', '삼두', '유산소', '하체', '전완근', '이두'];
     const selectedParts = ref([]);
     const selectedTime = ref(60);
     const loading = ref(false);
+    const isModalOpen = ref(false);
     const router =useRouter();
 
     const toggleSelection = (part) => {
@@ -52,6 +56,11 @@
     }
 
     const generateRoutine = async () => {
+
+        if (selectedParts.value.length === 0) {
+            isModalOpen.value = true;
+            return;
+        }
         loading.value = true; 
         const bodyPart = selectedParts.value[0];
 
@@ -78,12 +87,11 @@
         if (!response.ok) {
             throw new Error('서버 응답 오류');
         }
-
         const data = await response.json();
 
         router.push({ 
             path: '/generate-routine', 
-            query: { routineData: JSON.stringify(data), bodyPart: bodyPart } 
+            query: { routineData: JSON.stringify(data), bodyPart: bodyPart, time: selectedTime } 
         });
         } catch (error) {
                 console.error('오류 발생:', error);
