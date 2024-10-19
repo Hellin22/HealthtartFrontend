@@ -32,7 +32,7 @@
                   <input class="inputinfo" type="text" id="nickname" required v-model="formData.userNickname" @input="resetNicknameCheck" placeholder="닉네임 입력" />
                   <button type="button" @click="checkNickname" class="auth" :disabled="!formData.userNickname">중복체크</button>
                 </div>
-                <div v-if="nicknameError" class="error-message">중복된 닉네임입니다. 다른 닉네임을 선택해주세요.</div>
+                <div v-if="nicknameError" class="error-message">중복되거나 닉네임 길이를 벗어났습니다.(한글 7글자, 영어 15글자)</div>
                 <div v-if="nicknameChecked && !nicknameError" class="success-message">사용 가능한 닉네임입니다.</div>
               </div>
 
@@ -114,7 +114,7 @@ const checkNickname = async () => {
       });
 
       // 서버로부터 닉네임 중복 체크 결과 처리
-      if (response.data.isDuplicate) {
+      if (!response.data.isValid) {
         nicknameError.value = true; // 중복됨
         nicknameChecked.value = false; // 체크 실패
       } else {
@@ -307,7 +307,7 @@ const next = () => {
 
   .error-message {
   color: red;
-  font-size: 12px;
+  font-size: 11px;
   margin-left: 10px;
 }
 
