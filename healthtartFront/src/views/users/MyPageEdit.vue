@@ -255,7 +255,6 @@ const deleteItem = async () => {
       });
       selectedGym.value = null;
     } else if (deleteItemType.value === 'rival') {
-      // 먼저 라이벌 정보를 가져옵니다.
       const rivalResponse = await axios.get(`http://localhost:8080/rival`, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -278,8 +277,8 @@ const deleteItem = async () => {
       
       registeredRival.value = null;
     }
-
-    alert(`${deleteItemType.value === 'gym' ? '헬스장' : '라이벌'}이 성공적으로 삭제되었습니다.`);
+    
+    alert(`성공적으로 삭제되었습니다.`);
     closeDeleteModal();
   } catch (error) {
     console.error('Error deleting item:', error);
