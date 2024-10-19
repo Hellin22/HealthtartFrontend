@@ -14,8 +14,8 @@
             플레이리스트까지 함께합니다.
           </p>
           <div class="buttons">
-            <button class="primary-btn">운동 루틴 추천받기</button>
-            <button class="secondary-btn">추천 루틴 리스트 보기</button>
+            <button class="primary-btn" @click="routeRoutinePage">운동 루틴 추천받기</button>
+            <button class="secondary-btn" @click="routeRecommendationPage">추천 루틴 리스트 보기</button>
           </div>
         </div>
         <div class="right-content">
@@ -37,6 +37,14 @@ const router = useRouter();
 const route = useRoute();
 const loginState = inject('loginState'); // loginState를 상위 컴포넌트에서 inject로 받음
 
+const routeRoutinePage = () => {
+  router.push({ path: '/routine' });
+  };
+  
+const routeRecommendationPage = () => {
+  router.push({ path: '/user-recommendation' });
+  };
+  
 onMounted(() => {
   const blueWave = document.createElement('div');
   blueWave.className = 'blue-wave';
