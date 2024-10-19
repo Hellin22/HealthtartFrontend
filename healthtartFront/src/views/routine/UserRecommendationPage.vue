@@ -40,9 +40,8 @@
     const routines = ref([]);
 
     const setActiveTitle = (routine) => {
-        router.push({ path: '/routine-detail', query: { title: routine.title } });
+        router.push({ path: '/routine-detail', query: { title: routine.title, workoutInfoCode: routine.workoutInfoCode } });
     };
-
 
     const startRoutine = (routine) => {
         console.log(`운동을 시작합니다: ${routine.title}`);
@@ -63,7 +62,7 @@
             }
 
             const data = await response.json();
-            console.log(data);
+
             routines.value = await Promise.all(data.map(async (item, index) => {
                 const averageRating = item.routineRatings ? Math.round(item.routineRatings * 2) / 2 : 0;
                 const workoutInfoResponse = await fetch(`http://localhost:8080/workoutInfos/${item.workoutInfoCode}`, {
@@ -85,6 +84,7 @@
                     title: workoutInfo.title,
                     averageRating: averageRating,
                     workoutTime: workoutInfo.time,
+                    workoutInfoCode: workoutInfo.workoutInfoCode
                 };
             }));
         
