@@ -2,6 +2,14 @@
   <div class="inbody-ranking">
     <BackGround class="background-component" />
     <h2 class="inbodyrankingtitle">InBody Ranking</h2>
+    <div class="icon-button-container">
+      <button @click="openFilterModal" class="icon-button">
+        <img src="@/assets/icons/filtericon.svg" alt="Filter" />
+      </button>
+      <button @click="openInbodyInfoModal" class="icon-button">
+        <img src="@/assets/icons/usericon.svg" alt="User" />
+      </button>
+    </div>
     <div class="table-container">
       <table>
         <thead>
@@ -44,6 +52,17 @@
       </button>
       <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages">다음</button>
     </div>
+
+    <InbodyFilterModal 
+      v-if="isFilterModalOpen" 
+      @close="isFilterModalOpen = false" 
+      @applyFilters="applyFilters" 
+    />
+    <InbodyInfoModal 
+      v-if="isInbodyInfoModalOpen" 
+      @close="isInbodyInfoModalOpen = false" 
+      :inbodyData="inbodyData" 
+    />
   </div>
 </template>
 
@@ -51,24 +70,26 @@
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import BackGround from '../../components/BackGround.vue';
+import InbodyFilterModal from '../../components/modal/inbody/InbodyFilterModal.vue';
+import InbodyInfoModal from '../../components/modal/inbody/InbodyInfoModal.vue';
+import { jwtDecode } from 'jwt-decode';
 
 const inbodyUsers = ref([]);
 const currentPage = ref(1);
-const itemsPerPage = 10;
+const itemsPerPage = ref(10);
+const isFilterModalOpen = ref(false);
+const isInbodyInfoModalOpen = ref(false);
+const inbodyData = ref(null);
 
 const fetchInbodyData = async () => {
   try {
-    console.log('Fetching InBody data...');
     const token = localStorage.getItem('token');
-    const response = await axios.get('http://localhost:8080/inbody', {
+    const response = await axios.get('http://localhost:8080/inbody/inbody_ranking', {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
     });
-
-    console.log('Response status:', response.status);
-    console.log('Fetched data:', response.data);
 
     inbodyUsers.value = response.data;
   } catch (error) {
@@ -80,16 +101,71 @@ onMounted(() => {
   fetchInbodyData();
 });
 
-const totalPages = computed(() => Math.ceil(inbodyUsers.value.length / itemsPerPage));
+const openInbodyInfoModal = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const decodedToken = jwtDecode(token);
+    const userCode = decodedToken.sub;
+    
+    const response = await axios.get('http://localhost:8080/inbody/my-inbody', {
+      params: { userCode: userCode },
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    console.log(response);
+    
+
+    if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+      inbodyData.value = response.data;
+      isInbodyInfoModalOpen.value = true;
+    } else if (response.data && !Array.isArray(response.data)) {
+      inbodyData.value = [response.data];
+      isInbodyInfoModalOpen.value = true;
+    } else {
+      alert("등록된 인바디 정보가 없습니다. MyPage에서 인바디 정보를 등록해주세요.");
+    }
+  } catch (error) {
+    console.error('Error fetching user Inbody data:', error);
+    alert("인바디 정보를 불러오는 중 오류가 발생했습니다. 다시 시도해 주세요.");
+  }
+};
+
+const openFilterModal = () => {
+  isFilterModalOpen.value = true;
+};
+
+const applyFilters = async (appliedFilters) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.post('http://localhost:8080/inbody/filter', appliedFilters, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    inbodyUsers.value = response.data;
+    currentPage.value = 1;
+
+    inbodyUsers.value.sort((a, b) => b.inbodyScore - a.inbodyScore);
+  } catch (error) {
+    console.error('Error applying filters:', error);
+  }
+};
+
+const totalItems = computed(() => inbodyUsers.value.length);
+const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value));
 
 const paginatedUsers = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
   return inbodyUsers.value.slice(start, end);
 });
 
 const displayedPages = computed(() => {
-  const range = 2; // 현재 페이지 양쪽으로 표시할 페이지 수
+  const range = 2;
   let start = Math.max(1, currentPage.value - range);
   let end = Math.min(totalPages.value, currentPage.value + range);
 
@@ -101,7 +177,7 @@ const displayedPages = computed(() => {
     }
   }
 
-  return Array.from({length: end - start + 1}, (_, i) => start + i);
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
 });
 
 const changePage = (page) => {
@@ -137,6 +213,34 @@ const changePage = (page) => {
   z-index: 2;
 }
 
+.icon-button-container {
+  display: flex;
+  justify-content: right;
+  margin-bottom: 10px;
+  padding: 0 15%;
+  gap : 10px;
+}
+
+.icon-button {
+  display: flex;
+  align-items: end;
+  background-color: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding : 3px 5px;
+}
+
+.icon-button:hover {
+  background-color: #01FEAE;
+}
+
+.icon-button img {
+  width: 20px;
+  height: 20px;
+}
+
 .table-container {
   display: flex;
   justify-content: center;
@@ -149,19 +253,19 @@ table {
   border-collapse: collapse;
   background-color: rgba(0, 0, 0, 0.7);
   border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* 그림자 추가 */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .inbodytrtitle, .inbodytr {
   border: 1px solid #ffffff;
   padding: 8px;
   text-align: center;
-  transition: background-color 0.3s; /* 호버 시 색상 전환 효과 */
+  transition: background-color 0.3s;
 }
 
 .inbodytrtitle {
-  background-color: rgba(255, 255, 255, 0.8); /* 더 밝은 배경 */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* 제목 행에 그림자 추가 */
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 th {
@@ -182,7 +286,7 @@ td {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 10px;
   color: #fff;
 }
 
@@ -194,7 +298,7 @@ td {
   margin: 0 5px;
   cursor: pointer;
   border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 버튼에 그림자 추가 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .pagination button:disabled {
@@ -205,5 +309,26 @@ td {
 .pagination button.active {
   background-color: #00ffff;
   color: black;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.button-container button {
+  background-color: #00ffff;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s;
+}
+
+.button-container button:hover {
+  background-color: #008080;
 }
 </style>

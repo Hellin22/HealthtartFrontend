@@ -4,9 +4,8 @@
         <div class="delete-modal-header">
           <button class="delete-close-btn" @click="closeModal">✖</button>
         </div>
-        <div class="delete-modal-body">삭제하시겠습니까?</div>
+        <div class="delete-modal-body">운동 부위를 선택해주세요</div>
         <div class="delete-modal-actions">
-          <button class="delete-cancel-btn" @click="closeModal">취소</button>
           <button class="delete-confirm-btn" @click="confirmDeletion">확인</button>
         </div>
       </div>

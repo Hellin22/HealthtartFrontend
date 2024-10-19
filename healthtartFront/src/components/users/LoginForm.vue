@@ -26,7 +26,7 @@
         <div class="finds">
           <div class="find-email">이메일 찾기</div>
           <div>|</div>
-          <div class="find-password">비밀번호 재설정</div>
+          <div class="find-password" @click="goToPasswordReset">비밀번호 재설정</div>
           <div>|</div>
           <div class="signup" @click="goToSignup">회원가입</div>
         </div>
@@ -79,15 +79,20 @@ const checkEmail = () => {
 
 // 로그인 함수
 const loginUser = async () => {
+  // 이메일과 비밀번호가 빈 값이 아닌지, 이메일 형식이 올바른지 확인
+  if (!formData.value.userEmail || !formData.value.userPassword || emailError.value) {
+    alert("아이디, 비밀번호를 확인해주세요");
+    return; // 입력이 잘못되었으면 함수 종료
+  }
 
-    try {
+  try {
     const response = await axios.post('http://localhost:8080/users/login', {
       userEmail: formData.value.userEmail,
       userPassword: formData.value.userPassword
     }, {
-        headers: {
-          'Content-Type': 'application/json',
-        }
+      headers: {
+        'Content-Type': 'application/json',
+      }
     });
 
     console.log('HTTP 응답 상태 코드:', response.status);
@@ -105,7 +110,9 @@ const loginUser = async () => {
       loginState.state.userNickname = decodedToken.nickname;
       
       console.log('Login successful:', decodedToken.nickname);
-      
+
+      alert("로그인 성공"); // 로그인 성공 시 alert창 띄우기
+
       // 로그인 성공 이벤트 발생
       emit('loginSuccess', decodedToken.nickname);  // 부모 컴포넌트로 로그인 상태 전달
     } else {
@@ -120,6 +127,11 @@ const loginUser = async () => {
 const goToSignup = () => {
   router.push('/users/signup'); // /users/signup 경로로 이동
 }
+
+const goToPasswordReset = () => {
+  router.push('/users/password'); // /users/password 경로로 이동
+};
+
 
 const kakaoLogin = () => {
   window.location.href = 'http://localhost:8080/oauth2/authorization/kakao';
