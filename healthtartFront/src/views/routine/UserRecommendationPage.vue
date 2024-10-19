@@ -19,7 +19,7 @@
                         </div>
                         <div class="board-row-time">{{ routine.workoutTime }}</div>
                         <div class="board-row-start">
-                            <button @click="startRoutine(routine)">운동 시작</button>
+                            <button @click="routeStartWorkoutPage(routine)">운동 시작</button>
                         </div>
                     </div>
                 </div>
@@ -43,8 +43,15 @@
         router.push({ path: '/routine-detail', query: { title: routine.title, workoutInfoCode: routine.workoutInfoCode } });
     };
 
-    const startRoutine = (routine) => {
+    const routeStartWorkoutPage = (routine) => {
         console.log(`운동을 시작합니다: ${routine.title}`);
+        router.push({ 
+            path: '/start-workout', 
+            query: { 
+                title: routine.title, 
+                workoutInfoCode: routine.workoutInfoCode 
+            } 
+        });
     };
 
     const fetchRoutines = async () => {
