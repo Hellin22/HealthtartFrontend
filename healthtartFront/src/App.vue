@@ -4,7 +4,7 @@
     <AppHeader :is-logged-in="loginState.isLoggedIn" :user-nickname="loginState.userNickname" @logout="logout" />
   </div>
   <main>
-    <RouterView @login-success="handleLoginSuccess"/>
+    <RouterView />
   </main>
 </template>
 
@@ -84,11 +84,6 @@ const logout = () => {
   loginState.isLoggedIn = false;
   loginState.userNickname = '';
   router.push('/');
-};
-
-// 로그인 성공 처리 함수
-const handleLoginSuccess = () => {
-  checkLoginStatus();
 };
 
 onMounted(() => {

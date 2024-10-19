@@ -5,8 +5,8 @@ import AddInfoPage from "../views/users/AddInfoPage.vue";
 import ResetPasswordPage from "../views/users/ResetPasswordPage.vue";
 
 const UserRoutes = [
-    { path: "/mypage", component: MyPage },
-    { path: "/mypage/edit", component: MyPageEdit },
+    { path: "/mypage", component: MyPage, meta: { requiresAuth: true } },
+    { path: "/mypage/edit", name: 'MyPageEdit', component: MyPageEdit, props: true },
     { path: "/users/login", component: LoginPage },
     { path: "/users/addinfo", component: AddInfoPage},
     { path: "/users/password", component: ResetPasswordPage},

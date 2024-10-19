@@ -74,11 +74,11 @@
           <div class="extra-button-group">
             <span class="label-text">등록 라이벌</span>
             <button v-if="!registeredRival" class="add-btn" @click="openRivalModal">추가</button>
-            <button v-if="registeredRival && registeredRival.rivalMatchCode" @click="confirmDelete('rival')" class="remove-btn">
+            <button v-if="registeredRival" @click="confirmDelete('rival')" class="remove-btn">
               삭제
             </button>
           </div>
-          <div v-if="registeredRival && registeredRival.rivalMatchCode" class="selected-rival">
+          <div v-if="registeredRival" class="selected-rival">
             <div class="rival-info new-design">
               <div class="new-design-header-rival">
                 <img src="@/assets/icons/usericon.svg" alt="유저" class="usericon new-design-icon" />
@@ -118,7 +118,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, inject } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 import RightSide from '@/components/RightSide.vue';
@@ -151,16 +151,9 @@ const triggerAnimation = () => {
 
 onMounted(async () => {
   try {
-    if (route.query.selectedGym && route.query.registeredRival) {
-      selectedGym.value = JSON.parse(route.query.selectedGym);
-      registeredRival.value = JSON.parse(route.query.registeredRival);
-      formData.value = await fetchUserData();
-    } else {
-      await fetchUserData();
-    }
+    await fetchUserData();
   } catch (error) {
     console.error('Error initializing data:', error);
-    await fetchUserData();
   }
 });
 
@@ -183,9 +176,8 @@ const fetchUserData = async () => {
       };
     }
 
-    if (!registeredRival.value && response.data.rivalMatchCode) {
+    if (!registeredRival.value) {
       registeredRival.value = {
-        rivalMatchCode: response.data.rivalMatchCode,
         rivalUserCode: response.data.rivalUserCode,
         userNickname: response.data.rivalNickname
       };
@@ -204,7 +196,6 @@ const updateProfile = async () => {
     const decodedToken = jwtDecode(token);
     const userCode = decodedToken.sub;
 
-    // 비밀번호 변경 처리
     if (isPasswordChangeEnabled.value) {
       if (newPassword.value !== confirmPassword.value) {
         alert('새 비밀번호가 일치하지 않습니다.');
@@ -222,8 +213,7 @@ const updateProfile = async () => {
       });
     }
 
-    // 헬스장 정보 업데이트
-    if (selectedGym.value) {
+    if (selectedGym.value && selectedGym.value.businessNumber) {
       await axios.post('http://localhost:8080/users/register-gym', {
         userCode: userCode,
         businessNumber: selectedGym.value.businessNumber,

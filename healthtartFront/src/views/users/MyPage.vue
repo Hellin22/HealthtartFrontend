@@ -185,12 +185,12 @@ if (route.params.updatedData) {
   registeredRival.value = route.params.registeredRival;
 }
 
-const goToEditPage = () => {
+const goToEditPage = async () => {
   router.push({
-    path: '/mypage/edit',
-    query: {
-      selectedGym: JSON.stringify(selectedGym.value),
-      registeredRival: JSON.stringify(registeredRival.value)
+    name: 'MyPageEdit',
+    params: {
+      selectedGym: selectedGym.value,
+      registeredRival: registeredRival.value
     }
   });
 };
