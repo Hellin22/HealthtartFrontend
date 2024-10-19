@@ -26,7 +26,7 @@
         <div class="finds">
           <div class="find-email">이메일 찾기</div>
           <div>|</div>
-          <div class="find-password">비밀번호 찾기</div>
+          <div class="find-password">비밀번호 재설정</div>
           <div>|</div>
           <div class="signup" @click="goToSignup">회원가입</div>
         </div>
