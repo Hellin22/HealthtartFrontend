@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="start-button-container">
-                <button class="start-button">운동 시작</button>
+                <button class="start-button" @click="routeStartWorkoutPage">운동 시작</button>
             </div>
         </div>
     </div>
@@ -37,9 +37,10 @@
 
 <script setup>
     import { ref, onMounted } from 'vue';
-    import { useRoute } from 'vue-router';
+    import { useRoute,useRouter } from 'vue-router';
 
     const route = useRoute();
+    const router = useRouter();
     const title = ref(route.query.title);
     const createdAt = ref(null);
     const totalTime = ref(0);
@@ -99,6 +100,18 @@
             console.error('오류 발생:', error);
         }
     };
+
+    const routeStartWorkoutPage = () => {
+        router.push({ 
+            path: '/start-workout', 
+            query: { 
+                title: title.value, 
+                workoutInfoCode: workoutInfoCode.value 
+            } 
+        });
+    };
+
+    
 
     onMounted(() => {
         fetchRoutineDetails();
