@@ -255,12 +255,27 @@ const deleteItem = async () => {
       });
       selectedGym.value = null;
     } else if (deleteItemType.value === 'rival') {
-      await axios.delete(`http://localhost:8080/rival/${registeredRival.value.rivalMatchCode}`, {
+      // 먼저 라이벌 정보를 가져옵니다.
+      const rivalResponse = await axios.get(`http://localhost:8080/rival`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
+
+      const rivalMatchCode = rivalResponse.data.rivalMatchCode;
+
+      if (!rivalMatchCode) {
+        throw new Error('라이벌 매치 코드를 찾을 수 없습니다.');
+      }
+
+      await axios.delete(`http://localhost:8080/rival/${rivalMatchCode}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
       registeredRival.value = null;
     }
 
@@ -268,7 +283,11 @@ const deleteItem = async () => {
     closeDeleteModal();
   } catch (error) {
     console.error('Error deleting item:', error);
-    alert('삭제에 실패했습니다.');
+    if (error.message === '라이벌 매치 코드를 찾을 수 없습니다.') {
+      alert('라이벌 정보를 찾을 수 없습니다.');
+    } else {
+      alert('삭제에 실패했습니다.');
+    }
   }
 };
 
