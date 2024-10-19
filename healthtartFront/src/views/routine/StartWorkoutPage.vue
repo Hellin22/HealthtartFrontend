@@ -5,7 +5,9 @@
                 <div class="exercise-list">
                     <div v-for="(exercise, index) in routine.exercises" :key="index">
                         <p class="name-p"><span class="name-span">{{ exercise.name }}</span> - {{ exercise.sets }}세트, {{ exercise.reps }}회</p>
-                        <p><span v-html="formatExerciseExplanation(exercise.explanation)"></span>.</p><br>
+                        <p v-if="getExplanation(exercise)">
+                            <span v-html="formatExerciseExplanation(getExplanation(exercise))"></span>.
+                        </p><br>
                     </div>
                 </div>
             </div>
@@ -29,12 +31,13 @@
 </template>
 
 <script setup>
-    import { ref, computed } from 'vue';
+    import { ref, computed, onMounted } from 'vue';
     import { useRoute } from 'vue-router';
 
     const route = useRoute();
-    const routine = ref(JSON.parse(route.query.routineData || '{}')); 
-    console.log(routine);
+    const routine = ref(JSON.parse(route.query.routineData || '{"exercises":[], "totalTime": 0}')); 
+    console.log('Initial routine data:', routine.value);
+
     const seconds = ref(0);
     let timerInterval = null;
 
@@ -56,7 +59,7 @@
         clearInterval(timerInterval);
         timerInterval = null;
     };
-    
+
     const resetTimer = () => {
         stopTimer();
         seconds.value = 0;
@@ -65,6 +68,86 @@
     const formatExerciseExplanation = (explanation) => {
         return explanation.split('.').map(sentence => sentence.trim()).filter(sentence => sentence).join('.<br>');
     };
+
+    const getExplanation = (exercise) => {
+        if (exercise.explanation) {
+            return exercise.explanation;
+        } else if (exercise.exerciseEquipmentCode.exerciseDescription) {
+            return exercise.exerciseEquipmentCode.exerciseDescription;
+        }
+        return '';
+    };
+
+    const fetchRoutineDetails = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.error('토큰이 없습니다.');
+                return;
+            }
+
+            const workoutInfoCode = route.query.workoutInfoCode;
+            if (!workoutInfoCode) {
+                console.error('workoutInfoCode가 없습니다.');
+                return;
+            }
+
+            const response = await fetch(`http://localhost:8080/workoutInfos/${workoutInfoCode}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('운동 정보 조회 오류');
+            }
+
+            const workoutInfo = await response.json();
+            console.log('Workout Info:', workoutInfo);
+
+            const routineResponse = await fetch(`http://localhost:8080/workout-per-routine/detail/${workoutInfo.routineCode}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+
+            if (!routineResponse.ok) {
+                throw new Error('운동 루틴 상세 정보 조회 오류');
+            }
+
+            const routineInfo = await routineResponse.json();
+            console.log('Routine Info:', routineInfo);
+
+
+            routine.value = {
+                title: workoutInfo.title,
+                totalTime: workoutInfo.time,
+                exercises: routineInfo.map((exercise) => ({
+                    name: exercise.workoutName,
+                    sets: exercise.weightSet,
+                    reps: exercise.numberPerSet,
+                    weight: exercise.weightPerSet,
+                    explanation: exercise.exerciseExplanation || 
+                        (exercise.exerciseEquipmentCode && exercise.exerciseEquipmentCode.exerciseDescription) || '',
+                    video: exercise.link
+                }))
+            };
+
+            console.log('Updated routine data:', routine.value);
+
+        } catch (error) {
+            console.error('오류 발생:', error);
+        }
+    };
+
+    onMounted(() => {
+        fetchRoutineDetails();
+    });
 </script>
 
 <style scoped>
@@ -96,7 +179,6 @@
     .name-span {
         font-weight: bold;
     }
-
 
     .timer-border {
         position: sticky; 
@@ -157,8 +239,7 @@
         color:#01FDFE;
     }
 
-     /* 추가된 스타일 */
-     .timer-instruction {
+    .timer-instruction {
         color: white;
         text-align: center; 
         margin: 10px 0; 
