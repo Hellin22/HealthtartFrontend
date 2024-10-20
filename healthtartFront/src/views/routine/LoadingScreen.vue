@@ -9,14 +9,12 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import BackGround from '../../components/BackGround.vue';
 
-const progressWidth = ref('0%'); // 게이지 바의 너비
+const progressWidth = ref('0%'); 
 
 onMounted(async () => {
-    // 게이지 바가 차오르도록 2초 동안 애니메이션을 진행
     for (let i = 0; i <= 100; i++) {
-        await new Promise(resolve => setTimeout(resolve, 20)); // 2초 동안 진행
+        await new Promise(resolve => setTimeout(resolve, 150));
         progressWidth.value = `${i}%`;
     }
 });

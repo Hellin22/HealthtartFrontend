@@ -19,14 +19,16 @@
 
         <div class="login-buttons">
           <button type="button" @click="loginUser" class="login">로그인</button>
-          <button type="button" @click="kakaoLogin" class="kakao">카카오 로그인</button>
-          <button type="button" @click="googleLogin" class="google">구글 로그인</button>
+          <button type="button" @click="kakaoLogin" class="kakao">
+            <img src="@/assets/icons/kakao-icon.svg" alt="카카오 아이콘" class="icon"/>카카오 로그인</button>
+          <button type="button" @click="googleLogin" class="google">
+            <img src="@/assets/icons/google-icon.svg" alt="구글 아이콘" class="icon"/>구글 로그인</button>
         </div>
 
         <div class="finds">
-          <div class="find-email">이메일 찾기</div>
+          <div class="find-email" @click="goToFindEmail">이메일 찾기</div>
           <div>|</div>
-          <div class="find-password">비밀번호 재설정</div>
+          <div class="find-password" @click="goToPasswordReset">비밀번호 재설정</div>
           <div>|</div>
           <div class="signup" @click="goToSignup">회원가입</div>
         </div>
@@ -79,15 +81,20 @@ const checkEmail = () => {
 
 // 로그인 함수
 const loginUser = async () => {
+  // 이메일과 비밀번호가 빈 값이 아닌지, 이메일 형식이 올바른지 확인
+  if (!formData.value.userEmail || !formData.value.userPassword || emailError.value) {
+    alert("아이디, 비밀번호를 확인해주세요");
+    return; // 입력이 잘못되었으면 함수 종료
+  }
 
-    try {
+  try {
     const response = await axios.post('http://localhost:8080/users/login', {
       userEmail: formData.value.userEmail,
       userPassword: formData.value.userPassword
     }, {
-        headers: {
-          'Content-Type': 'application/json',
-        }
+      headers: {
+        'Content-Type': 'application/json',
+      }
     });
 
     console.log('HTTP 응답 상태 코드:', response.status);
@@ -105,7 +112,9 @@ const loginUser = async () => {
       loginState.state.userNickname = decodedToken.nickname;
       
       console.log('Login successful:', decodedToken.nickname);
-      
+
+      alert("로그인 성공"); // 로그인 성공 시 alert창 띄우기
+
       // 로그인 성공 이벤트 발생
       emit('loginSuccess', decodedToken.nickname);  // 부모 컴포넌트로 로그인 상태 전달
     } else {
@@ -119,6 +128,14 @@ const loginUser = async () => {
 
 const goToSignup = () => {
   router.push('/users/signup'); // /users/signup 경로로 이동
+}
+
+const goToPasswordReset = () => {
+  router.push('/users/password'); // /users/password 경로로 이동
+};
+
+const goToFindEmail = () => {
+  router.push('/users/findemail');
 }
 
 const kakaoLogin = () => {
@@ -179,6 +196,10 @@ const googleLogin = () => {
   border-radius: 12px;
   border-style: none;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
 .login {
@@ -266,5 +287,12 @@ input {
 
 .login-message-container {
     display: flex;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  left: 10px;
 }
 </style>

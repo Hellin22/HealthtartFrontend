@@ -5,13 +5,22 @@
         <form @submit.prevent="handleSubmit">
           <div class="form-group">
             <label class="lablefirst" for="inbodyImage">인바디 이미지 업로드:</label>
-            <input type="file" id="inbodyImage" @change="onFileChange" accept="image/*" />
+            <input
+              type="file"
+              id="inbodyImage"
+              @change="onFileChange"
+              accept="image/*"
+              ref="fileInput"
+              style="display: none;"
+            />
+            <span v-if="selectedFile" class="selected-file-name">{{ selectedFile.name }}</span>
+            <button type="button" class="file-select-btn" @click="triggerFileInput">파일 선택</button>
           </div>
           <div v-if="imageUrl" class="image-preview-container">
             <img :src="imageUrl" alt="Preview" class="image-preview" />
           </div>
           <div class="inbody-btn-group">
-            <button type="submit" class="submit-btn" :disabled="!imageUrl">등록</button>
+            <button type="submit" class="submit-btn" :disabled="!imageUrl || isSubmitting">등록</button>
             <button type="button" class="cancel-btn" @click="closeModal">취소</button>
           </div>
         </form>
@@ -22,6 +31,8 @@
   <script setup>
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
+  import axios from 'axios';
+  import { jwtDecode } from 'jwt-decode';
   
   const props = defineProps({
     isOpen: Boolean,
@@ -30,10 +41,18 @@
   
   const router = useRouter();
   const imageUrl = ref(null);
+  const selectedFile = ref(null);
+  const isSubmitting = ref(false);
+  const fileInput = ref(null);
+  
+  const triggerFileInput = () => {
+    fileInput.value.click();
+  };
   
   const onFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
+      selectedFile.value = file;
       const reader = new FileReader();
       reader.onload = (e) => {
         imageUrl.value = e.target.result;
@@ -42,11 +61,82 @@
     }
   };
   
-  const handleSubmit = () => {
-    alert('인바디 이미지가 등록되었습니다!');
+  const handleSubmit = async () => {
+  if (!selectedFile.value) return;
+
+  isSubmitting.value = true;
+
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('인증 토큰이 없습니다. 다시 로그인해주세요.');
+    }
+
+    const formData = new FormData();
+    formData.append('file', selectedFile.value);
+    const uploadResponse = await axios.post('http://localhost:8080/upload/image', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    console.log('Upload response:', uploadResponse.data);
+
+    const fullUrl = uploadResponse.data;
+    const fileName = fullUrl.split('/').pop();
+
+    console.log('File name for OCR:', fileName);
+
+    const ocrResponse = await axios.get(`http://localhost:8080/ocr/extract-text`, {
+      params: { fileName: fileName },
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    
+    console.log('Full OCR response:', ocrResponse);
+    const ocrData = ocrResponse.data;
+
+    const decodedToken = jwtDecode(token);
+    console.log('Decoded token:', decodedToken);
+
+    const userCode = decodedToken.sub;
+
+    const dataToSend = {
+        ...ocrData,
+        userCode
+    };
+
+    console.log('Data to send:', dataToSend);
+
+await axios.post('http://localhost:8080/inbody/register', dataToSend, {
+    headers: {
+        'Authorization': `Bearer ${token}`,
+    },
+});
+
+    alert('인바디 정보가 등록되었습니다!');
     props.closeModal();
-    router.push('/mypage'); // MyPage로 이동
-  };
+    router.push('/mypage');
+  } catch (error) {
+    console.error('Error registering inbody:', error);
+    if (error.response) {
+      console.error('Error response:', error.response.data);
+      console.error('Error status:', error.response.status);
+      alert(`인바디 등록 중 오류가 발생했습니다: ${error.response.data}`);
+    } else if (error.request) {
+      console.error('Error request:', error.request);
+      alert('서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.');
+    } else {
+      console.error('Error message:', error.message);
+      alert(`인바디 등록 중 오류가 발생했습니다: ${error.message}`);
+    }
+  } finally {
+    isSubmitting.value = false;
+  }
+};
+
   </script>
   
   <style scoped>
@@ -56,7 +146,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(193, 193, 193, 0.6);
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -65,10 +155,13 @@
   
   .inbody-modal-content {
     background: rgb(0, 0, 0);
-    padding: 20px;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     border-radius: 10px;
-    width: 600px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 550px;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
   }
   
   .registerinbodytitle {
@@ -87,13 +180,13 @@
   }
   
   .lablefirst {
-    width: 170px;
+    width: 180px;
   }
   
   .inbody-btn-group {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 10px;
     font-size: 14px;
   }
   
@@ -105,6 +198,11 @@
     border-radius: 5px;
     cursor: pointer;
   }
+
+  .submit-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
   
   .cancel-btn {
     background-color: #f44336;
@@ -133,5 +231,23 @@
   background-color: #cccccc;
   cursor: not-allowed;
 }
+
+.file-select-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.file-select-btn:hover {
+  background-color: #45a049;
+}
+
+.selected-file-name {
+  font-size: 14px;
+  color: #00ffff;
+}
   </style>
-  

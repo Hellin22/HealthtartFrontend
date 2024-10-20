@@ -14,8 +14,8 @@
             플레이리스트까지 함께합니다.
           </p>
           <div class="buttons">
-            <button class="primary-btn">운동 루틴 추천받기</button>
-            <button class="secondary-btn">추천 루틴 리스트 보기</button>
+            <button class="primary-btn" @click="routeRoutinePage">운동 루틴 추천받기</button>
+            <button class="secondary-btn" @click="routeRecommendationPage">추천 루틴 리스트 보기</button>
           </div>
         </div>
         <div class="right-content">
@@ -28,27 +28,45 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, inject } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import { jwtDecode } from 'jwt-decode';  // jwt-decode 임포트
 import '@/assets/css/Main/MainPage.css';
 
 const router = useRouter();
 const route = useRoute();
+const loginState = inject('loginState'); // loginState를 상위 컴포넌트에서 inject로 받음
 
+const routeRoutinePage = () => {
+  router.push({ path: '/routine' });
+  };
+  
+const routeRecommendationPage = () => {
+  router.push({ path: '/user-recommendation' });
+  };
+  
 onMounted(() => {
   const blueWave = document.createElement('div');
   blueWave.className = 'blue-wave';
   document.querySelector('.app').appendChild(blueWave);
 
-   // URL에서 토큰 파라미터 확인
-   const token = route.query.token;
-   if (token) {
+  // URL에서 토큰 파라미터 확인
+  const token = route.query.token;
+  
+  if (token) {
     // 토큰을 로컬 스토리지에 저장
     localStorage.setItem('token', token);
     
+    // jwt-decode를 사용해 닉네임 추출
+    const decodedToken = jwtDecode(token);
+    const userNickname = decodedToken.nickname; // 토큰에서 nickname 추출
+
+    // 로그인 상태 업데이트
+    loginState.state.isLoggedIn = true;
+    loginState.state.userNickname = userNickname; // 추출한 닉네임을 loginState에 저장
+
     // 토큰을 제거한 URL로 리다이렉트
     router.replace('/');
   }
-
 });
 </script>

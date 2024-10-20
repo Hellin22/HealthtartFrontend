@@ -4,7 +4,7 @@
     <AppHeader :is-logged-in="loginState.isLoggedIn" :user-nickname="loginState.userNickname" @logout="logout" />
   </div>
   <main>
-    <RouterView @login-success="handleLoginSuccess"/>
+    <RouterView />
   </main>
 </template>
 
@@ -26,6 +26,7 @@ import { jwtDecode } from 'jwt-decode';
   const isMyPage = ref(false);
   const isRankingPage = ref(false);
   const isAddInfoPage = ref(false);
+  const isResetPasswordPage = ref(false);
 
 const loginState = reactive({
   isLoggedIn: false,
@@ -70,7 +71,8 @@ watch(() => route?.path, (newPath) => {
     isMyPage.value = newPath === '/mypage';
     isGymPage.value = newPath === '/gym';
     isRankingPage.value = newPath === '/ranking';
-    isAddInfoPage.value = newPath == '/users/addinfo'
+    isAddInfoPage.value = newPath === '/users/addinfo';
+    isResetPasswordPage.value = newPath === '/users/password'; 
   },
   {
     immediate: true
@@ -82,11 +84,6 @@ const logout = () => {
   loginState.isLoggedIn = false;
   loginState.userNickname = '';
   router.push('/');
-};
-
-// 로그인 성공 처리 함수
-const handleLoginSuccess = () => {
-  checkLoginStatus();
 };
 
 onMounted(() => {
