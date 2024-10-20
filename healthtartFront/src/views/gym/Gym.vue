@@ -16,7 +16,7 @@
                 v-for="equipment in gymEquipment[category]"
                 :key="equipment.exerciseEquipment.exerciseEquipmentCode"
                 class="equipment-button"
-                @click="showEquipmentInfo(equipment)"
+                @click="showEquipmentInfo(equipment.exerciseEquipment.exerciseEquipmentCode)"
               >
                 {{ equipment.exerciseEquipment.exerciseEquipmentName }}
               </button>
@@ -31,7 +31,7 @@
                 v-for="equipment in gymEquipment[category]"
                 :key="equipment.exerciseEquipment.exerciseEquipmentCode"
                 class="equipment-button"
-                @click="showEquipmentInfo(equipment)"
+                @click="showEquipmentInfo(equipment.exerciseEquipment.exerciseEquipmentCode)"
               >
                 {{ equipment.exerciseEquipment.exerciseEquipmentName }}
               </button>
@@ -40,10 +40,10 @@
         </div>
       </div>
     </div>
-    <Modal
+    <EquipmentInfoModal
       v-if="selectedEquipment"
       :equipment="selectedEquipment"
-      :equipmentImage="getEquipmentImage(selectedEquipment)"
+      :equipmentImage="selectedEquipment ? selectedEquipment.exerciseImage : ''"
       @close="closeEquipmentModal"
       @confirm="closeEquipmentModal"
     />
@@ -54,7 +54,7 @@
 import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import '@/assets/css/gym/Gym.css';
-import Modal from '@/components/modal/exerciseequipment/EquipmentInfoModal.vue';
+import EquipmentInfoModal from '@/components/modal/exerciseequipment/EquipmentInfoModal.vue';
 import defaultEquipmentImage from '@/assets/icons/equipment.svg';
 import GymBackGround from '../../components/gym/GymBackGround.vue';
 
@@ -65,12 +65,6 @@ const error = ref(null);
 
 const topCategories = computed(() => ['등', '가슴', '어깨', '하체', '코어']);
 const bottomCategories = computed(() => ['이두', '삼두', '유산소', '전완근']);
-
-const categories = computed(() => Object.keys(gymEquipment.value));
-const maxEquipmentCount = computed(() => {
-  const lengths = Object.values(gymEquipment.value).map(arr => arr.length);
-  return lengths.length > 0 ? Math.max(...lengths, 0) : 0;
-});
 
 const fetchGymData = async () => {
   try {
@@ -129,24 +123,31 @@ const fetchEquipmentData = async (gymCode) => {
   }
 };
 
-const showEquipmentInfo = (equipment) => {
-  selectedEquipment.value = {
-    name: equipment.exerciseEquipment.exerciseEquipmentName,
-    part: equipment.exerciseEquipment.bodyPart,
-    videoUrl: equipment.exerciseEquipment.videoUrl,
-    description: equipment.exerciseEquipment.description
-  };
+const showEquipmentInfo = async (exerciseEquipmentCode) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(`http://localhost:8080/exercise_equipment/${exerciseEquipmentCode}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    selectedEquipment.value = {
+      name: response.data.exerciseEquipmentName,
+      part: response.data.bodyPart,
+      videoUrl: response.data.recommendedVideo,
+      description: response.data.exerciseDescription,
+      exerciseImage: response.data.exerciseImage || defaultEquipmentImage
+    };
+    
+  } catch (err) {
+    console.error('Error fetching equipment data:', err);
+    error.value = '운동 기구 정보를 불러오는데 실패했습니다: ' + err.message;
+  }
 };
 
 const closeEquipmentModal = () => {
   selectedEquipment.value = null;
-};
-
-const getEquipmentImage = (equipment) => {
-  if (equipment.exerciseEquipment.imageUrl == null) {
-    return defaultEquipmentImage;
-  }
-  return equipment.exerciseEquipment.imageUrl;
 };
 
 onMounted(() => {
