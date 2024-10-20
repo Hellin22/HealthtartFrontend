@@ -1,72 +1,140 @@
 <template>
-    <BackGround />
-    <div class="gym-container">
+  <GymBackGround />
+  <div class="gym-page">
+    <div v-if="error" class="error-message">{{ error }}</div>
+    <div class="gym-container" v-if="gymData">
       <div class="gym-header">
-        <h1 class="gym-title">{{ gymName }}</h1>
+        <h1 class="gym-title">{{ gymData.gymName }}</h1>
         <h2 class="equipment-title">보유 운동기구</h2>
       </div>
       <div class="equipment-table">
-        <div class="table-header">
-          <div v-for="category in categories" :key="category" class="header-item">{{ category }}</div>
-        </div>
-        <div class="table-body">
-          <div v-for="i in maxEquipmentCount" :key="i" class="table-row">
-            <div v-for="category in categories" :key="category" class="table-cell">
+        <div class="table-row">
+          <div v-for="category in topCategories" :key="category" class="table-column">
+            <div class="header-item">{{ category }}</div>
+            <div class="column-body">
               <button
-                v-if="gymEquipment[category][i - 1]"
+                v-for="equipment in gymEquipment[category]"
+                :key="equipment.exerciseEquipment.exerciseEquipmentCode"
                 class="equipment-button"
-                @click="showEquipmentInfo(gymEquipment[category][i - 1])"
+                @click="showEquipmentInfo(equipment)"
               >
-                {{ gymEquipment[category][i - 1] }}
+                {{ equipment.exerciseEquipment.exerciseEquipmentName }}
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="table-row bottom-row">
+          <div v-for="category in bottomCategories" :key="category" class="table-column">
+            <div class="header-item">{{ category }}</div>
+            <div class="column-body">
+              <button
+                v-for="equipment in gymEquipment[category]"
+                :key="equipment.exerciseEquipment.exerciseEquipmentCode"
+                class="equipment-button"
+                @click="showEquipmentInfo(equipment)"
+              >
+                {{ equipment.exerciseEquipment.exerciseEquipmentName }}
               </button>
             </div>
           </div>
         </div>
       </div>
-      <Modal
-        v-if="selectedEquipment"
-        :equipment="selectedEquipment"
-        :equipmentImage="getEquipmentImage(selectedEquipment)"
-        @close="closeEquipmentModal"
-        @confirm="closeEquipmentModal"
-      />
     </div>
+    <Modal
+      v-if="selectedEquipment"
+      :equipment="selectedEquipment"
+      :equipmentImage="getEquipmentImage(selectedEquipment)"
+      @close="closeEquipmentModal"
+      @confirm="closeEquipmentModal"
+    />
+  </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import axios from 'axios';
 import '@/assets/css/gym/Gym.css';
-import BackGround from '@/components/BackGround.vue';
 import Modal from '@/components/modal/exerciseequipment/EquipmentInfoModal.vue';
+import defaultEquipmentImage from '@/assets/icons/equipment.svg';
+import GymBackGround from '../../components/gym/GymBackGround.vue';
 
-const emit = defineEmits(['loginSuccess']);
+const gymData = ref(null);
+const gymEquipment = ref({});
+const selectedEquipment = ref(null);
+const error = ref(null);
 
-const gymName = ref('유씨네 헬스장');
-const gymEquipment = ref({
-  등: ['등기구1', '등기구2', '등기구3'],
-  가슴: ['가슴기구1', '가슴기구2', '가슴기구3'],
-  어깨: ['어깨기구1', '어깨기구2', '어깨기구3'],
-  코어: ['코어기구1', '코어기구2', '코어기구3'],
-  삼두: ['삼두기구1', '삼두기구2', '삼두기구3'],
-  하체: ['하체기구1', '하체기구2', '하체기구3'],
-  유산소: ['유산소기구1', '유산소기구2', '유산소기구3'],
-  전완근: ['전완근기구1', '전완근기구2', '전완근기구3'],
-  이두: ['이두기구1', '이두기구2', '이두기구3'],
-});
+const topCategories = computed(() => ['등', '가슴', '어깨', '하체', '코어']);
+const bottomCategories = computed(() => ['이두', '삼두', '유산소', '전완근']);
 
 const categories = computed(() => Object.keys(gymEquipment.value));
 const maxEquipmentCount = computed(() => {
-  return Math.max(...Object.values(gymEquipment.value).map(arr => arr.length));
+  const lengths = Object.values(gymEquipment.value).map(arr => arr.length);
+  return lengths.length > 0 ? Math.max(...lengths, 0) : 0;
 });
 
-const selectedEquipment = ref(null);
+const fetchGymData = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get('http://localhost:8080/users/mypage', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    if (response.data && response.data.gymCode) {
+      gymData.value = {
+        gymCode: response.data.gymCode,
+        gymName: response.data.gymName
+      };
+      await fetchEquipmentData(response.data.gymCode);
+    } else {
+      error.value = '헬스장 정보가 없습니다.';
+    }
+  } catch (err) {
+    console.error('Error fetching gym data:', err);
+    error.value = '데이터를 불러오는 중 오류가 발생했습니다: ' + err.message;
+  }
+};
+
+const fetchEquipmentData = async (gymCode) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(`http://localhost:8080/equipment_per_gym/equipment_per_gym_list`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      params: {
+        gymCode: gymCode
+      }
+    });
+    
+    const equipmentList = response.data;
+    if (Array.isArray(equipmentList) && equipmentList.length > 0) {
+      gymEquipment.value = equipmentList.reduce((acc, item) => {
+        const bodyPart = item.exerciseEquipment.bodyPart;
+        if (!acc[bodyPart]) {
+          acc[bodyPart] = [];
+        }
+        acc[bodyPart].push(item);
+        return acc;
+      }, {});
+    } else {
+      gymEquipment.value = {};
+      error.value = '운동 기구 정보가 없습니다.';
+    }
+  } catch (err) {
+    console.error('Error fetching equipment data:', err);
+    error.value = '운동 기구 정보를 불러오는데 실패했습니다: ' + err.message;
+    gymEquipment.value = {};
+  }
+};
 
 const showEquipmentInfo = (equipment) => {
   selectedEquipment.value = {
-    name: equipment,
-    part: '예시 부위', // 실제 데이터로 교체 필요
-    videoUrl: 'https://www.youtube.com/watch?v=example', // 실제 URL로 교체 필요
-    description: '이 운동기구에 대한 설명입니다.' // 실제 설명으로 교체 필요
+    name: equipment.exerciseEquipment.exerciseEquipmentName,
+    part: equipment.exerciseEquipment.bodyPart,
+    videoUrl: equipment.exerciseEquipment.videoUrl,
+    description: equipment.exerciseEquipment.description
   };
 };
 
@@ -75,7 +143,13 @@ const closeEquipmentModal = () => {
 };
 
 const getEquipmentImage = (equipment) => {
-  // 여기에 실제 이미지 URL을 반환하는 로직 구현
-  return 'path/to/default/image.jpg';
+  if (equipment.exerciseEquipment.imageUrl == null) {
+    return defaultEquipmentImage;
+  }
+  return equipment.exerciseEquipment.imageUrl;
 };
+
+onMounted(() => {
+  fetchGymData();
+});
 </script>

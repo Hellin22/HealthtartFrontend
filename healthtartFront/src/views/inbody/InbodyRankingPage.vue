@@ -200,7 +200,7 @@ const changePage = (page) => {
   position: fixed;
   width: 100%;
   height: 100%;
-  margin-top: 30px;
+  margin-top: 32px;
   z-index: -1;
 }
 
