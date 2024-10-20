@@ -19,12 +19,14 @@
 
         <div class="login-buttons">
           <button type="button" @click="loginUser" class="login">로그인</button>
-          <button type="button" @click="kakaoLogin" class="kakao">카카오 로그인</button>
-          <button type="button" @click="googleLogin" class="google">구글 로그인</button>
+          <button type="button" @click="kakaoLogin" class="kakao">
+            <img src="@/assets/icons/kakao-icon.svg" alt="카카오 아이콘" class="icon"/>카카오 로그인</button>
+          <button type="button" @click="googleLogin" class="google">
+            <img src="@/assets/icons/google-icon.svg" alt="구글 아이콘" class="icon"/>구글 로그인</button>
         </div>
 
         <div class="finds">
-          <div class="find-email">이메일 찾기</div>
+          <div class="find-email" @click="goToFindEmail">이메일 찾기</div>
           <div>|</div>
           <div class="find-password" @click="goToPasswordReset">비밀번호 재설정</div>
           <div>|</div>
@@ -132,6 +134,9 @@ const goToPasswordReset = () => {
   router.push('/users/password'); // /users/password 경로로 이동
 };
 
+const goToFindEmail = () => {
+  router.push('/users/findemail');
+}
 
 const kakaoLogin = () => {
   window.location.href = 'http://localhost:8080/oauth2/authorization/kakao';
@@ -191,6 +196,10 @@ const googleLogin = () => {
   border-radius: 12px;
   border-style: none;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
 .login {
@@ -278,5 +287,12 @@ input {
 
 .login-message-container {
     display: flex;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  left: 10px;
 }
 </style>
