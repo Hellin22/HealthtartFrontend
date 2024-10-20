@@ -113,12 +113,13 @@ const loginUser = async () => {
       
       console.log('Login successful:', decodedToken.nickname);
 
-      alert("로그인 성공"); // 로그인 성공 시 alert창 띄우기
+      alert(decodedToken.nickname+"님, 환영합니다."); // 로그인 성공 시 alert창 띄우기
 
       // 로그인 성공 이벤트 발생
       emit('loginSuccess', decodedToken.nickname);  // 부모 컴포넌트로 로그인 상태 전달
     } else {
       errorMessage.value = '인증 토큰이 없습니다. 로그인 실패';
+      alert("아이디, 비밀번호를 확인해주세요");
     }
   } catch (error) {
     console.error('로그인 중 오류 발생:', error);

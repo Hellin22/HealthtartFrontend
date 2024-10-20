@@ -77,6 +77,7 @@
 
             const routineInfo = await routineResponse.json();
 
+
             title.value = workoutInfo.title;
 
             const year = workoutInfo.createdAt[0];
