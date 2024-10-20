@@ -94,7 +94,6 @@
                     time: routine.value.totalTime,
                 })
             });
-            
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -133,9 +132,13 @@
     onMounted(() => {
 
         const data = router.currentRoute.value.query.routineData;
+        console.log(data);
 
         if (data) {
             const parsedData = JSON.parse(data);
+
+
+
             routine.value.title = parsedData.title;
             routine.value.totalTime = parsedData.totalTime;
             routine.value.musicList = parsedData.musicList;
@@ -173,7 +176,6 @@
             exercise[field] = newValue;
         }
     };
-
     const setActiveButton = () => {
         router.push({ 
             path: '/start-workout', 
