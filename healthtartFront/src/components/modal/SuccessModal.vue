@@ -1,34 +1,37 @@
 <template>
-    <div class="modal-overlay" v-if="isOpen">
-      <div class="delete-modal-content">
-        <div class="delete-modal-header">
-          <button class="delete-close-btn" @click="closeModal">✖</button>
-        </div>
-        <div class="delete-modal-body">운동을 기록하시겠습니까?</div>
-        <div class="delete-modal-actions">
-          <button class="delete-cancel-btn" @click="closeModal">취소</button>
-          <button class="delete-confirm-btn" @click="confirmDeletion">확인</button>
-        </div>
+  <div class="modal-overlay" v-if="isOpen">
+    <div class="delete-modal-content">
+      <div class="delete-modal-header">
+        <button class="delete-close-btn" @click="handleClose">✖</button>
+      </div>
+      <div class="delete-modal-body">운동을 기록하시겠습니까?</div>
+      <div class="delete-modal-actions">
+        <button class="delete-cancel-btn" @click="handleCancel">취소</button>
+        <button class="delete-confirm-btn" @click="handleConfirm">확인</button>
       </div>
     </div>
-  </template>
+  </div>
+</template>
 
 <script setup>
 import { defineProps, defineEmits } from 'vue';
 
 const props = defineProps({
-    isOpen: Boolean
+  isOpen: Boolean
 });
 
-const emit = defineEmits(['close', 'confirm']);
+const emit = defineEmits(['close', 'cancel', 'confirm']);
 
-const closeModal = () => {
-    emit('close');
+const handleClose = () => {
+  emit('close');
 };
 
-const confirmDeletion = () => {
-    emit('confirm');
-    closeModal();
+const handleCancel = () => {
+  emit('cancel');
+};
+
+const handleConfirm = () => {
+  emit('confirm');
 };
 </script>
 

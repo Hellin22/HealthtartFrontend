@@ -30,9 +30,10 @@
         <SuccessModal
             v-if="showModal"
             :isOpen="showModal"
-            @close="handleCancel"
+            @close="closeModal"
+            @cancel="handleCancel"
             @confirm="handleModalAction"
-        />
+            />
     </div>
 </template>
 
@@ -132,6 +133,7 @@
         }
     };
 
+// 이거 routineContent tab누르지말기~! 저대로 두기~!
     const saveRoutine = async () => {
         const currentDate = new Date().toLocaleDateString('ko-KR');
         const routineContent = `
@@ -231,15 +233,14 @@ ${index + 1}. ${exercise.name}
             console.error('운동 기록 오류:', error);
         }
 
-        showModal.value = false;
-        resetTimer();
     };
 
     const handleModalAction = async () => {
         if (modalAction.value === 'record') {
             await recordWorkout();
+            closeModal();
+            resetTimer();
             await router.push('/finished-routine');
-            closeModal(); 
         }
     };
 
@@ -250,13 +251,49 @@ ${index + 1}. ${exercise.name}
     };
 
     const closeModal = () => {
-        showModal.value = false;
+    showModal.value = false;
     };
 
-    const handleCancel = () => {
+    const handleCancel = async () => {
         closeModal();
-        router.push('/');
-    };
+        console.log('취소 버튼 클릭됨. workoutInfoCode:', workoutInfoCode, 'routineCode:', routine.value.routineCode);
+
+        const isAIGeneratedRoutine = !workoutInfoCode && routine.value.routineCode;
+        console.log('AI 생성 루틴 여부:', isAIGeneratedRoutine);
+
+        if (isAIGeneratedRoutine) {
+            console.log('AI 생성 루틴 삭제 시도 중...');
+            try {
+            const response = await fetch(`http://localhost:8080/routines/${routine.value.routineCode}`, {
+                method: 'DELETE',
+                headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+                },
+            });
+
+            const responseData = await response.text();
+            console.log('서버 응답:', response.status, responseData);
+
+            if (!response.ok) {
+                throw new Error(`루틴 삭제 실패: ${response.status} ${responseData}`);
+            }
+
+            console.log('AI 생성 루틴 삭제 성공');
+            } catch (error) {
+            console.error('루틴 삭제 중 오류 발생:', error);
+            }
+        } else {
+            console.log('기존 루틴이므로 삭제하지 않습니다.');
+        }
+
+        console.log('메인 화면으로 이동 중...');
+        await router.push('/');
+        };
+
+
+
+
 
     const formatExerciseExplanation = (explanation) => {
         return explanation.split('.').map(sentence => sentence.trim()).filter(sentence => sentence).join('.');
@@ -281,7 +318,6 @@ ${index + 1}. ${exercise.name}
 
             const workoutInfoCode = route.query.workoutInfoCode;
             if (!workoutInfoCode) {
-                console.error('AI루틴생성페이지에서 넘어옴');
                 return;
             }
 
@@ -342,8 +378,6 @@ ${index + 1}. ${exercise.name}
         fetchUserInfo();
     });
 </script>
-
-
 <style scoped>
     .container {
         display: flex;
