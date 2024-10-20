@@ -11,10 +11,10 @@
   <style scoped>
   .gym-background {
     position: fixed;
-    top: 0;
+    top: -65px;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: calc(100% + 65px);
     z-index: -1;
     overflow: hidden;
     pointer-events: none;
