@@ -8,28 +8,34 @@ import StartWorkoutPage from "../views/routine/StartWorkoutPage.vue";
 const RoutineRoutes = [
   {
     path: "/routine",
-    component: WorkoutInfoInputPage
+    component: WorkoutInfoInputPage,
+    meta: { requiresAuth: true }, // 로그인 필요
   },
   {
     path: "/user-recommendation",
-    component: UserRecommendationPage
+    component: UserRecommendationPage,
+    meta: { requiresAuth: true }, // 로그인 필요
   },
   {
     path: "/routine-detail",
     component: UserRecommendationdetailPage
+    , meta: { requiresAuth: true }, // 로그인 필요
   },
   {
     name : "GenerateRoutine",
     path: "/generate-routine",
-    component: AIGenerateRoutinePage
+    component: AIGenerateRoutinePage,
+    meta: { requiresAuth: true }, // 로그인 필요
   },
   {
     path: "/start-workout",
-    component: StartWorkoutPage
+    component: StartWorkoutPage,
+    meta: { requiresAuth: true }, // 로그인 필요
   },
   {
     path: "/finished-routine",
-    component: RoutineFinishPage
+    component: RoutineFinishPage,
+    meta: { requiresAuth: true }, // 로그인 필요
   },
 ];
 
