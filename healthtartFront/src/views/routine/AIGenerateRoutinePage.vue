@@ -32,6 +32,7 @@
                 <button class="start-routine-button" @click="setActiveButton()"><img class="start-icon"src="@/assets/icons/start.svg" alt="운동 시작 버튼">운동 시작하기</button>
             </div>
         </div>
+        <LoadingScreen v-if="isLoading" />
     </div>
     <DeleteModal
         :is-open="isDeleteModalOpen" 
@@ -41,169 +42,213 @@
 </template>
 
 <script setup>
-    import { ref, onMounted } from 'vue';
-    import { useRouter } from 'vue-router';
-    import { jwtDecode } from 'jwt-decode';
-    import DeleteModal from '../../components/modal/DeleteModal.vue';
+import { ref, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { jwtDecode } from 'jwt-decode';
+import DeleteModal from '../../components/modal/DeleteModal.vue';
+import LoadingScreen from './LoadingScreen.vue';
 
-    const router = useRouter(); 
-    const routine = ref({ exercises: [], bodyPart: '', date: '' });
+const router = useRouter(); 
+const route = useRoute();
+const routine = ref({ exercises: [], bodyPart: '', date: '' });
+const isLoading = ref(false);
 
-    const token = localStorage.getItem('token');
-    const userCode = jwtDecode(token).sub;
+const token = localStorage.getItem('token');
+const userCode = jwtDecode(token).sub;
 
-    const fetchUserData = async () => {
-        try {
-            const response = await fetch(`http://localhost:8080/users/usercode/${userCode}`,{
-                method: 'GET',
+const fetchUserData = async () => {
+    try {
+        const response = await fetch(`http://localhost:8080/users/usercode/${userCode}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+        const userData = await response.json();
+        routine.value.height = userData.userHeight; 
+        routine.value.weight = userData.userWeight; 
+        routine.value.gender = userData.userGender;
+    } catch (error) {
+        console.error('Error fetching User data:', error);
+    }
+}
+
+const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0'); 
+    return `${year}년 ${month}월 ${day}일`;
+};
+
+const regenerateRoutine = async () => {
+    isLoading.value = true;
+    try {
+        const bodyPart = routine.value.bodyPart;
+        const time = routine.value.totalTime;
+
+        console.log('Regenerating routine with:', { userCode, bodyPart, time });  // 디버깅용
+
+        const response = await fetch(`http://localhost:8080/api/gpt/generate-routine`, {    
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                userCode: userCode,
+                bodyPart: bodyPart,
+                time: time,
+            })
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Network response was not ok: ${response.status} ${errorText}`);
+        }
+
+        const newRoutine = await response.json();
+        console.log('New routine received:', newRoutine);
+
+        routine.value = {
+            ...routine.value,
+            title: newRoutine.title,
+            totalTime: newRoutine.totalTime,
+            musicList: newRoutine.musicList,
+            bodyPart: newRoutine.bodyPart,
+            exercises: newRoutine.exercises.map(exercise => ({
+                name: exercise.workoutName,
+                explanation: exercise.exerciseExplanation,
+                video: exercise.exerciseVideo,
+                sets: exercise.weightSet,
+                reps: exercise.numberPerSet,
+                weight: exercise.weightPerSet,
+                time: exercise.workoutTime
+            }))
+        };
+
+        console.log('Updated routine:', routine.value);
+
+    } catch (error) {
+        console.error('Error regenerating routine:', error);
+        alert('루틴 재생성 중 오류가 발생했습니다. 다시 시도해 주세요.');
+    } finally {
+        isLoading.value = false;
+    }
+}
+
+onMounted(async () => {
+    isLoading.value = true;
+    try {
+        const bodyPart = route.params.bodyPart;
+        const time = parseInt(route.params.time);
+
+        if (route.state && route.state.routineDataStored) {
+            const storedData = localStorage.getItem('tempRoutineData');
+            if (storedData) {
+                const newRoutine = JSON.parse(storedData);
+                routine.value = {
+                    title: newRoutine.title,
+                    totalTime: newRoutine.totalTime,
+                    musicList: newRoutine.musicList,
+                    bodyPart: bodyPart,
+                    date: formatDate(new Date()),
+                    exercises: newRoutine.exercises.map(exercise => ({
+                        name: exercise.workoutName,
+                        explanation: exercise.exerciseExplanation,
+                        video: exercise.exerciseVideo,
+                        sets: exercise.weightSet,
+                        reps: exercise.numberPerSet,
+                        weight: exercise.weightPerSet,
+                        time: exercise.workoutTime
+                    }))
+                };
+                localStorage.removeItem('tempRoutineData');
+            }
+        } else {
+            const response = await fetch(`http://localhost:8080/api/gpt/generate-routine`, {    
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-            });
-            const userData = await response.json();
-            routine.value.height = userData.userHeight; 
-            routine.value.weight = userData.userWeight; 
-            routine.value.gender = userData.userGender;
-            
-        } catch (error) {
-            console.error('Error fetching User data:', error);
-        }
-
-    }
-
-    const formatDate = (date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0'); 
-        return `${year}년 ${month}월 ${day}일`;
-    };
-
-    const regenerateRoutine = async () => {
-
-        try {
-            const response = await fetch(`http://localhost:8080/api/gpt/generate-routine?userCode=${userCode}&bodyPart=${routine.value.bodyPart}&time=${routine.value.totalTime}`, {    
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    'Authorization': `Bearer ${token}`,
-                },
                 body: JSON.stringify({
                     userCode: userCode,
-                    bodyPart: routine.value.bodyPart,
-                    time: routine.value.totalTime,
+                    bodyPart: bodyPart,
+                    time: time,
                 })
             });
-            
+
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
 
             const newRoutine = await response.json();
 
-             routine.value = {
-                ...routine.value,
+            routine.value = {
                 title: newRoutine.title,
                 totalTime: newRoutine.totalTime,
                 musicList: newRoutine.musicList,
-                bodyPart: newRoutine.bodyPart,
-                exercises: [],
+                bodyPart: bodyPart,
+                date: formatDate(new Date()),
+                exercises: newRoutine.exercises.map(exercise => ({
+                    name: exercise.workoutName,
+                    explanation: exercise.exerciseExplanation,
+                    video: exercise.exerciseVideo,
+                    sets: exercise.weightSet,
+                    reps: exercise.numberPerSet,
+                    weight: exercise.weightPerSet,
+                    time: exercise.workoutTime
+                }))
             };
-
-            let i = 1;
-            while (newRoutine[`workoutName${i}`]) {
-                routine.value.exercises.push({
-                    name: newRoutine[`workoutName${i}`],
-                    explanation: newRoutine[`exerciseExplanation${i}`],
-                    video: newRoutine[`exerciseVideo${i}`],
-                    sets: newRoutine[`weightSet${i}`],
-                    reps: newRoutine[`numberPerSet${i}`],
-                    weight: newRoutine[`weightPerSet${i}`],
-                    time: newRoutine[`workoutTime${i}`]
-                });
-                i++;
-            }
-
-        } catch (error) {
-            console.error('Error regenerating routine:', error);
         }
+
+        await fetchUserData();
+    } catch (error) {
+        console.error('Error generating routine:', error);
+    } finally {
+        isLoading.value = false;
     }
+});
 
+const formatExerciseExplanation = (explanation) => {
+    return explanation.split('.').map(sentence => sentence.trim()).filter(sentence => sentence).join('.<br>');
+};
 
-    onMounted(() => {
+const toggleEdit = (index, field) => {
+    const exercise = routine.value.exercises[index];
+    const newValue = prompt(`${field} 변경:`, exercise[field]);
+    if (newValue !== null) {
+        exercise[field] = newValue;
+    }
+};
 
-        const data = router.currentRoute.value.query.routineData;
-
-        if (data) {
-            const parsedData = JSON.parse(data);
-            routine.value.title = parsedData.title;
-            routine.value.totalTime = parsedData.totalTime;
-            routine.value.musicList = parsedData.musicList;
-            routine.value.bodyPart = router.currentRoute.value.query.bodyPart; 
-            
-            const today = new Date();
-            routine.value.date = formatDate(today); 
-            
-            let i = 1;
-            routine.value.exercises = [];
-            while (parsedData[`workoutName${i}`]) {
-                routine.value.exercises.push({
-                    name: parsedData[`workoutName${i}`],
-                    explanation: parsedData[`exerciseExplanation${i}`],
-                    video: parsedData[`exerciseVideo${i}`],
-                    sets: parsedData[`weightSet${i}`],
-                    reps: parsedData[`numberPerSet${i}`],
-                    weight: parsedData[`weightPerSet${i}`],
-                    time: parsedData[`workoutTime${i}`]
-                });
-                i++;
-            }
-        }
-        fetchUserData();
+const setActiveButton = () => {
+    router.push({ 
+        path: '/start-workout', 
+        state: { routineData: routine.value }
     });
+};
 
-    const formatExerciseExplanation = (explanation) => {
-        return explanation.split('.').map(sentence => sentence.trim()).filter(sentence => sentence).join('.<br>');
-    };
+const isDeleteModalOpen = ref(false);
+const currentDeleteIndex = ref(null);
 
-    const toggleEdit = (index, field) => {
-        const exercise = routine.value.exercises[index];
-        const newValue = prompt(`${field} 변경:`, exercise[field]);
-        if (newValue !== null) {
-            exercise[field] = newValue;
-        }
-    };
-
-    const setActiveButton = () => {
-        router.push({ 
-            path: '/start-workout', 
-            query: { 
-                routineData: JSON.stringify(routine.value) 
-            } 
-        });
-    };
-
-
-    const isDeleteModalOpen = ref(false);
-    const currentDeleteIndex = ref(null);
-
-    const openDeleteModal = (index) => {
+const openDeleteModal = (index) => {
     currentDeleteIndex.value = index;
     isDeleteModalOpen.value = true;
-    };
+};
 
-    const closeDeleteModal = () => {
-        isDeleteModalOpen.value = false;
-        currentDeleteIndex.value = null;
-    };
+const closeDeleteModal = () => {
+    isDeleteModalOpen.value = false;
+    currentDeleteIndex.value = null;
+};
 
-    const confirmDelete = () => {
-        if (currentDeleteIndex.value !== null) {
-            routine.value.exercises.splice(currentDeleteIndex.value, 1);
-        }
-        closeDeleteModal();
-    };
-
+const confirmDelete = () => {
+    if (currentDeleteIndex.value !== null) {
+        routine.value.exercises.splice(currentDeleteIndex.value, 1);
+    }
+    closeDeleteModal();
+};
 </script>
 
 <style scoped>

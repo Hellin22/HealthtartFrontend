@@ -15,37 +15,77 @@
         <div class="timer-border">
             <div class="timer">{{ formattedTime }}</div>
             <div class="timer-button">
-                <button class="start-button" @click="startTimer">
+                <button class="start-button" @click="handleStart" :disabled="isStarted">
                     <img class="start-icon" src="@/assets/icons/playbutton.svg" alt="시작 버튼">
                 </button>
-                <button class="pause-button" @click="stopTimer">
+                <button class="pause-button" @click="stopTimer" :disabled="!isStarted">
                     <img class="pause-icon" src="@/assets/icons/pausebutton.svg" alt="중지 버튼">
                 </button>
-                <button class="stop-button" @click="resetTimer">
+                <button class="stop-button" @click="handleStop">
                     <img class="stop-icon" src="@/assets/icons/stopbutton.svg" alt="끝 버튼">
                 </button>
             </div>
             <p class="timer-instruction">추천 운동 시간: {{ routine.totalTime }}분</p>
         </div>
+        <SuccessModal
+            v-if="showModal"
+            :isOpen="showModal"
+            @close="closeModal"
+            @cancel="handleCancel"
+            @confirm="handleModalAction"
+            />
     </div>
 </template>
 
 <script setup>
     import { ref, computed, onMounted } from 'vue';
-    import { useRoute } from 'vue-router';
+    import { useRoute, useRouter } from 'vue-router';
+    import { jwtDecode } from 'jwt-decode';
+    import SuccessModal from '../../components/modal/SuccessModal.vue';
 
     const route = useRoute();
+    const router = useRouter();
     const routine = ref(JSON.parse(route.query.routineData || '{"exercises":[], "totalTime": 0}')); 
-    console.log('Initial routine data:', routine.value);
+    const token = localStorage.getItem('token');
+    const workoutInfoCode = route.query.workoutInfoCode || null;
+    const workoutRoutineCode = ref(0);
+    const userInfo = ref({
+        height: '',
+        weight: '',
+        gender: '',
+        age: ''
+    });
 
     const seconds = ref(0);
     let timerInterval = null;
+
+    const isStarted = ref(false);
+    const showModal = ref(false);
+    const modalAction = ref('record');
 
     const formattedTime = computed(() => {
         const minutes = String(Math.floor(seconds.value / 60)).padStart(2, '0');
         const secs = String(seconds.value % 60).padStart(2, '0');
         return `${minutes}:${secs}`;
     });
+
+    const selectedRoutineCode = computed(() => {
+        if (workoutInfoCode) {
+            return workoutRoutineCode.value;
+        } else {
+            return routine.value.routineCode;
+        }
+    });
+
+    const handleStart = () => {
+        if (!isStarted.value) {
+            startTimer();
+            if (!workoutInfoCode) {
+                saveRoutine();
+            }
+            isStarted.value = true;
+        }
+    };
 
     const startTimer = () => {
         if (!timerInterval) {
@@ -60,19 +100,209 @@
         timerInterval = null;
     };
 
+    const handleStop = () => {
+        stopTimer();
+        showModal.value = true; 
+        modalAction.value = 'record';
+    };
+
+    const fetchUserInfo = async () => {
+        try {
+            const decodedToken = jwtDecode(token);
+            const userCode = decodedToken.sub;
+            const response = await fetch(`http://localhost:8080/users/usercode/${userCode}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('사용자 정보 조회 실패');
+            }
+
+            const data = await response.json();
+            userInfo.value = {
+                height: data.userHeight,
+                weight: data.userWeight,
+                gender: data.userGender,
+                age: data.userAge
+            };
+        } catch (error) {
+            console.error('사용자 정보 조회 오류:', error);
+        }
+    };
+
+// 이거 routineContent tab누르지말기~! 저대로 두기~!
+    const saveRoutine = async () => {
+        const currentDate = new Date().toLocaleDateString('ko-KR');
+        const routineContent = `
+오늘의 운동 루틴
+제목: ${routine.value.title}
+날짜: ${currentDate}
+운동 부위: ${routine.value.bodyPart}
+키: ${userInfo.value.height}cm
+몸무게: ${userInfo.value.weight}kg
+성별: ${userInfo.value.gender}
+나이: ${userInfo.value.age}세
+운동 시간: ${routine.value.totalTime}분
+
+오늘의 운동 루틴을 추천해 드립니다:
+${routine.value.exercises.map((exercise, index) => `
+${index + 1}. ${exercise.name}
+- 세트 및 반복: ${exercise.sets}세트 x ${exercise.reps}회
+- 운동별 시간: ${exercise.time || ''}분
+- 운동 설명: ${formatExerciseExplanation(getExplanation(exercise))}
+- 중량: ${exercise.weight > 0 ? exercise.weight + 'kg' : '맨몸운동입니다.'}
+- 추천 영상: [${exercise.name} 운동 영상](${exercise.video})
+`).join('')}
+추천 MusicList: ${routine.value.musicList || ''}`;
+
+        const formattedResponse = {
+            choices: [
+                {
+                    message: {
+                        content: routineContent.trim()
+                    }
+                }
+            ]
+        };
+
+        try {
+            const response = await fetch('http://localhost:8080/api/gpt/process-routine', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(formattedResponse)
+            });
+
+            if (!response.ok) {
+                throw new Error('루틴 저장 실패');
+            }
+
+            const result = await response.json();
+            console.log('운동 루틴 저장 결과:', result);
+
+            if (result.routineCode) {
+                routine.value.routineCode = result.routineCode;
+            }
+        } catch (error) {
+            console.error('루틴 저장 오류:', error);
+        }
+    };
+
+    const recordWorkout = async () => {
+        try {
+            const decodedToken = jwtDecode(token);
+            const userCode = decodedToken.sub;
+
+            const now = new Date();
+            const dayOfExercise = now.toISOString().split('T')[0];
+            const createdAt = now.toISOString();
+            const updatedAt = now.toISOString();
+            const hours = Math.floor(seconds.value / 3600);
+            const minutes = Math.floor((seconds.value % 3600) / 60);
+            const secs = seconds.value % 60;
+            const exerciseDuration = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, secs); 
+            const response = await fetch('http://localhost:8080/recordperuser/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({      
+                    dayOfExercise: dayOfExercise, 
+                    exerciseDuration: exerciseDuration.toISOString(),
+                    recordFlag: true, 
+                    userCode: userCode,
+                    routineCode: selectedRoutineCode.value,
+                    createdAt: createdAt,
+                    updatedAt: updatedAt
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('운동 기록 실패');
+            }
+
+            console.log('운동이 성공적으로 기록되었습니다.');
+
+        } catch (error) {
+            console.error('운동 기록 오류:', error);
+        }
+
+    };
+
+    const handleModalAction = async () => {
+        if (modalAction.value === 'record') {
+            await recordWorkout();
+            closeModal();
+            resetTimer();
+            await router.push('/finished-routine');
+        }
+    };
+
     const resetTimer = () => {
         stopTimer();
         seconds.value = 0;
+        isStarted.value = false;
     };
 
+    const closeModal = () => {
+    showModal.value = false;
+    };
+
+    const handleCancel = async () => {
+        closeModal();
+        console.log('취소 버튼 클릭됨. workoutInfoCode:', workoutInfoCode, 'routineCode:', routine.value.routineCode);
+
+        const isAIGeneratedRoutine = !workoutInfoCode && routine.value.routineCode;
+        console.log('AI 생성 루틴 여부:', isAIGeneratedRoutine);
+
+        if (isAIGeneratedRoutine) {
+            console.log('AI 생성 루틴 삭제 시도 중...');
+            try {
+            const response = await fetch(`http://localhost:8080/routines/${routine.value.routineCode}`, {
+                method: 'DELETE',
+                headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+                },
+            });
+
+            const responseData = await response.text();
+            console.log('서버 응답:', response.status, responseData);
+
+            if (!response.ok) {
+                throw new Error(`루틴 삭제 실패: ${response.status} ${responseData}`);
+            }
+
+            console.log('AI 생성 루틴 삭제 성공');
+            } catch (error) {
+            console.error('루틴 삭제 중 오류 발생:', error);
+            }
+        } else {
+            console.log('기존 루틴이므로 삭제하지 않습니다.');
+        }
+
+        console.log('메인 화면으로 이동 중...');
+        await router.push('/');
+        };
+
+
+
+
+
     const formatExerciseExplanation = (explanation) => {
-        return explanation.split('.').map(sentence => sentence.trim()).filter(sentence => sentence).join('.<br>');
+        return explanation.split('.').map(sentence => sentence.trim()).filter(sentence => sentence).join('.');
     };
 
     const getExplanation = (exercise) => {
         if (exercise.explanation) {
             return exercise.explanation;
-        } else if (exercise.exerciseEquipmentCode.exerciseDescription) {
+        } else if (exercise.exerciseEquipmentCode && exercise.exerciseEquipmentCode.exerciseDescription) {
             return exercise.exerciseEquipmentCode.exerciseDescription;
         }
         return '';
@@ -88,7 +318,6 @@
 
             const workoutInfoCode = route.query.workoutInfoCode;
             if (!workoutInfoCode) {
-                console.error('workoutInfoCode가 없습니다.');
                 return;
             }
 
@@ -115,7 +344,6 @@
                 },
             });
 
-
             if (!routineResponse.ok) {
                 throw new Error('운동 루틴 상세 정보 조회 오류');
             }
@@ -123,10 +351,12 @@
             const routineInfo = await routineResponse.json();
             console.log('Routine Info:', routineInfo);
 
+            workoutRoutineCode.value = workoutInfo.routineCode;
 
             routine.value = {
                 title: workoutInfo.title,
                 totalTime: workoutInfo.time,
+                routineCode: workoutInfo.routineCode, 
                 exercises: routineInfo.map((exercise) => ({
                     name: exercise.workoutName,
                     sets: exercise.weightSet,
@@ -138,8 +368,6 @@
                 }))
             };
 
-            console.log('Updated routine data:', routine.value);
-
         } catch (error) {
             console.error('오류 발생:', error);
         }
@@ -147,9 +375,9 @@
 
     onMounted(() => {
         fetchRoutineDetails();
+        fetchUserInfo();
     });
 </script>
-
 <style scoped>
     .container {
         display: flex;

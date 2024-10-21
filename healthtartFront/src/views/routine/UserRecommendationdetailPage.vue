@@ -15,6 +15,7 @@
                     <div class="board-header-set">세트 수</div>
                     <div class="board-header-num">세트 별 개수</div>
                     <div class="board-header-weight">무게</div>
+                    <div class="board-header-time">시간</div>
                     <div class="board-header-link">영상 링크</div>
                 </div>
             <div class="board-body">
@@ -24,6 +25,7 @@
                         <div class="board-row-set">{{ routine.set }}</div>
                         <div class="board-row-num">{{ routine.num }}</div>
                         <div class="board-row-weight">{{ routine.weight }}</div>
+                        <div class="board-row-time">{{ routine.time }}</div>
                         <div class="board-row-link">{{ routine.link }}</div>
                     </div>
                 </div>
@@ -77,6 +79,7 @@
 
             const routineInfo = await routineResponse.json();
 
+
             title.value = workoutInfo.title;
 
             const year = workoutInfo.createdAt[0];
@@ -93,6 +96,7 @@
                 num: routine.numberPerSet,
                 weight: routine.weightPerSet,
                 link: routine.link,
+                time: routine.workoutTime,
             }));
 
 
@@ -170,7 +174,7 @@
 
     .detail-board-header {
         display: grid;
-        grid-template-columns: 1fr 2fr 1fr 1fr 1fr 2fr;
+        grid-template-columns: 1fr 2fr 1fr 1fr 1fr 1fr 3fr;
         padding: 20px 16px;
         font-weight: bold;
         border-bottom: 2px solid rgb(1, 254, 174, 0.5);
@@ -181,13 +185,13 @@
     .board-body {
         display: flex;
         flex-direction: column;
-        max-height: 400px; 
+        max-height: 300px; 
         overflow-y: auto; 
     }
 
     .board-row {
         display: grid;
-        grid-template-columns: 1fr 2fr 1fr 1fr 1fr 2fr;
+        grid-template-columns: 1fr 2fr 1fr 1fr 1fr 1fr 3fr;
         padding: 10px 16px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }

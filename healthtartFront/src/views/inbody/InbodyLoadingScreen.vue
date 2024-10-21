@@ -3,7 +3,7 @@
       <div class="rotating-monster">
         <img src="@/assets/icons/bluemonster.svg" alt="Blue Monster" />
       </div>
-      <div class="loading-text">운동 루틴을 생성 중입니다!<br />잠시만 기다려 주세요.</div>
+      <div class="inbody-loading-text">인바디 등록 중입니다!<br />잠시만 기다려 주세요.</div>
     </div>
   </template>
   
@@ -33,7 +33,7 @@
     height: 100%;
   }
   
-  .loading-text {
+  .inbody-loading-text {
     color: white;
     font-size: 18px;
     text-align: center;

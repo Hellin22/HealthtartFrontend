@@ -19,6 +19,7 @@ const RoutineRoutes = [
     component: UserRecommendationdetailPage
   },
   {
+    name : "GenerateRoutine",
     path: "/generate-routine",
     component: AIGenerateRoutinePage
   },

@@ -176,7 +176,7 @@ const fetchUserData = async () => {
       };
     }
 
-    if (!registeredRival.value) {
+    if (!registeredRival.value && response.data.rivalUserCode && response.data.rivalNickname) {
       registeredRival.value = {
         rivalUserCode: response.data.rivalUserCode,
         userNickname: response.data.rivalNickname
@@ -323,13 +323,5 @@ const closeDeleteModal = () => {
 const handleRivalRegistration = (rival) => {
   registeredRival.value = rival;
   closeRivalModal();
-};
-
-const viewRivalWorkoutRecord = (rivalUserCode) => {
-  console.log('View rival workout record:', rivalUserCode);
-};
-
-const viewRivalInbody = (rivalUserCode) => {
-  console.log('View rival inbody:', rivalUserCode);
 };
 </script>

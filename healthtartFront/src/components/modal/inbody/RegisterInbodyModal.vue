@@ -25,6 +25,7 @@
           </div>
         </form>
       </div>
+      <InbodyLoadingScreen v-if="isLoading" />
     </div>
   </template>
   
@@ -33,15 +34,18 @@
   import { useRouter } from 'vue-router';
   import axios from 'axios';
   import { jwtDecode } from 'jwt-decode';
+import InbodyLoadingScreen from '../../../views/inbody/InbodyLoadingScreen.vue';
   
   const props = defineProps({
-    isOpen: Boolean,
-    closeModal: Function,
-  });
+  isOpen: Boolean,
+  closeModal: Function,
+  updateUserData: Function,
+});
   
   const router = useRouter();
   const imageUrl = ref(null);
   const selectedFile = ref(null);
+  const isLoading = ref(false);
   const isSubmitting = ref(false);
   const fileInput = ref(null);
   
@@ -65,6 +69,7 @@
   if (!selectedFile.value) return;
 
   isSubmitting.value = true;
+  isLoading.value = true;
 
   try {
     const token = localStorage.getItem('token');
@@ -81,12 +86,8 @@
       },
     });
 
-    console.log('Upload response:', uploadResponse.data);
-
     const fullUrl = uploadResponse.data;
     const fileName = fullUrl.split('/').pop();
-
-    console.log('File name for OCR:', fileName);
 
     const ocrResponse = await axios.get(`http://localhost:8080/ocr/extract-text`, {
       params: { fileName: fileName },
@@ -95,48 +96,48 @@
       },
     });
     
-    console.log('Full OCR response:', ocrResponse);
     const ocrData = ocrResponse.data;
-
     const decodedToken = jwtDecode(token);
-    console.log('Decoded token:', decodedToken);
-
     const userCode = decodedToken.sub;
 
     const dataToSend = {
-        ...ocrData,
-        userCode
+      ...ocrData,
+      userCode
     };
 
-    console.log('Data to send:', dataToSend);
-
-await axios.post('http://localhost:8080/inbody/register', dataToSend, {
-    headers: {
+    await axios.post('http://localhost:8080/inbody/register', dataToSend, {
+      headers: {
         'Authorization': `Bearer ${token}`,
-    },
-});
+      },
+    });
+
+    const updatedUserInfo = {
+      userHeight: dataToSend.height,
+      userWeight: dataToSend.weight,
+    };
+
+    await axios.patch('http://localhost:8080/users/mypage/edit/userinfo', updatedUserInfo, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (typeof props.updateUserData === 'function') {
+      props.updateUserData(updatedUserInfo);
+    }
 
     alert('인바디 정보가 등록되었습니다!');
     props.closeModal();
     router.push('/mypage');
   } catch (error) {
-    console.error('Error registering inbody:', error);
-    if (error.response) {
-      console.error('Error response:', error.response.data);
-      console.error('Error status:', error.response.status);
-      alert(`인바디 등록 중 오류가 발생했습니다: ${error.response.data}`);
-    } else if (error.request) {
-      console.error('Error request:', error.request);
-      alert('서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.');
-    } else {
-      console.error('Error message:', error.message);
-      alert(`인바디 등록 중 오류가 발생했습니다: ${error.message}`);
-    }
+    console.error('Error registering inbody and updating user info:', error);
+    alert('인바디 등록 중 오류가 발생했습니다.');
   } finally {
     isSubmitting.value = false;
+    isLoading.value = false;
   }
 };
-
   </script>
   
   <style scoped>

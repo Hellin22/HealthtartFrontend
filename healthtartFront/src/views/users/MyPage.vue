@@ -43,7 +43,11 @@
             <button type="button" class="edit-btn" @click="goToEditPage">수정</button>
           </div>
         </form>
-        <RegisterInbodyModal :isOpen="isInbodyModalOpen" :closeModal="closeInbodyModal" />
+        <RegisterInbodyModal
+          :isOpen="isInbodyModalOpen"
+          :closeModal="closeModal"
+          :updateUserData="updateUserData"
+        />
         <div class="extra-content">
           <div class="extra-section">
             <div class="extra-button-group">
@@ -107,7 +111,6 @@ const isInbodyModalOpen = ref(false);
 provide('selectedGym', selectedGym);
 provide('registeredRival', registeredRival);
 
-// 유저 정보 조회
 const fetchUserData = async () => {
   try {
     const token = localStorage.getItem('token');
@@ -155,7 +158,7 @@ const fetchRival = async () => {
     const decodedToken = jwtDecode(token);
     const userCode = decodedToken.sub;
 
-    const response = await axios.get(`http://localhost:8080/rival`, {
+    const response = await axios.get('http://localhost:8080/rival', {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -174,16 +177,10 @@ const fetchRival = async () => {
   }
 };
 
-onMounted(() => {
-  fetchUserData();
-  fetchRival();
-});
-
-if (route.params.updatedData) {
-  formData.value = route.params.updatedData;
-  selectedGym.value = route.params.selectedGym;
-  registeredRival.value = route.params.registeredRival;
-}
+const updateUserData = (updatedUserData) => {
+  formData.value.userHeight = updatedUserData.height;
+  formData.value.userWeight = updatedUserData.weight;
+};
 
 const goToEditPage = async () => {
   router.push({
@@ -199,23 +196,18 @@ const openInbodyModal = () => {
   isInbodyModalOpen.value = true;
 };
 
-const closeInbodyModal = () => {
+const handleInbodyModalClose = () => {
   isInbodyModalOpen.value = false;
+  fetchUserData();
 };
 
-const showGymEquipment = () => {
-  console.log('Show gym equipment');
+const closeModal = () => {
+  isInbodyModalOpen.value = false;
+  handleInbodyModalClose();
 };
 
-const showGymAddress = () => {
-  console.log('Show gym address');
-};
-
-const viewRivalWorkoutRecord = (rivalUserCode) => {
-  console.log('View rival workout record:', rivalUserCode);
-};
-
-const viewRivalInbody = (rivalUserCode) => {
-  console.log('View rival inbody:', rivalUserCode);
-};
+onMounted(() => {
+  fetchUserData();
+  fetchRival();
+});
 </script>
