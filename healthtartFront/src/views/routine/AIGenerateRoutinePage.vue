@@ -2,8 +2,8 @@
     <div class="container">
         <div class="ai-main-container">
             <div class="div-title">
-                    <h1 class="routine-title">{{ routine.title }}</h1>
-                </div>
+                <h1 class="routine-title">{{ routine.title }}</h1>
+            </div>
             <div class="routine-contents">
                 <div class="routine-insert-info">
                     <p class="routine-date">날짜: {{routine.date}}</p> 
@@ -25,7 +25,6 @@
                         <p><span class="music-span">추천 Music: {{ routine.musicList }}</span></p>
                     </div>
                 </div>
-            
             </div>
             <div class="button-container">
                 <button class="regenerate-routine-button" @click="regenerateRoutine()"><img class="regenerate-icon" src="@/assets/icons/regenerate.svg" alt="루틴 재생성 버튼">루틴 재생성 하기</button>
@@ -42,11 +41,6 @@
 </template>
 
 <script setup>
-    import { ref, onMounted } from 'vue';
-    import { useRouter } from 'vue-router';
-    import { jwtDecode } from 'jwt-decode';
-    import DeleteModal from '../../components/modal/DeleteModal.vue';
-    import LoadingScreen from './LoadingScreen.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { jwtDecode } from 'jwt-decode';
