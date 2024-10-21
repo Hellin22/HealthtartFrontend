@@ -33,6 +33,7 @@
             </div>
         </div>
     </div>
+    <LoadingScreen v-if="loading"/>
     <DeleteModal
         :is-open="isDeleteModalOpen" 
         @close="closeDeleteModal" 
@@ -45,12 +46,14 @@
     import { useRouter } from 'vue-router';
     import { jwtDecode } from 'jwt-decode';
     import DeleteModal from '../../components/modal/DeleteModal.vue';
+    import LoadingScreen from './LoadingScreen.vue';
 
     const router = useRouter(); 
     const routine = ref({ exercises: [], bodyPart: '', date: '' });
 
     const token = localStorage.getItem('token');
     const userCode = jwtDecode(token).sub;
+    const loading = ref(false);
 
     const fetchUserData = async () => {
         try {
@@ -80,8 +83,11 @@
     };
 
     const regenerateRoutine = async () => {
-
+        loading.value = true; 
         try {
+            const bodyPart = routine.value.bodyPart || '';
+            const totalTime = routine.value.totalTime;
+
             const response = await fetch(`http://localhost:8080/api/gpt/generate-routine?userCode=${userCode}&bodyPart=${routine.value.bodyPart}&time=${routine.value.totalTime}`, {    
                 method: 'POST',
                 headers: {
@@ -90,8 +96,8 @@
                 },
                 body: JSON.stringify({
                     userCode: userCode,
-                    bodyPart: routine.value.bodyPart,
-                    time: routine.value.totalTime,
+                    bodyPart: bodyPart,
+                    time: totalTime,
                 })
             });
             if (!response.ok) {
@@ -99,6 +105,7 @@
             }
 
             const newRoutine = await response.json();
+            console.log("재생성의재생성된루틴이야!!!!!!!!!"+newRoutine);
 
              routine.value = {
                 ...routine.value,
@@ -125,6 +132,8 @@
 
         } catch (error) {
             console.error('Error regenerating routine:', error);
+        } finally {
+            loading.value = false;
         }
     }
 
@@ -137,15 +146,14 @@
         if (data) {
             const parsedData = JSON.parse(data);
 
-
-
-            routine.value.title = parsedData.title;
-            routine.value.totalTime = parsedData.totalTime;
-            routine.value.musicList = parsedData.musicList;
-            routine.value.bodyPart = router.currentRoute.value.query.bodyPart; 
-            
-            const today = new Date();
-            routine.value.date = formatDate(today); 
+            routine.value = {
+                title: parsedData.title || '',
+                totalTime: parsedData.totalTime || 120,
+                musicList: parsedData.musicList || '',
+                bodyPart: router.currentRoute.value.query.bodyPart || '',
+                date: formatDate(new Date()),
+                exercises: [],
+            };
             
             let i = 1;
             routine.value.exercises = [];
