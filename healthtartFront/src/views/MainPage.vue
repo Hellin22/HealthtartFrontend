@@ -31,7 +31,7 @@
 import { onMounted, inject } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { jwtDecode } from 'jwt-decode';  // jwt-decode 임포트
-import '@/assets/css/Main/MainPage.css';
+import '@/assets/css/main/MainPage.css';
 
 const router = useRouter();
 const route = useRoute();

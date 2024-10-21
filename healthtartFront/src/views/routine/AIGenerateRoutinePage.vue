@@ -42,11 +42,6 @@
 </template>
 
 <script setup>
-    import { ref, onMounted } from 'vue';
-    import { useRouter } from 'vue-router';
-    import { jwtDecode } from 'jwt-decode';
-    import DeleteModal from '../../components/modal/DeleteModal.vue';
-    import LoadingScreen from './LoadingScreen.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { jwtDecode } from 'jwt-decode';
@@ -63,7 +58,7 @@ const userCode = jwtDecode(token).sub;
 
 const fetchUserData = async () => {
     try {
-        const response = await fetch(`http://localhost:8080/users/usercode/${userCode}`, {
+        const response = await fetch(`/boot/users/usercode/${userCode}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -94,7 +89,7 @@ const regenerateRoutine = async () => {
 
         console.log('Regenerating routine with:', { userCode, bodyPart, time });  // 디버깅용
 
-        const response = await fetch(`http://localhost:8080/api/gpt/generate-routine`, {    
+        const response = await fetch(`/boot/api/gpt/generate-routine`, {    
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -171,7 +166,7 @@ onMounted(async () => {
                 localStorage.removeItem('tempRoutineData');
             }
         } else {
-            const response = await fetch(`http://localhost:8080/api/gpt/generate-routine`, {    
+            const response = await fetch(`/boot/api/gpt/generate-routine`, {    
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
