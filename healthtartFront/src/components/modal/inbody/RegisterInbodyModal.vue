@@ -79,7 +79,7 @@ import InbodyLoadingScreen from '../../../views/inbody/InbodyLoadingScreen.vue';
 
     const formData = new FormData();
     formData.append('file', selectedFile.value);
-    const uploadResponse = await axios.post('http://localhost:8080/upload/image', formData, {
+    const uploadResponse = await axios.post('/boot/upload/image', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'Authorization': `Bearer ${token}`,
@@ -89,7 +89,7 @@ import InbodyLoadingScreen from '../../../views/inbody/InbodyLoadingScreen.vue';
     const fullUrl = uploadResponse.data;
     const fileName = fullUrl.split('/').pop();
 
-    const ocrResponse = await axios.get(`http://localhost:8080/ocr/extract-text`, {
+    const ocrResponse = await axios.get(`/boot/ocr/extract-text`, {
       params: { fileName: fileName },
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -105,7 +105,7 @@ import InbodyLoadingScreen from '../../../views/inbody/InbodyLoadingScreen.vue';
       userCode
     };
 
-    await axios.post('http://localhost:8080/inbody/register', dataToSend, {
+    await axios.post('/boot/inbody/register', dataToSend, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
@@ -116,7 +116,7 @@ import InbodyLoadingScreen from '../../../views/inbody/InbodyLoadingScreen.vue';
       userWeight: dataToSend.weight,
     };
 
-    await axios.patch('http://localhost:8080/users/mypage/edit/userinfo', updatedUserInfo, {
+    await axios.patch('/boot/users/mypage/edit/userinfo', updatedUserInfo, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',

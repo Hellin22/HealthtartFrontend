@@ -63,7 +63,7 @@ const closeModal = () => {
 const fetchAllUsers = async () => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axios.get('http://localhost:8080/users', {
+    const response = await axios.get('/boot/users', {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     allUsers.value = response.data;
@@ -92,7 +92,7 @@ const registerRival = async () => {
   if (selectedRival.value) {
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`http://localhost:8080/rival/${selectedRival.value.userCode}`, {}, {
+      await axios.post(`/boot/rival/${selectedRival.value.userCode}`, {}, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       

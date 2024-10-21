@@ -67,7 +67,7 @@
         const token = localStorage.getItem('token');
         const userCode = jwtDecode(token).sub;
         
-        const response = await fetch(`http://localhost:8080/api/gpt/generate-routine`, {    
+        const response = await fetch(`/boot/api/gpt/generate-routine`, {    
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

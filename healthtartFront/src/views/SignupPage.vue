@@ -45,7 +45,7 @@ const submitForm = (dataFromStep2) => {
   // 여기에 서버로 데이터를 보내는 로직 추가
   console.log('최종 데이터: ', formData.value);
 
-  axios.post("http://localhost:8080/users/signup", formData.value)
+  axios.post("/boot/users/signup", formData.value)
     .then((response) => {
       console.log('서버 응답: ', response.data);
       alert('가입 성공!');

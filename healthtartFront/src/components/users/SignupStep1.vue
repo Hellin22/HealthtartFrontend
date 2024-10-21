@@ -109,7 +109,7 @@ const resetNicknameCheck = () => {
 const checkNickname = async () => {
   if (formData.value.userNickname) {
     try {
-      const response = await axios.get('http://localhost:8080/users/nickname/check', {
+      const response = await axios.get('/boot/users/nickname/check', {
         params: { userNickname: formData.value.userNickname }
       });
 
@@ -134,7 +134,7 @@ const checkNickname = async () => {
 const sendVerificationEmail = async () => {
   if (!emailError.value && formData.value.userEmail) {
     try {
-      const response = await axios.post('http://localhost:8080/users/verification-email', {
+      const response = await axios.post('/boot/users/verification-email', {
         email: formData.value.userEmail
       }, {
         headers: {
@@ -161,7 +161,7 @@ const sendVerificationEmail = async () => {
 const verifyCode = async () => {
   if (verificationCode.value) {
     try {
-      const response = await axios.post('http://localhost:8080/users/verification-email/confirmation', {
+      const response = await axios.post('/boot/users/verification-email/confirmation', {
         email: formData.value.userEmail,
         code: verificationCode.value
       }, {

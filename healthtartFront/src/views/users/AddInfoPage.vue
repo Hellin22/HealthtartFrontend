@@ -43,7 +43,7 @@ const handleAddinfoSuccess = (finalData) => {
 
   axios
     .post(
-      "http://localhost:8080/users/oauth2",
+      "/boot/users/oauth2",
       finalData,
       {
         headers: {

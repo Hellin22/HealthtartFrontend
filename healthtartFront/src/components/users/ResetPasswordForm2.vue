@@ -68,7 +68,7 @@
     try {
         console.log(userEmail.value);
         console.log(userPassword1.value);
-        const response = await axios.post('http://localhost:8080/users/password', {
+        const response = await axios.post('/boot/users/password', {
             userEmail: userEmail.value,  // 부모로부터 받은 이메일
             userPassword: userPassword1.value
         });

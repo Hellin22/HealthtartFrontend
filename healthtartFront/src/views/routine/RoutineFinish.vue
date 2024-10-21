@@ -62,7 +62,7 @@
       return;
     }
     try {
-      const response = await fetch(`http://localhost:8080/workoutInfos/detail/${routineCode.value}`, {
+      const response = await fetch(`/boot/workoutInfos/detail/${routineCode.value}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -92,7 +92,7 @@
       workoutInfoCode: workoutInfoCode.value
     });
     
-    const response = await fetch(`http://localhost:8080/history/register`, {    
+    const response = await fetch(`/boot/history/register`, {    
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',

@@ -56,7 +56,7 @@
 
     const fetchRoutines = async () => {
         try {
-            const response = await fetch('http://localhost:8080/history/ratings', {
+            const response = await fetch('/boot/history/ratings', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,7 +72,7 @@
 
             routines.value = await Promise.all(data.map(async (item, index) => {
                 const averageRating = item.routineRatings ? Math.round(item.routineRatings * 2) / 2 : 0;
-                const workoutInfoResponse = await fetch(`http://localhost:8080/workoutInfos/${item.workoutInfoCode}`, {
+                const workoutInfoResponse = await fetch(`/boot/workoutInfos/${item.workoutInfoCode}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

@@ -160,7 +160,7 @@ onMounted(async () => {
 const fetchUserData = async () => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axios.get('http://localhost:8080/users/mypage', {
+    const response = await axios.get('/boot/users/mypage', {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -202,7 +202,7 @@ const updateProfile = async () => {
         return;
       }
 
-      await axios.patch('http://localhost:8080/users/mypage/edit/password', {
+      await axios.patch('/boot/users/mypage/edit/password', {
         currentPassword: currentPassword.value,
         newPassword: newPassword.value
       }, {
@@ -214,7 +214,7 @@ const updateProfile = async () => {
     }
 
     if (selectedGym.value && selectedGym.value.businessNumber) {
-      await axios.post('http://localhost:8080/users/register-gym', {
+      await axios.post('/boot/users/register-gym', {
         userCode: userCode,
         businessNumber: selectedGym.value.businessNumber,
       }, {
@@ -245,7 +245,7 @@ const deleteItem = async () => {
 
   try {
     if (deleteItemType.value === 'gym') {
-      await axios.post('http://localhost:8080/users/remove-gym', {
+      await axios.post('/boot/users/remove-gym', {
         userCode: userCode,
       }, {
         headers: {
@@ -255,7 +255,7 @@ const deleteItem = async () => {
       });
       selectedGym.value = null;
     } else if (deleteItemType.value === 'rival') {
-      const rivalResponse = await axios.get(`http://localhost:8080/rival`, {
+      const rivalResponse = await axios.get(`/boot/rival`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -268,7 +268,7 @@ const deleteItem = async () => {
         throw new Error('라이벌 매치 코드를 찾을 수 없습니다.');
       }
 
-      await axios.delete(`http://localhost:8080/rival/${rivalMatchCode}`, {
+      await axios.delete(`/boot/rival/${rivalMatchCode}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',

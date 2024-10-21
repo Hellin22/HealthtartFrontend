@@ -55,7 +55,7 @@
     errorMessage.value = '';
   
     try {
-      const response = await axios.post('http://localhost:8080/users/login', {
+      const response = await axios.post('/boot/users/login', {
         userEmail: email.value,
         userPassword: password.value,
       }, {

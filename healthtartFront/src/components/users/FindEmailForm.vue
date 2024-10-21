@@ -59,7 +59,7 @@
 
   const sendVerificationCode = async () => {
     try {
-        const response = await axios.post('http://localhost:8080/users/send-sms', {
+        const response = await axios.post('/boot/users/send-sms', {
             userPhone: formData.value.userPhone,
         });
         console.log('SMS 전송 응답:', response.data); // 로그 추가
@@ -90,7 +90,7 @@
   const verifyCode = async () => {
       try {
         console.log('인증번호 검증 요청:', formData.value); // 로그 추가
-        const response = await axios.post('http://localhost:8080/users/verify-code', {
+        const response = await axios.post('/boot/users/verify-code', {
           userPhone: formData.value.userPhone,
           verificationCode: formData.value.verificationCode,
         });

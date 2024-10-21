@@ -114,7 +114,7 @@ provide('registeredRival', registeredRival);
 const fetchUserData = async () => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axios.get('http://localhost:8080/users/mypage', {
+    const response = await axios.get('/boot/users/mypage', {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -139,7 +139,7 @@ const fetchUserData = async () => {
 const fetchRivalNickname = async (rivalUserCode) => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axios.get(`http://localhost:8080/users/usercode/${rivalUserCode}`, {
+    const response = await axios.get(`/boot/users/usercode/${rivalUserCode}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ const fetchRival = async () => {
     const decodedToken = jwtDecode(token);
     const userCode = decodedToken.sub;
 
-    const response = await axios.get('http://localhost:8080/rival', {
+    const response = await axios.get('/boot/rival', {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',

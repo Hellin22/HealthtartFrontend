@@ -88,7 +88,7 @@ const loginUser = async () => {
   }
 
   try {
-    const response = await axios.post('http://localhost:8080/users/login', {
+    const response = await axios.post('/boot/users/login', {
       userEmail: formData.value.userEmail,
       userPassword: formData.value.userPassword
     }, {
@@ -140,12 +140,12 @@ const goToFindEmail = () => {
 }
 
 const kakaoLogin = () => {
-  window.location.href = 'http://localhost:8080/oauth2/authorization/kakao';
+  window.location.href = '/boot/oauth2/authorization/kakao';
 };
 
 
 const googleLogin = () => {
-  window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+  window.location.href = '/boot/oauth2/authorization/google';
 };
 </script>
 

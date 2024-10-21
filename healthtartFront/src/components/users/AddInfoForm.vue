@@ -157,7 +157,7 @@ const emit = defineEmits(['submit']); // 이벤트 정의
 const checkNickname = async () => {
   if (formData.value.userNickname) {
     try {
-      const response = await axios.get('http://localhost:8080/users/nickname/check', {
+      const response = await axios.get('/boot/users/nickname/check', {
         params: { userNickname: formData.value.userNickname }
       });
 

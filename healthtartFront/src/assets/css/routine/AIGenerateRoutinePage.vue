@@ -54,7 +54,7 @@
 
     const fetchUserData = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/users/usercode/${userCode}`,{
+            const response = await fetch(`/boot/users/usercode/${userCode}`,{
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -82,7 +82,7 @@
     const regenerateRoutine = async () => {
 
         try {
-            const response = await fetch(`http://localhost:8080/api/gpt/generate-routine?userCode=${userCode}&bodyPart=${routine.value.bodyPart}&time=${routine.value.totalTime}`, {    
+            const response = await fetch(`/boot/api/gpt/generate-routine?userCode=${userCode}&bodyPart=${routine.value.bodyPart}&time=${routine.value.totalTime}`, {    
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json; charset=UTF-8',

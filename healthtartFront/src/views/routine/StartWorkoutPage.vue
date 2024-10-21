@@ -110,7 +110,7 @@
         try {
             const decodedToken = jwtDecode(token);
             const userCode = decodedToken.sub;
-            const response = await fetch(`http://localhost:8080/users/usercode/${userCode}`, {
+            const response = await fetch(`/boot/users/usercode/${userCode}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -168,7 +168,7 @@ ${index + 1}. ${exercise.name}
         };
 
         try {
-            const response = await fetch('http://localhost:8080/api/gpt/process-routine', {
+            const response = await fetch('/boot/api/gpt/process-routine', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -210,7 +210,7 @@ ${index + 1}. ${exercise.name}
             const secs = seconds.value % 60;
             const exerciseDuration = new Date(koreaTime.getFullYear(), koreaTime.getMonth(), koreaTime.getDate(), hours, minutes, secs); 
 
-            const response = await fetch('http://localhost:8080/recordperuser/register', {
+            const response = await fetch('/boot/recordperuser/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -268,7 +268,7 @@ ${index + 1}. ${exercise.name}
         if (isAIGeneratedRoutine) {
             console.log('AI 생성 루틴 삭제 시도 중...');
             try {
-            const response = await fetch(`http://localhost:8080/routines/${routine.value.routineCode}`, {
+            const response = await fetch(`/boot/routines/${routine.value.routineCode}`, {
                 method: 'DELETE',
                 headers: {
                 'Authorization': `Bearer ${token}`,
@@ -325,7 +325,7 @@ ${index + 1}. ${exercise.name}
                 return;
             }
 
-            const response = await fetch(`http://localhost:8080/workoutInfos/${workoutInfoCode}`, {
+            const response = await fetch(`/boot/workoutInfos/${workoutInfoCode}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -340,7 +340,7 @@ ${index + 1}. ${exercise.name}
             const workoutInfo = await response.json();
             console.log('Workout Info:', workoutInfo);
 
-            const routineResponse = await fetch(`http://localhost:8080/workout-per-routine/detail/${workoutInfo.routineCode}`, {
+            const routineResponse = await fetch(`/boot/workout-per-routine/detail/${workoutInfo.routineCode}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

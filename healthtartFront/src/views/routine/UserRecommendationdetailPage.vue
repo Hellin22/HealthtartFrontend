@@ -51,7 +51,7 @@
 
     const fetchRoutineDetails = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/workoutInfos/${workoutInfoCode.value}`, {
+            const response = await fetch(`/boot/workoutInfos/${workoutInfoCode.value}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -65,7 +65,7 @@
 
             const workoutInfo = await response.json();
 
-            const routineResponse = await fetch(`http://localhost:8080/workout-per-routine/detail/${workoutInfo.routineCode}`, {
+            const routineResponse = await fetch(`/boot/workout-per-routine/detail/${workoutInfo.routineCode}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

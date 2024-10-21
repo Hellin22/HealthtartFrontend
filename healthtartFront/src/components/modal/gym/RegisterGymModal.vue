@@ -62,7 +62,7 @@ const gyms = ref([]);
 
 const fetchGyms = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/gym/gym_list');
+    const response = await axios.get('/boot/gym/gym_list');
     gyms.value = response.data;
   } catch (error) {
     console.error('헬스장 데이터를 불러오는 중 오류가 발생했습니다:', error);

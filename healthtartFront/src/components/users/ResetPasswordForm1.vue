@@ -62,7 +62,7 @@ const checkEmail = () => {
 const sendVerificationEmail = async () => {
   if (!emailError.value && email.value) {
     try {
-      const response = await axios.post('http://localhost:8080/users/verification-email/password', { email: email.value });
+      const response = await axios.post('/boot/users/verification-email/password', { email: email.value });
 
       if (response.data.success) {
         alert('인증번호를 전송하였습니다.');
@@ -80,7 +80,7 @@ const sendVerificationEmail = async () => {
 const verifyCode = async () => {
   if (verificationCode.value) {
     try {
-      const response = await axios.post('http://localhost:8080/users/verification-email/confirmation', {
+      const response = await axios.post('/boot/users/verification-email/confirmation', {
         email: email.value,
         code: verificationCode.value
       });

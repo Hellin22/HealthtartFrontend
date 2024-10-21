@@ -84,7 +84,7 @@ const inbodyData = ref(null);
 const fetchInbodyData = async () => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axios.get('http://localhost:8080/inbody/inbody_ranking', {
+    const response = await axios.get('/boot/inbody/inbody_ranking', {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -107,7 +107,7 @@ const openInbodyInfoModal = async () => {
     const decodedToken = jwtDecode(token);
     const userCode = decodedToken.sub;
     
-    const response = await axios.get('http://localhost:8080/inbody/my-inbody', {
+    const response = await axios.get('/boot/inbody/my-inbody', {
       params: { userCode: userCode },
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -135,7 +135,7 @@ const openFilterModal = () => {
 const applyFilters = async (appliedFilters) => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axios.post('http://localhost:8080/inbody/filter', appliedFilters, {
+    const response = await axios.post('/boot/inbody/filter', appliedFilters, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,

@@ -69,7 +69,7 @@ const bottomCategories = computed(() => ['이두', '삼두', '유산소', '전�
 const fetchGymData = async () => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axios.get('http://localhost:8080/users/mypage', {
+    const response = await axios.get('/boot/users/mypage', {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -93,7 +93,7 @@ const fetchGymData = async () => {
 const fetchEquipmentData = async (gymCode) => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axios.get(`http://localhost:8080/equipment_per_gym/equipment_per_gym_list`, {
+    const response = await axios.get(`/boot/equipment_per_gym/equipment_per_gym_list`, {
       headers: {
         'Authorization': `Bearer ${token}`
       },
@@ -126,7 +126,7 @@ const fetchEquipmentData = async (gymCode) => {
 const showEquipmentInfo = async (exerciseEquipmentCode) => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axios.get(`http://localhost:8080/exercise_equipment/${exerciseEquipmentCode}`, {
+    const response = await axios.get(`/boot/exercise_equipment/${exerciseEquipmentCode}`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }

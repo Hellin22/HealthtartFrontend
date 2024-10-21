@@ -95,7 +95,7 @@ const getUserCodeFromToken = () => {
 const fetchWorkoutDetailsForRoutine = async (routineCode) => {
   try {
     const token = localStorage.getItem('token');
-    const response = await fetch(`http://localhost:8080/workout-per-routine/detail/${routineCode}`, {
+    const response = await fetch(`/boot/workout-per-routine/detail/${routineCode}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -164,7 +164,7 @@ const getWorkoutIcon = (workout) => {
 const fetchBodyPartForEquipment = async (exerciseEquipmentCode) => {
   try {
     const token = localStorage.getItem('token');
-    const response = await fetch(`http://localhost:8080/exercise_equipment/${exerciseEquipmentCode}`, {
+    const response = await fetch(`/boot/exercise_equipment/${exerciseEquipmentCode}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -195,7 +195,7 @@ const fetchBodyPartForEquipment = async (exerciseEquipmentCode) => {
 const fetchWorkoutHistoryForDay = async (userCode, dayOfExercise) => {
   try {
     const token = localStorage.getItem('token');
-    const response = await fetch(`http://localhost:8080/recordperuser/${userCode}/${dayOfExercise}`, {
+    const response = await fetch(`/boot/recordperuser/${userCode}/${dayOfExercise}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
