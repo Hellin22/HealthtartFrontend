@@ -133,7 +133,6 @@
         }
     };
 
-// 이거 routineContent tab누르지말기~! 저대로 두기~!
     const saveRoutine = async () => {
         const currentDate = new Date().toLocaleDateString('ko-KR');
         const routineContent = `
@@ -199,13 +198,18 @@ ${index + 1}. ${exercise.name}
             const userCode = decodedToken.sub;
 
             const now = new Date();
-            const dayOfExercise = now.toISOString().split('T')[0];
-            const createdAt = now.toISOString();
-            const updatedAt = now.toISOString();
+            const koreaOffset = now.getTimezoneOffset() * 60000;
+            const koreaTime = new Date(now.getTime() - koreaOffset);
+
+            const dayOfExercise = koreaTime.toISOString().split('T')[0];
+            const createdAt = koreaTime.toISOString();
+            const updatedAt = koreaTime.toISOString();
+
             const hours = Math.floor(seconds.value / 3600);
             const minutes = Math.floor((seconds.value % 3600) / 60);
             const secs = seconds.value % 60;
-            const exerciseDuration = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, secs); 
+            const exerciseDuration = new Date(koreaTime.getFullYear(), koreaTime.getMonth(), koreaTime.getDate(), hours, minutes, secs); 
+
             const response = await fetch('http://localhost:8080/recordperuser/register', {
                 method: 'POST',
                 headers: {
@@ -232,7 +236,6 @@ ${index + 1}. ${exercise.name}
         } catch (error) {
             console.error('운동 기록 오류:', error);
         }
-
     };
 
     const handleModalAction = async () => {
@@ -240,7 +243,8 @@ ${index + 1}. ${exercise.name}
             await recordWorkout();
             closeModal();
             resetTimer();
-            await router.push('/finished-routine');
+            await router.push({path: '/finished-routine', query: { routineCode: selectedRoutineCode.value} });
+            console.log("보내는 query: "+selectedRoutineCode.value);
         }
     };
 

@@ -42,6 +42,11 @@
 </template>
 
 <script setup>
+    import { ref, onMounted } from 'vue';
+    import { useRouter } from 'vue-router';
+    import { jwtDecode } from 'jwt-decode';
+    import DeleteModal from '../../components/modal/DeleteModal.vue';
+    import LoadingScreen from './LoadingScreen.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { jwtDecode } from 'jwt-decode';
@@ -184,6 +189,7 @@ onMounted(async () => {
             }
 
             const newRoutine = await response.json();
+            console.log("재생성의재생성된루틴이야!!!!!!!!!"+newRoutine);
 
             routine.value = {
                 title: newRoutine.title,

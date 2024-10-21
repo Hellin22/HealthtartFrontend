@@ -46,7 +46,7 @@
     const selectedTime = ref(60);
     const loading = ref(false);
     const isModalOpen = ref(false);
-    const router =useRouter();
+    const router = useRouter();
 
     const toggleSelection = (part) => {
         if (!selectedParts.value.includes(part)) {
