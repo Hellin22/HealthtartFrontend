@@ -56,49 +56,50 @@
     }
 
     const generateRoutine = async () => {
+    if (selectedParts.value.length === 0) {
+        isModalOpen.value = true;
+        return;
+    }
+    loading.value = true; 
+    const bodyPart = selectedParts.value[0];
 
-        if (selectedParts.value.length === 0) {
-            isModalOpen.value = true;
-            return;
-        }
-        loading.value = true; 
-        const bodyPart = selectedParts.value[0];
-
-        try {
-            const token = localStorage.getItem('token');
-            const userCode = jwtDecode(token).sub;
-            console.log(userCode);
-            console.log(bodyPart); 
-            console.log(selectedTime.value); 
-            
-            const response = await fetch(`http://localhost:8080/api/gpt/generate-routine?userCode=${userCode}&bodyPart=${bodyPart}&time=${selectedTime.value}`, {    
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    userCode: userCode,
-                    bodyPart: bodyPart,
-                    time: selectedTime.value,
-                }),
-            });
+    try {
+        const token = localStorage.getItem('token');
+        const userCode = jwtDecode(token).sub;
+        
+        const response = await fetch(`http://localhost:8080/api/gpt/generate-routine`, {    
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                userCode: userCode,
+                bodyPart: bodyPart,
+                time: selectedTime.value,
+            }),
+        });
 
         if (!response.ok) {
             throw new Error('서버 응답 오류');
         }
         const data = await response.json();
 
-        router.push({ 
-            path: '/generate-routine', 
-            query: { routineData: JSON.stringify(data), bodyPart: bodyPart, time: selectedTime } 
-        });
-        } catch (error) {
-                console.error('오류 발생:', error);
-            } finally {
-                loading.value = false;
-            }
-    };
+        localStorage.setItem('tempRoutineData', JSON.stringify(data));
 
-    
+        router.push({ 
+            name: 'GenerateRoutine',
+            params: { 
+                bodyPart: bodyPart,
+                time: selectedTime.value
+            },
+            state: { routineDataStored: true }
+        });
+    } catch (error) {
+        console.error('오류 발생:', error);
+    } finally {
+        loading.value = false;
+    }
+};
+
  </script>

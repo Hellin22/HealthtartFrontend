@@ -25,6 +25,7 @@
           </div>
         </form>
       </div>
+      <InbodyLoadingScreen v-if="isLoading" />
     </div>
   </template>
   
@@ -33,6 +34,7 @@
   import { useRouter } from 'vue-router';
   import axios from 'axios';
   import { jwtDecode } from 'jwt-decode';
+import InbodyLoadingScreen from '../../../views/inbody/InbodyLoadingScreen.vue';
   
   const props = defineProps({
   isOpen: Boolean,
@@ -43,6 +45,7 @@
   const router = useRouter();
   const imageUrl = ref(null);
   const selectedFile = ref(null);
+  const isLoading = ref(false);
   const isSubmitting = ref(false);
   const fileInput = ref(null);
   
@@ -66,6 +69,7 @@
   if (!selectedFile.value) return;
 
   isSubmitting.value = true;
+  isLoading.value = true;
 
   try {
     const token = localStorage.getItem('token');
@@ -131,6 +135,7 @@
     alert('인바디 등록 중 오류가 발생했습니다.');
   } finally {
     isSubmitting.value = false;
+    isLoading.value = false;
   }
 };
   </script>

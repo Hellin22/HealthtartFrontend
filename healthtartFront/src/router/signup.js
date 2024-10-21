@@ -4,7 +4,8 @@ const SignupRoutes = [
     {
         path: "/users/signup",
         component: SignupPage,
-        props: true
+        props: true,
+        
     },
 
 ];

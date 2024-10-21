@@ -4,6 +4,7 @@ const HistoryRoutes = [
   {
     path: '/history',
     component: RoutineHistoryPage,
+    meta: { requiresAuth: true }, // 로그인 필요
   },
 ];
 
