@@ -113,22 +113,18 @@ const openInbodyInfoModal = async () => {
         'Authorization': `Bearer ${token}`,
       },
     });
-
-    console.log(response);
     
-
-    if (response.data && Array.isArray(response.data) && response.data.length > 0) {
-      inbodyData.value = response.data;
-      isInbodyInfoModalOpen.value = true;
-    } else if (response.data && !Array.isArray(response.data)) {
-      inbodyData.value = [response.data];
-      isInbodyInfoModalOpen.value = true;
-    } else {
+    if (!response.data || (Array.isArray(response.data) && response.data.length === 0)) {
       alert("등록된 인바디 정보가 없습니다. MyPage에서 인바디 정보를 등록해주세요.");
+    } else {
+      inbodyData.value = Array.isArray(response.data) ? response.data : [response.data];
+      isInbodyInfoModalOpen.value = true;
     }
   } catch (error) {
     console.error('Error fetching user Inbody data:', error);
-    alert("인바디 정보를 불러오는 중 오류가 발생했습니다. 다시 시도해 주세요.");
+    if (error.response && error.response.status === 404) {
+      alert("인바디 정보를 불러오는 중 오류가 발생했습니다. 다시 시도해 주세요.");
+    } 
   }
 };
 
