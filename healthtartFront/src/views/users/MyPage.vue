@@ -166,14 +166,20 @@ const fetchRival = async () => {
     });
 
     const rivalData = response.data;
-    const userNickname = await fetchRivalNickname(rivalData.rivalUserCode);
-    registeredRival.value = {
-      ...rivalData,
-      userNickname,
-    };
+
+    if (rivalData && rivalData.rivalUserCode) {
+      const userNickname = await fetchRivalNickname(rivalData.rivalUserCode);
+      registeredRival.value = {
+        ...rivalData,
+        userNickname,
+      };
+    } else {
+      registeredRival.value = null;
+    }
 
   } catch (error) {
     console.error('라이벌 조회 중 오류가 발생했습니다:', error);
+    registeredRival.value = null;
   }
 };
 
