@@ -1,95 +1,108 @@
 <template>
-    <div class="level">
-      <BackGround />
-      <div class="content">
-        <div class="emoji-container">
-          <img src="@/assets/icons/emoji.svg" alt="Muscle Emoji" class="muscle-emoji" />
+  <div class="level">
+    <BackGround />
+    <div class="content">
+      <div class="emoji-container">
+        <img src="@/assets/icons/emoji.svg" alt="Muscle Emoji" class="muscle-emoji" />
+      </div>
+      <div class="emoji-none">
+        <h1>오늘도 난 한단계 강해졌다 으랏차차!!</h1>
+        <div class="stars">
+          <span v-for="star in 5" :key="star" @click="rate(star)">
+            <img
+              :src="rating >= star ? filledStar : emptyStar"
+              :alt="star"
+              class="star"
+            />
+          </span>
         </div>
-        <div class="emoji-none">
-          <h1>오늘도 난 한단계 강해졌다 으랏차차!!</h1>
-          <div class="stars">
-            <span v-for="star in 5" :key="star" @click="rate(star)">
-              <img
-                :src="rating >= star ? filledStar : emptyStar"
-                :alt="star"
-                class="star"
-              />
-            </span>
-          </div>
-          <p>오늘 운동한 시간: 1시간</p>
-          <p>운동 루틴이 마음에 드신만큼 선택해 주세요 :)</p>
-          <button @click="submitRating" class="submit-button">만족도 등록</button>
-          <div class="foot">
-            <div class="right-progress">
-              <img :src="right" alt="right" class="right-icon" />
-              <a href="/history" class="view-progress">내 달력 보러가기</a>
-            </div>
+        <p>오늘 운동한 시간: 1시간</p>
+        <p>운동 루틴이 마음에 드신만큼 선택해 주세요 :)</p>
+        <button @click="submitRating" class="submit-button">만족도 등록</button>
+        <div class="foot">
+          <div class="right-progress">
+            <img :src="right" alt="right" class="right-icon" />
+            <a href="/history" class="view-progress">내 달력 보러가기</a>
           </div>
         </div>
       </div>
     </div>
-  </template>
-  
-  <script setup>
-  import { ref, onMounted } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { jwtDecode } from 'jwt-decode';
-  
-  import BackGround from '@/components/BackGround.vue';
-  
-  import filledStar from '@/assets/icons/history/star.svg';
-  import emptyStar from '@/assets/icons/history/nonestar.svg';
-  import right from '@/assets/icons/right1.svg';
-  
-  const rating = ref(0); 
-  const token = localStorage.getItem('token');
-  const workoutInfoCode = ref(null);
-  const routineCode = ref(0);
-  const userCode = ref('');
-  
-  const rate = (value) => {
-    rating.value = value;
-  };
+  </div>
+</template>
 
-  const router = useRouter();
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { jwtDecode } from 'jwt-decode';
 
-  // routineCode로 운동정보에서 운동정보번호 찾고, 찾은 운동정보번호로 운동추천내역 /history/register에 만족도 저장하기
+import BackGround from '@/components/BackGround.vue';
 
-  const findWorkoutInfoCode = async () => {
-    console.log("routineCode입니다: " + routineCode.value);
-    if (!routineCode.value) {
-      console.error('Invalid routineCode');
-      return;
+import filledStar from '@/assets/icons/history/star.svg';
+import emptyStar from '@/assets/icons/history/nonestar.svg';
+import right from '@/assets/icons/right1.svg';
+
+const rating = ref(0);
+const token = localStorage.getItem('token');
+const workoutInfoCode = ref(null);
+const routineCode = ref(0);
+const userCode = ref('');
+
+const rate = (value) => {
+  rating.value = value;
+};
+
+const router = useRouter();
+
+const formatDateTime = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(0).padStart(2, '0');
+  const minutes = String(0).padStart(2, '0');
+  const seconds = String(0).padStart(2, '0');
+
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+};
+
+const findWorkoutInfoCode = async () => {
+  console.log("routineCode입니다: " + routineCode.value);
+  if (!routineCode.value) {
+    console.error('Invalid routineCode');
+    return;
+  }
+  try {
+    const response = await fetch(`http://localhost:8080/workoutInfos/detail/${routineCode.value}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-    try {
-      const response = await fetch(`http://localhost:8080/workoutInfos/detail/${routineCode.value}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      workoutInfoCode.value = data.workoutInfoCode;
-      console.log("넘어온 routineCode로 확인한 workoutInfoCode: " + workoutInfoCode.value);
-    } catch (error) {
-      console.error('Error fetching workout info:', error);
-    }
-  };
+    const data = await response.json();
+    workoutInfoCode.value = data.workoutInfoCode;
+    console.log("넘어온 routineCode로 확인한 workoutInfoCode: " + workoutInfoCode.value);
+  } catch (error) {
+    console.error('Error fetching workout info:', error);
+  }
+};
 
-  const submitRating = async () => {
-    if (rating.value === 0) {
-      alert('별점을 선택해주세요.');
-      return;
-    }
+const submitRating = async () => {
+  if (rating.value === 0) {
+    alert('별점을 선택해주세요.');
+    return;
+  }
+  
+  try {
+    const currentDate = new Date();
+    const formattedDate = formatDateTime(currentDate);
     
-    try {
     console.log('Submitting rating:', {
       routineRatings: rating.value,
-      workoutInfoCode: workoutInfoCode.value
+      workoutInfoCode: workoutInfoCode.value,
+      dayOfExercise: formattedDate // 포맷팅된 날짜 추가
     });
     
     const response = await fetch(`http://localhost:8080/history/register`, {    
@@ -101,9 +114,10 @@
       body: JSON.stringify({
         routineRatings: rating.value,
         workoutInfoCode: workoutInfoCode.value,
+        dayOfExercise: formattedDate
       })
     });
-    console.log('평가 제출 응답 상태:', response.status);
+    
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`Network response was not ok: ${response.status} ${errorText}`);
@@ -111,11 +125,14 @@
     
     const result = await response.json();
     console.log('Rating submitted successfully:', result);
-    alert('평가가 성공적으로 제출되었습니다.');
+    
+    
+    alert('평가와 운동 기록이 성공적으로 제출되었습니다.');
+    
     router.push('/history');
   } catch (error) {
-    console.error('Error submitting rating:', error);
-    alert('평가 제출 중 오류가 발생했습니다. 다시 시도해 주세요.');
+    console.error('Error submitting rating or recording workout:', error);
+    alert('평가 제출 또는 운동 기록 중 오류가 발생했습니다. 다시 시도해 주세요.');
   }
 };
 
@@ -123,16 +140,15 @@ onMounted(async () => {
   routineCode.value = Number(router.currentRoute.value.query.routineCode) || 0;
   console.log("routineCode 확인:", routineCode.value);
   await findWorkoutInfoCode();
-  
-  // userCode 설정
+
   const decodedToken = jwtDecode(token);
   userCode.value = decodedToken.sub;
-});
-
-
-  </script>
   
-  <style scoped>
+  await findWorkoutInfoCode();
+});
+</script>
+
+<style scoped>
  .level {
   background-color: black;
   display: flex;
@@ -224,4 +240,3 @@ onMounted(async () => {
     margin-top: 0; 
   }
   </style>
-  

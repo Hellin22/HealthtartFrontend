@@ -27,6 +27,7 @@
       localStorage.setItem('userEmail', query.userEmail);
       localStorage.setItem('provider', query.provider);
       localStorage.setItem('providerId', query.providerId);
+      
 
       // URL에서 쿼리 스트링을 제거하기 위해 리다이렉트
       router.replace({ path: '/users/addinfo' });

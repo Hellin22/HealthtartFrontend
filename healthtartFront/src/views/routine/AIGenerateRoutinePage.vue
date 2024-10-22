@@ -2,8 +2,8 @@
     <div class="container">
         <div class="ai-main-container">
             <div class="div-title">
-                    <h1 class="routine-title">{{ routine.title }}</h1>
-                </div>
+                <h1 class="routine-title">{{ routine.title }}</h1>
+            </div>
             <div class="routine-contents">
                 <div class="routine-insert-info">
                     <p class="routine-date">날짜: {{routine.date}}</p> 
@@ -25,7 +25,6 @@
                         <p><span class="music-span">추천 Music: {{ routine.musicList }}</span></p>
                     </div>
                 </div>
-            
             </div>
             <div class="button-container">
                 <button class="regenerate-routine-button" @click="regenerateRoutine()"><img class="regenerate-icon" src="@/assets/icons/regenerate.svg" alt="루틴 재생성 버튼">루틴 재생성 하기</button>
@@ -42,11 +41,6 @@
 </template>
 
 <script setup>
-    import { ref, onMounted } from 'vue';
-    import { useRouter } from 'vue-router';
-    import { jwtDecode } from 'jwt-decode';
-    import DeleteModal from '../../components/modal/DeleteModal.vue';
-    import LoadingScreen from './LoadingScreen.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { jwtDecode } from 'jwt-decode';
@@ -145,57 +139,14 @@ const regenerateRoutine = async () => {
 onMounted(async () => {
     isLoading.value = true;
     try {
-        const bodyPart = route.params.bodyPart;
-        const time = parseInt(route.params.time);
-
-        if (route.state && route.state.routineDataStored) {
-            const storedData = localStorage.getItem('tempRoutineData');
-            if (storedData) {
-                const newRoutine = JSON.parse(storedData);
-                routine.value = {
-                    title: newRoutine.title,
-                    totalTime: newRoutine.totalTime,
-                    musicList: newRoutine.musicList,
-                    bodyPart: bodyPart,
-                    date: formatDate(new Date()),
-                    exercises: newRoutine.exercises.map(exercise => ({
-                        name: exercise.workoutName,
-                        explanation: exercise.exerciseExplanation,
-                        video: exercise.exerciseVideo,
-                        sets: exercise.weightSet,
-                        reps: exercise.numberPerSet,
-                        weight: exercise.weightPerSet,
-                        time: exercise.workoutTime
-                    }))
-                };
-                localStorage.removeItem('tempRoutineData');
-            }
-        } else {
-            const response = await fetch(`http://localhost:8080/api/gpt/generate-routine`, {    
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    userCode: userCode,
-                    bodyPart: bodyPart,
-                    time: time,
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            const newRoutine = await response.json();
-            console.log("재생성의재생성된루틴이야!!!!!!!!!"+newRoutine);
-
+        const storedData = localStorage.getItem('tempRoutineData');
+        if (storedData) {
+            const newRoutine = JSON.parse(storedData);
             routine.value = {
                 title: newRoutine.title,
                 totalTime: newRoutine.totalTime,
                 musicList: newRoutine.musicList,
-                bodyPart: bodyPart,
+                bodyPart: route.params.bodyPart,
                 date: formatDate(new Date()),
                 exercises: newRoutine.exercises.map(exercise => ({
                     name: exercise.workoutName,
@@ -207,11 +158,14 @@ onMounted(async () => {
                     time: exercise.workoutTime
                 }))
             };
+            localStorage.removeItem('tempRoutineData');
+        } else {
+            console.error('No routine data found in localStorage');
         }
 
         await fetchUserData();
     } catch (error) {
-        console.error('Error generating routine:', error);
+        console.error('Error loading routine:', error);
     } finally {
         isLoading.value = false;
     }
@@ -231,10 +185,11 @@ const toggleEdit = (index, field) => {
 
 const setActiveButton = () => {
     router.push({ 
-        path: '/start-workout', 
-        state: { routineData: routine.value }
+        path: "/start-workout",
+        query: { routineData: JSON.stringify(routine.value) }
     });
 };
+
 
 const isDeleteModalOpen = ref(false);
 const currentDeleteIndex = ref(null);
