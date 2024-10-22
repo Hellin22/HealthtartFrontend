@@ -106,6 +106,17 @@
         modalAction.value = 'record';
     };
 
+    const formatDateTime = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(0).padStart(2, '0');
+  const minutes = String(0).padStart(2, '0');
+  const seconds = String(0).padStart(2, '0');
+
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+};
+
     const fetchUserInfo = async () => {
         try {
             const decodedToken = jwtDecode(token);
@@ -193,50 +204,56 @@ ${index + 1}. ${exercise.name}
     };
 
     const recordWorkout = async () => {
-        try {
-            const decodedToken = jwtDecode(token);
-            const userCode = decodedToken.sub;
+    try {
+        const now = new Date();
 
-            const now = new Date();
-            const koreaOffset = now.getTimezoneOffset() * 60000;
-            const koreaTime = new Date(now.getTime() - koreaOffset);
+        // toISOString() 사용 후 필요 없는 부분 제거
+        const formatDate = (date) => {
+        return date.toISOString().split('.')[0]; // 밀리초와 'Z' 제거
+        };
 
-            const dayOfExercise = koreaTime.toISOString().split('T')[0];
-            const createdAt = koreaTime.toISOString();
-            const updatedAt = koreaTime.toISOString();
+        const createdAt = formatDate(now);
+        const updatedAt = formatDate(now);
+        const currentDate = new Date();
+        const dayOfExercise = formatDateTime(currentDate);
 
-            const hours = Math.floor(seconds.value / 3600);
-            const minutes = Math.floor((seconds.value % 3600) / 60);
-            const secs = seconds.value % 60;
-            const exerciseDuration = new Date(koreaTime.getFullYear(), koreaTime.getMonth(), koreaTime.getDate(), hours, minutes, secs); 
+        console.log(dayOfExercise);  // 로그 출력
+        console.log(createdAt);      // 로그 출력
+        console.log(updatedAt);      // 로그 출력
 
-            const response = await fetch('http://localhost:8080/recordperuser/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({      
-                    dayOfExercise: dayOfExercise, 
-                    exerciseDuration: exerciseDuration.toISOString(),
-                    recordFlag: true, 
-                    userCode: userCode,
-                    routineCode: selectedRoutineCode.value,
-                    createdAt: createdAt,
-                    updatedAt: updatedAt
-                })
-            });
+        const exerciseDuration = seconds.value; // 타이머로 측정한 시간 (초 단위)
+        const decodedToken = jwtDecode(token);
+        const userCode = decodedToken.sub;
+        const response = await fetch('http://localhost:8080/recordperuser/register', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({      
+            userRecordCode: null,
+            dayOfExercise: dayOfExercise,
+            exerciseDuration: exerciseDuration,
+            recordFlag: true,
+            userCode: userCode,
+            routineCode: selectedRoutineCode.value,
+            createdAt: createdAt,
+            updatedAt: updatedAt
+        })
+        });
 
-            if (!response.ok) {
-                throw new Error('운동 기록 실패');
-            }
-
-            console.log('운동이 성공적으로 기록되었습니다.');
-
-        } catch (error) {
-            console.error('운동 기록 오류:', error);
+        if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error('운동 기록 실패: ' + errorText);
         }
+
+        console.log('운동이 성공적으로 기록되었습니다.');
+        
+    } catch (error) {
+        console.error('운동 기록 오류:', error);
+    }
     };
+
 
     const handleModalAction = async () => {
         if (modalAction.value === 'record') {
@@ -294,9 +311,6 @@ ${index + 1}. ${exercise.name}
         console.log('메인 화면으로 이동 중...');
         await router.push('/');
         };
-
-
-
 
 
     const formatExerciseExplanation = (explanation) => {
