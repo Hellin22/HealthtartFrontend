@@ -70,7 +70,7 @@
             document.querySelector('.verification-btn').disabled = true;
         }
     } catch (error) {
-        phoneErrorMessage = '인증번호 발송에 실패했습니다. 다시 시도해주세요.';
+        phoneErrorMessage.value = '인증번호 발송에 실패했습니다. 다시 시도해주세요.';
         console.error('SMS 전송 오류:', error); // 로그 추가
     }
   };
@@ -231,7 +231,7 @@ label {
 }
 
 #verification-code {
-  /* margin-bottom: 25px; */
+  margin-bottom: 25px;
 }
 
 .form-group {
