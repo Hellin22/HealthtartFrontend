@@ -143,13 +143,37 @@ const goToFindEmail = () => {
 //   window.location.href = 'http://localhost:8080/oauth2/authorization/kakao';
 // };
 
-const kakaoLogin = () => {
-  const clientId = '6cbd43ba1b1fa2803c31d42c0b49c27f'; // 카카오 REST API 키
-  const redirectUri = 'http://localhost:5173/users/oauth/callback'; // 프론트 콜백 주소
-  const kakaoAuthUrl = 
-    `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
-  window.location.href = kakaoAuthUrl;
-};
+  // pkce를 위한 codeVerifier 생성
+  const generateCodeVerifier = () => {
+    const array = new Uint32Array(56);
+    window.crypto.getRandomValues(array);
+    return Array.from(array, dec => ('0' + dec.toString(16)).slice(-2)).join('');
+  };
+
+  // pkce를 위한 codeChallenge 생성
+  const generateCodeChallenge = async (verifier) => {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(verifier);
+    const digest = await crypto.subtle.digest('SHA-256', data);
+    return btoa(String.fromCharCode(...new Uint8Array(digest)))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+  };
+
+  const kakaoLogin = async () => {
+    const codeVerifier = generateCodeVerifier();
+    sessionStorage.setItem('code_verifier', codeVerifier);
+    
+    const codeChallenge = await generateCodeChallenge(codeVerifier);
+    
+    const clientId = '6cbd43ba1b1fa2803c31d42c0b49c27f'; // 카카오 REST API 키
+    const redirectUri = 'http://localhost:5173/users/oauth/callback'; // 프론트 콜백 주소
+    const kakaoAuthUrl = 
+    `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+    // const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+    window.location.href = kakaoAuthUrl;
+  };
 
 
 const googleLogin = () => {
