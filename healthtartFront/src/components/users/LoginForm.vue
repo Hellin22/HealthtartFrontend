@@ -170,8 +170,8 @@ const goToFindEmail = () => {
     const clientId = '6cbd43ba1b1fa2803c31d42c0b49c27f'; // 카카오 REST API 키
     const redirectUri = 'http://localhost:5173/users/oauth/callback'; // 프론트 콜백 주소
     const kakaoAuthUrl = 
-    `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
-    // const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+    `https://kauth.kakao.com/oauth/authorize?
+      response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
     window.location.href = kakaoAuthUrl;
   };
 
