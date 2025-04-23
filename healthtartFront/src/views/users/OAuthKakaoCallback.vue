@@ -12,10 +12,14 @@
   onMounted(async () => {
     const query = new URLSearchParams(window.location.search);
     const code = query.get('code');
-  
-    if (code) {
+    const codeVerifier = sessionStorage.getItem('code_verifier'); // PKCE
+
+    if (code && codeVerifier) {
       try {
-        const response = await axios.post('http://localhost:8080/api/oauth/kakao', { code },{
+        const response = await axios.post('http://localhost:8080/api/oauth/kakao', { 
+          code,
+          codeVerifier
+          },{
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -26,7 +30,7 @@
   
         // localStorage에 저장
         localStorage.setItem('token', jwt);
-  
+        sessionStorage.removeItem('code_verifier');
         router.push('/'); // 메인 페이지로 이동
 
       } catch (error) {

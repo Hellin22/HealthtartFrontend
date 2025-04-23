@@ -4,7 +4,7 @@ import LoginPage from "@/views/users/LoginPage.vue";
 import AddInfoPage from "../views/users/AddInfoPage.vue";
 import ResetPasswordPage from "../views/users/ResetPasswordPage.vue";
 import FindEmailPage from "../views/users/FindEmailPage.vue";
-import OAuthKakaoCallback from "../components/users/OAuthKakaoCallback.vue";
+import OAuthKakaoCallback from "../views/users/OAuthKakaoCallback.vue";
 
 const UserRoutes = [
     { path: "/mypage", component: MyPage, meta: { requiresAuth: true } },
